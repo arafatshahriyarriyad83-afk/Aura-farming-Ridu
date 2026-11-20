@@ -393,5 +393,16 @@ showPage('home');
 reader.readAsDataURL(file);
 });
 </script>
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const supabase = createClient(
+    https://lntvyexkbxlfimlhjpvg.supabase.co/rest/v1/
+    sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv
+
+  window.auraSupabase = supabase;
+  console.log("AURA connected!");
+</script>
+
 </body>
 </html>
