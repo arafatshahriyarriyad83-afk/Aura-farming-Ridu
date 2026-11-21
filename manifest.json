@@ -1,0 +1,20 @@
+
+{
+  "name": "AURA — Your Aesthetic World",
+  "short_name": "AURA",
+  "description": "Your aesthetic world starts here.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8f6fc",
+  "theme_color": "#f8f5ff",
+  "icons": [
+    {
+      "src": "./aura-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
