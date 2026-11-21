@@ -1684,6 +1684,84 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
 
   console.log("AURA Single Video Playback Activated");
 })();
+
+/* AURA PREMIUM ACTION ICON RESTORE */
+(() => {
+  if (window.AURA_PREMIUM_ACTIONS) return;
+  window.AURA_PREMIUM_ACTIONS = true;
+
+  const icons = {
+    like: `<svg viewBox="0 0 24 24"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"/></svg>`,
+    liked: `<svg viewBox="0 0 24 24" class="filled"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"/></svg>`,
+    comment: `<svg viewBox="0 0 24 24"><path d="M20 11.5a8.5 8.5 0 0 1-12.8 7.3L3 20l1.2-4.2A8.5 8.5 0 1 1 20 11.5Z"/></svg>`,
+    share: `<svg viewBox="0 0 24 24"><path d="M22 2 9.5 14.5M22 2l-8 20-4.5-7.5L2 10 22 2Z"/></svg>`,
+    save: `<svg viewBox="0 0 24 24"><path d="M6 3.5h12a1 1 0 0 1 1 1V22l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"/></svg>`,
+    saved: `<svg viewBox="0 0 24 24" class="filled"><path d="M6 3.5h12a1 1 0 0 1 1 1V22l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"/></svg>`
+  };
+
+  const style = document.createElement("style");
+  style.textContent = `
+    .post-actions .action {
+      width:42px;height:42px;
+      display:inline-flex;align-items:center;justify-content:center;
+      border:0;background:transparent;color:#f5f2ff;
+      padding:9px;border-radius:50%;
+      transition:transform .22s ease,color .22s ease,background .22s ease;
+      cursor:pointer;
+    }
+    .post-actions .action svg {
+      width:24px;height:24px;
+      fill:none;stroke:currentColor;stroke-width:1.8;
+      stroke-linecap:round;stroke-linejoin:round;
+      transition:transform .25s ease;
+    }
+    .post-actions .action svg.filled {fill:currentColor;}
+    .post-actions .action:active {transform:scale(.82);}
+    .post-actions .action.liked {color:#ff477e;}
+    .post-actions .action.saved {color:#b69aff;}
+    .post-actions .action:hover svg {transform:scale(1.12);}
+    .post-actions .action.aura-pop {animation:auraPop .35s ease;}
+    @keyframes auraPop {
+      0%{transform:scale(1)}
+      45%{transform:scale(1.25)}
+      100%{transform:scale(1)}
+    }
+  `;
+  document.head.appendChild(style);
+
+  const originalRenderFeed = window.renderFeed;
+  if (typeof originalRenderFeed !== "function") return;
+
+  window.renderFeed = function() {
+    originalRenderFeed.apply(this, arguments);
+
+    document.querySelectorAll("#feed .post").forEach(post => {
+      const buttons = post.querySelectorAll(".post-actions button");
+      if (buttons.length < 4) return;
+
+      const [like, comment, share, save] = buttons;
+
+      like.innerHTML = like.classList.contains("liked")
+        ? icons.liked : icons.like;
+      comment.innerHTML = icons.comment;
+      share.innerHTML = icons.share;
+      save.innerHTML = save.classList.contains("saved")
+        ? icons.saved : icons.save;
+
+      [like, comment, share, save].forEach(button => {
+        if (button.dataset.auraAnimated) return;
+        button.dataset.auraAnimated = "1";
+        button.addEventListener("click", () => {
+          button.classList.remove("aura-pop");
+          void button.offsetWidth;
+          button.classList.add("aura-pop");
+        });
+      });
+    });
+  };
+
+  window.renderFeed();
+})();
 </script>
 </body>
 </html>
