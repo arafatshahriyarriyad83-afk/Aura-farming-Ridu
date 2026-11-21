@@ -3,21 +3,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#f9f6fb">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#faf8fc">
 <title>AURA — Your Aesthetic World</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
 <style>
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
  --bg:#faf8fc;--card:#fff;--text:#292435;
  --muted:#91899c;--pink:#e8b6d0;--purple:#a68cc8;
- --line:#eee8f2;--shadow:0 12px 35px #38264b0c;
+ --line:#eee8f2;
 }
-*{box-sizing:border-box;margin:0;padding:0}
 body{
  background:var(--bg);color:var(--text);
  font-family:'DM Sans',sans-serif;
@@ -33,42 +30,30 @@ header{
  background:#faf8fcf2;backdrop-filter:blur(16px);
  border-bottom:1px solid var(--line);
 }
-.logo{
+.logo,.auth-logo{
  font-family:'Playfair Display',serif;
- font-size:27px;letter-spacing:4px;
+ letter-spacing:4px;
  background:linear-gradient(110deg,#a77eae,#d49fbd);
  -webkit-background-clip:text;color:transparent;
 }
+.logo{font-size:27px}
 .header-icons{display:flex;gap:20px;font-size:22px}
 .header-icons span{cursor:pointer}
 .page{display:none;padding:20px}
 .page.active{display:block}
-.heading{
- font-family:'Playfair Display',serif;
- font-size:30px;margin:8px 0 5px;
-}
+.heading{font-family:'Playfair Display',serif;font-size:30px;margin:8px 0 5px}
 .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
-.stories{
- display:flex;gap:16px;overflow-x:auto;
- padding:10px 0 22px;scrollbar-width:none;
-}
+.stories{display:flex;gap:16px;overflow-x:auto;padding:10px 0 22px;scrollbar-width:none}
 .story{text-align:center;min-width:65px;font-size:11px;cursor:pointer}
-.story img{
- width:62px;height:62px;border-radius:50%;
- object-fit:cover;padding:3px;
- border:2px solid var(--pink);
-}
+.story img{width:62px;height:62px;border-radius:50%;object-fit:cover;padding:3px;border:2px solid var(--pink)}
 .story span{display:block;margin-top:5px}
 .post{
  background:var(--card);border:1px solid var(--line);
  border-radius:20px;overflow:hidden;margin-bottom:23px;
- box-shadow:var(--shadow);
+ box-shadow:0 10px 35px #38264b0c;
 }
 .post-user{display:flex;align-items:center;gap:10px;padding:14px}
-.avatar{
- width:40px;height:40px;border-radius:50%;
- object-fit:cover;background:#eee;
-}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#eee}
 .user-info{flex:1;min-width:0}
 .user-info strong{font-size:13px}
 .user-info small{display:block;color:var(--muted);font-size:11px}
@@ -76,18 +61,15 @@ header{
  border:0;background:#f5eaf2;color:#a05f8d;
  padding:8px 14px;border-radius:20px;font-weight:700;
 }
-.post-image{
- width:100%;max-height:520px;min-height:180px;
- object-fit:cover;display:block;background:#eee;
-}
+.post-image{width:100%;max-height:520px;min-height:180px;object-fit:cover;display:block;background:#eee}
 .post-actions{display:flex;align-items:center;gap:17px;padding:13px 14px}
 .action{border:0;background:none;font-size:23px;color:var(--text)}
 .action.liked{color:#ed729f}
 .bookmark{margin-left:auto;color:var(--muted);font-size:12px}
-.caption{padding:0 14px 15px;font-size:13px;line-height:1.6}
+.caption{padding:0 14px 15px;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
 .caption b{margin-right:5px}
 .comment-list{padding:0 14px 12px;font-size:12px}
-.comment-list p{margin:6px 0}
+.comment-list p{margin:6px 0;overflow-wrap:anywhere}
 .comment-form{display:flex;gap:8px;padding:0 14px 14px}
 .comment-form input{
  flex:1;min-width:0;border:1px solid var(--line);
@@ -101,10 +83,7 @@ header{
  color:var(--text);font-size:14px;outline:none;margin:18px 0;
 }
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.grid img,.grid video{
- width:100%;height:210px;object-fit:cover;border-radius:14px;
- background:#eee;
-}
+.grid img,.grid video{width:100%;height:210px;object-fit:cover;border-radius:14px;background:#eee}
 .profile-top{text-align:center;padding:20px 0}
 .profile-pic{
  width:105px;height:105px;border-radius:50%;
@@ -118,8 +97,7 @@ header{
 .stats small{color:var(--muted)}
 .edit{
  background:var(--text);color:white;border:0;
- border-radius:12px;padding:12px 25px;
- font-weight:600;margin:4px;
+ border-radius:12px;padding:12px 25px;font-weight:600;margin:4px;
 }
 .bottom{
  position:fixed;bottom:0;left:0;right:0;max-width:600px;
@@ -147,20 +125,15 @@ header{
 .hidden{display:none!important}
 #authScreen{
  position:fixed;inset:0;background:var(--bg);z-index:100;
- display:flex;align-items:center;justify-content:center;padding:20px;
- overflow-y:auto;
+ display:flex;align-items:center;justify-content:center;
+ padding:20px;overflow-y:auto;
 }
 .auth-card{
  width:100%;max-width:390px;background:var(--card);
  padding:30px;border-radius:25px;border:1px solid var(--line);
  box-shadow:0 15px 50px #33224412;
 }
-.auth-logo{
- text-align:center;font-family:'Playfair Display',serif;
- font-size:39px;letter-spacing:5px;margin-bottom:8px;
- background:linear-gradient(110deg,#a77eae,#d49fbd);
- -webkit-background-clip:text;color:transparent;
-}
+.auth-logo{text-align:center;font-size:39px;margin-bottom:8px}
 .auth-card h2{text-align:center;font-family:'Playfair Display',serif;margin:10px}
 .auth-card p{text-align:center;color:var(--muted);font-size:13px;margin-bottom:20px}
 .auth-card input{
@@ -168,13 +141,11 @@ header{
  border-radius:12px;margin:7px 0;background:var(--bg);
  color:var(--text);outline:none;
 }
-.auth-card input:focus,.comment-form input:focus{
- border-color:var(--purple);
-}
+.auth-card input:focus,.comment-form input:focus{border-color:var(--purple)}
 .auth-card button{width:100%;margin-top:14px}
 .auth-switch{text-align:center;margin-top:20px;font-size:13px}
 .auth-switch span{color:#a05f8d;font-weight:bold;cursor:pointer}
-#message{font-size:12px;color:#a05f8d;margin-top:13px;text-align:center;line-height:1.5}
+#message{font-size:12px;color:#a05f8d;margin-top:13px;text-align:center;line-height:1.5;overflow-wrap:anywhere}
 button:disabled{opacity:.6;cursor:wait}
 #uploadStatus{font-size:12px;color:var(--muted);margin-top:12px}
 .dark{
@@ -201,18 +172,16 @@ button:disabled{opacity:.6;cursor:wait}
   <p id="authSubtitle">Your little world starts here ✨</p>
 
   <div id="signupName" class="hidden">
-   <input id="fullName" placeholder="Your full name" autocomplete="name">
-   <input id="username" placeholder="Choose a username" autocomplete="username">
+   <input id="fullName" placeholder="Your full name">
+   <input id="username" placeholder="Choose a username">
   </div>
 
-  <input id="email" type="email" placeholder="Email address" autocomplete="email">
-  <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+  <input id="email" type="email" placeholder="Email address">
+  <input id="password" type="password" placeholder="Password">
 
   <button class="primary" id="authButton">Login</button>
   <div id="message"></div>
-  <div class="auth-switch">
-   <span id="switchText">Create an account</span>
-  </div>
+  <div class="auth-switch"><span id="switchText">Create an account</span></div>
  </div>
 </div>
 
@@ -267,8 +236,7 @@ button:disabled{opacity:.6;cursor:wait}
 
 <section class="page" id="profile">
  <div class="profile-top">
-  <img class="profile-pic" id="myPic"
-   src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300">
+  <img class="profile-pic" id="myPic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300">
   <div class="profile-name" id="myName">AURA User</div>
   <p class="profile-bio" id="myBio">Living in my own little world 🌷</p>
   <div class="stats">
@@ -291,22 +259,25 @@ button:disabled{opacity:.6;cursor:wait}
 </nav>
 
 <script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
 /* SUPABASE CONNECTION */
 const SUPABASE_URL = "https://lntvyexkbxlfimlhjpvg.supabase.co";
-const SUPABASE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
+const SUPABASE_KEY = "sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv";
+
+const supabase = createClient(SUPABASE_URL,SUPABASE_KEY);
+window.auraSupabase = supabase;
 
 const $ = id => document.getElementById(id);
 
-let supabase;
 let currentUser = null;
 let currentProfile = null;
 let signupMode = false;
 let postsCache = [];
+let startingUser = null;
 
-function showMessage(msg){
- $("message").textContent = msg;
+function message(text){
+ $("message").textContent = text;
 }
 
 function escapeHTML(value){
@@ -315,13 +286,14 @@ function escapeHTML(value){
  }[c]));
 }
 
-function safeURL(url){
+function safeURL(value){
  try{
-  const parsed = new URL(url);
-  return ["https:","http:"].includes(parsed.protocol) ? parsed.href : "";
+  const u = new URL(value);
+  return ["https:","http:"].includes(u.protocol) ? u.href : "";
  }catch{return "";}
 }
 
+/* LOGIN / SIGNUP */
 function setAuthMode(signup){
  signupMode = signup;
  $("authTitle").textContent = signup ? "Create your account" : "Welcome to AURA";
@@ -330,36 +302,27 @@ function setAuthMode(signup){
  $("signupName").classList.toggle("hidden",!signup);
  $("switchText").textContent = signup ? "Already have an account? Login" : "Create an account";
  $("password").autocomplete = signup ? "new-password" : "current-password";
- showMessage("");
+ message("");
 }
 
-$("switchText").onclick = () => setAuthMode(!signupMode);
-
-async function saveProfile(user,username,fullName){
- const {error} = await supabase.from("profiles").upsert({
-  id:user.id,
-  username,
-  full_name:fullName
- },{onConflict:"id"});
- if(error) throw error;
-}
+$("switchText").onclick = ()=>setAuthMode(!signupMode);
 
 $("authButton").onclick = async()=>{
  const email = $("email").value.trim();
  const password = $("password").value;
+ const button = $("authButton");
 
  if(!email || !password){
-  showMessage("Please enter your email and password.");
+  message("Please enter your email and password.");
   return;
  }
  if(password.length < 6){
-  showMessage("Password must be at least 6 characters.");
+  message("Password must contain at least 6 characters.");
   return;
  }
 
- const button = $("authButton");
  button.disabled = true;
- showMessage("Please wait...");
+ message("Please wait...");
 
  try{
   if(signupMode){
@@ -367,43 +330,48 @@ $("authButton").onclick = async()=>{
    const fullName = $("fullName").value.trim();
 
    if(!username || !fullName){
-    showMessage("Please enter your name and username.");
+    message("Please enter your name and username.");
     return;
    }
    if(!/^[a-z0-9_]{3,20}$/.test(username)){
-    showMessage("Username: 3–20 letters, numbers or underscores.");
+    message("Username must be 3–20 characters: letters, numbers or underscores.");
     return;
    }
 
    const {data,error} = await supabase.auth.signUp({
-    email,
-    password,
+    email,password,
     options:{data:{username,full_name:fullName}}
    });
    if(error) throw error;
 
-   if(data.user && data.session){
+   if(data.session && data.user){
     await saveProfile(data.user,username,fullName);
     await startApp(data.user);
    }else{
-    showMessage("Account created! Check your email to confirm, then log in.");
+    message("Account created! Check your email to confirm your account, then log in.");
    }
   }else{
-   const {data,error} = await supabase.auth.signInWithPassword({email,password});
+   const {error} = await supabase.auth.signInWithPassword({email,password});
    if(error) throw error;
-   if(data.user) await startApp(data.user);
   }
  }catch(err){
-  showMessage(err.message || "Something went wrong. Please try again.");
+  message(err.message || "Something went wrong.");
  }finally{
   button.disabled = false;
  }
 };
 
+/* PROFILE */
+async function saveProfile(user,username,fullName){
+ const {error} = await supabase.from("profiles").upsert({
+  id:user.id,username,full_name:fullName
+ },{onConflict:"id"});
+ if(error) throw error;
+}
+
 async function loadProfile(){
  const {data,error} = await supabase.from("profiles")
   .select("*").eq("id",currentUser.id).maybeSingle();
-
  if(error) throw error;
 
  if(!data){
@@ -419,15 +387,90 @@ async function loadProfile(){
  if(data.avatar_url) $("myPic").src = safeURL(data.avatar_url);
 }
 
+/* APP START */
 async function startApp(user){
+ if(!user) return;
+ if(startingUser === user.id) return;
+ startingUser = user.id;
  currentUser = user;
  $("authScreen").classList.add("hidden");
- await loadProfile();
- await loadFeed();
- await loadStories();
- await loadMyStats();
+
+ try{
+  await loadProfile();
+  await loadFeed();
+  await loadStories();
+  await loadMyStats();
+ }catch(err){
+  console.error(err);
+  alert("AURA loading error: "+err.message);
+  startingUser = null;
+ }
 }
 
+/* AUTH LISTENER */
+supabase.auth.onAuthStateChange((event,session)=>{
+ if(event === "SIGNED_IN" && session?.user){
+  setTimeout(()=>startApp(session.user),0);
+ }
+ if(event === "SIGNED_OUT"){
+  currentUser = null;
+  currentProfile = null;
+  startingUser = null;
+  $("authScreen").classList.remove("hidden");
+ }
+});
+
+async function initialize(){
+ try{
+  const {data,error} = await supabase.auth.getSession();
+  if(error) throw error;
+
+  if(data.session?.user){
+   await startApp(data.session.user);
+  }else{
+   $("authScreen").classList.remove("hidden");
+  }
+ }catch(err){
+  console.error(err);
+  $("authScreen").classList.remove("hidden");
+  message("Connection error: "+err.message);
+ }
+}
+
+/* LOGOUT */
+window.logout = async()=>{
+ const {error} = await supabase.auth.signOut();
+ if(error) alert(error.message);
+};
+
+/* NAVIGATION */
+window.showPage = (name,el)=>{
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ $(name).classList.add("active");
+ document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
+ if(el) el.classList.add("active");
+ window.scrollTo(0,0);
+};
+
+window.toggleDark = ()=>document.body.classList.toggle("dark");
+
+/* EDIT PROFILE */
+window.editProfile = async()=>{
+ if(!currentProfile || !currentUser) return;
+
+ const name = prompt("Enter your display name:",currentProfile.full_name || "");
+ if(name === null) return;
+ const bio = prompt("Enter your bio:",currentProfile.bio || "");
+ if(bio === null) return;
+
+ const {error} = await supabase.from("profiles")
+  .update({full_name:name,bio}).eq("id",currentUser.id);
+
+ if(error){alert(error.message);return;}
+ await loadProfile();
+};
+
+/* LOAD FEED */
 async function loadFeed(){
  const {data,error} = await supabase.from("posts")
   .select("*,profiles(username,full_name,avatar_url),likes(user_id),comments(id,user_id,content,profiles(username))")
@@ -440,10 +483,11 @@ async function loadFeed(){
 }
 
 function renderFeed(){
- $("feed").innerHTML = "";
+ const feed = $("feed");
+ feed.innerHTML = "";
 
  if(!postsCache.length){
-  $("feed").innerHTML = '<div class="empty"><h3>No posts yet ✨</h3><p>Be the first to share something beautiful.</p></div>';
+  feed.innerHTML = '<div class="empty"><h3>No posts yet ✨</h3><p>Be the first to share something beautiful.</p></div>';
   return;
  }
 
@@ -452,12 +496,16 @@ function renderFeed(){
   const liked = (post.likes || []).some(x=>x.user_id===currentUser.id);
   const username = escapeHTML(profile.username || "AURA User");
   const avatar = safeURL(profile.avatar_url) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
-  const comments = post.comments || [];
-  const isVideo = post.media_type === "video";
   const media = safeURL(post.media_url);
+  const comments = post.comments || [];
+  const video = post.media_type === "video";
 
   const article = document.createElement("article");
   article.className = "post";
+
+  const mediaHTML = video
+   ? `<video class="post-image" src="${media}" controls playsinline></video>`
+   : `<img class="post-image" src="${media}" alt="Post image">`;
 
   article.innerHTML = `
    <div class="post-user">
@@ -466,54 +514,55 @@ function renderFeed(){
      <strong>${username}</strong>
      <small>${new Date(post.created_at).toLocaleString()}</small>
     </div>
-    ${post.user_id!==currentUser.id ? `<button class="follow" data-follow="${post.user_id}">Follow</button>` : ""}
+    ${post.user_id!==currentUser.id ? `<button class="follow" data-follow="${escapeHTML(post.user_id)}">Follow</button>` : ""}
    </div>
-   ${isVideo
-    ? `<video class="post-image" src="${media}" controls playsinline></video>`
-    : `<img class="post-image" src="${media}" alt="Post image">`}
+   ${mediaHTML}
    <div class="post-actions">
-    <button class="action ${liked?'liked':''}" data-like="${post.id}">${liked?'♥':'♡'}</button>
-    <button class="action" data-comment-focus="${post.id}">♧</button>
-    <button class="action" data-share="${post.id}">↗</button>
+    <button class="action ${liked?'liked':''}" data-like="${escapeHTML(post.id)}">${liked?'♥':'♡'}</button>
+    <button class="action" data-focus="${escapeHTML(post.id)}">♧</button>
+    <button class="action" data-share="${escapeHTML(post.id)}">↗</button>
     <span class="bookmark">${(post.likes||[]).length} likes</span>
    </div>
    <div class="caption"><b>${username}</b>${escapeHTML(post.caption || "")}</div>
    <div class="comment-list">
     ${comments.slice(0,3).map(c=>`<p><b>${escapeHTML(c.profiles?.username || "User")}</b> ${escapeHTML(c.content)}</p>`).join("")}
    </div>
-   <form class="comment-form" data-comment="${post.id}">
+   <form class="comment-form" data-comment="${escapeHTML(post.id)}">
     <input name="content" placeholder="Add a comment..." required>
     <button type="submit">Post</button>
    </form>
   `;
-
-  $("feed").appendChild(article);
+  feed.appendChild(article);
  });
 
  document.querySelectorAll("[data-like]").forEach(b=>{
-  b.onclick=()=>toggleLike(b.dataset.like);
+  b.onclick = ()=>toggleLike(b.dataset.like);
  });
  document.querySelectorAll("[data-follow]").forEach(b=>{
-  b.onclick=()=>toggleFollow(b.dataset.follow,b);
+  b.onclick = ()=>toggleFollow(b.dataset.follow);
  });
  document.querySelectorAll("[data-comment]").forEach(f=>{
-  f.onsubmit=submitComment;
+  f.onsubmit = submitComment;
  });
- document.querySelectorAll("[data-comment-focus]").forEach(b=>{
-  b.onclick=()=>b.closest(".post").querySelector("input[name=content]").focus();
+ document.querySelectorAll("[data-focus]").forEach(b=>{
+  b.onclick = ()=>b.closest(".post").querySelector("input[name=content]").focus();
  });
  document.querySelectorAll("[data-share]").forEach(b=>{
-  b.onclick=()=>{
-   const p=postsCache.find(x=>x.id===b.dataset.share);
-   if(navigator.share){
-    navigator.share({title:"AURA",text:p?.caption || "AURA post",url:location.href}).catch(()=>{});
-   }else{
-    alert("Copy the AURA website link to share.");
-   }
+  b.onclick = async()=>{
+   const p = postsCache.find(x=>String(x.id)===b.dataset.share);
+   try{
+    if(navigator.share){
+     await navigator.share({title:"AURA",text:p?.caption || "AURA post",url:location.href});
+    }else{
+     await navigator.clipboard.writeText(location.href);
+     alert("Website link copied!");
+    }
+   }catch(e){console.log(e);}
   };
  });
 }
 
+/* LIKE */
 async function toggleLike(postId){
  const {data:existing,error:findError} = await supabase.from("likes")
   .select("id").eq("post_id",postId).eq("user_id",currentUser.id).maybeSingle();
@@ -531,6 +580,7 @@ async function toggleLike(postId){
  await loadFeed();
 }
 
+/* COMMENT */
 async function submitComment(e){
  e.preventDefault();
  const postId = e.currentTarget.dataset.comment;
@@ -545,12 +595,13 @@ async function submitComment(e){
  await loadFeed();
 }
 
+/* FOLLOW */
 async function toggleFollow(targetId){
- const {data:existing,error:findError} = await supabase.from("follows")
+ const {data:existing,error} = await supabase.from("follows")
   .select("id").eq("follower_id",currentUser.id)
   .eq("following_id",targetId).maybeSingle();
 
- if(findError){alert(findError.message);return;}
+ if(error){alert(error.message);return;}
 
  let result;
  if(existing){
@@ -566,6 +617,7 @@ async function toggleFollow(targetId){
  await loadMyStats();
 }
 
+/* PROFILE STATS */
 async function loadMyStats(){
  const [posts,followers,following] = await Promise.all([
   supabase.from("posts").select("id",{count:"exact",head:true}).eq("user_id",currentUser.id),
@@ -578,43 +630,51 @@ async function loadMyStats(){
  $("followingCount").textContent = following.count || 0;
 }
 
+/* EXPLORE AND MY POSTS */
 function renderGallery(){
  $("gallery").innerHTML = "";
  postsCache.forEach(p=>{
-  const img = document.createElement(p.media_type==="video"?"video":"img");
-  img.src = safeURL(p.media_url);
-  if(p.media_type==="video") img.controls = true;
-  img.onclick = ()=>window.showPage("home");
-  $("gallery").appendChild(img);
+  const media = safeURL(p.media_url);
+  const el = document.createElement(p.media_type==="video"?"video":"img");
+  el.src = media;
+  if(el.tagName==="VIDEO") el.muted = true;
+  el.onclick = ()=>window.showPage("home");
+  $("gallery").appendChild(el);
  });
 
  $("myPosts").innerHTML = "";
  postsCache.filter(p=>p.user_id===currentUser.id).forEach(p=>{
-  const img = document.createElement(p.media_type==="video"?"video":"img");
-  img.src = safeURL(p.media_url);
-  if(p.media_type==="video") img.controls = true;
-  $("myPosts").appendChild(img);
+  const media = safeURL(p.media_url);
+  const el = document.createElement(p.media_type==="video"?"video":"img");
+  el.src = media;
+  if(el.tagName==="VIDEO") el.muted = true;
+  $("myPosts").appendChild(el);
  });
 }
 
 $("search").addEventListener("input",()=>{
- const q=$("search").value.toLowerCase();
- $("gallery").innerHTML="";
- postsCache.filter(p=>(p.profiles?.username||"").toLowerCase().includes(q))
+ const q = $("search").value.toLowerCase();
+ $("gallery").innerHTML = "";
+
+ postsCache.filter(p=>(p.profiles?.username || "").toLowerCase().includes(q))
  .forEach(p=>{
-  const img=document.createElement(p.media_type==="video"?"video":"img");
-  img.src=safeURL(p.media_url);
-  if(p.media_type==="video") img.controls=true;
-  $("gallery").appendChild(img);
+  const el = document.createElement(p.media_type==="video"?"video":"img");
+  el.src = safeURL(p.media_url);
+  if(el.tagName==="VIDEO") el.muted = true;
+  $("gallery").appendChild(el);
  });
 });
 
+/* MEDIA UPLOAD */
 async function uploadMedia(file,folder){
+ if(!file) throw new Error("Please choose a file.");
+ if(file.size > 50*1024*1024) throw new Error("File must be smaller than 50 MB.");
+
  const ext = file.name.split(".").pop().toLowerCase();
  const path = `${currentUser.id}/${folder}-${Date.now()}.${ext}`;
 
  const {error} = await supabase.storage.from("aura-media")
-  .upload(path,file,{upsert:false});
+  .upload(path,file,{upsert:false,contentType:file.type});
 
  if(error) throw error;
 
@@ -622,150 +682,93 @@ async function uploadMedia(file,folder){
  return data.publicUrl;
 }
 
+/* CREATE POST */
 $("upload").addEventListener("change",async e=>{
- const file=e.target.files[0];
+ const file = e.target.files[0];
  if(!file) return;
 
  try{
-  $("uploadStatus").textContent="Uploading your post...";
-  const mediaUrl=await uploadMedia(file,"post");
-  const mediaType=file.type.startsWith("video/")?"video":"image";
+  $("uploadStatus").textContent = "Uploading...";
+  const url = await uploadMedia(file,"post");
+  const mediaType = file.type.startsWith("video/") ? "video" : "image";
 
-  const {error}=await supabase.from("posts").insert({
+  const {error} = await supabase.from("posts").insert({
    user_id:currentUser.id,
    caption:$("captionInput").value.trim(),
-   media_url:mediaUrl,
+   media_url:url,
    media_type:mediaType
   });
 
   if(error) throw error;
 
-  $("captionInput").value="";
-  $("uploadStatus").textContent="Posted successfully! ✨";
-  e.target.value="";
+  $("captionInput").value = "";
+  $("uploadStatus").textContent = "Posted successfully! ✨";
+  e.target.value = "";
   await loadFeed();
   await loadMyStats();
   window.showPage("home");
  }catch(err){
-  $("uploadStatus").textContent="Upload failed: "+err.message;
+  $("uploadStatus").textContent = "Upload failed: "+err.message;
  }
 });
 
+/* CREATE STORY */
 $("storyUpload").addEventListener("change",async e=>{
- const file=e.target.files[0];
+ const file = e.target.files[0];
  if(!file) return;
 
  try{
-  $("uploadStatus").textContent="Uploading story...";
-  const mediaUrl=await uploadMedia(file,"story");
+  $("uploadStatus").textContent = "Uploading story...";
+  const url = await uploadMedia(file,"story");
 
-  const {error}=await supabase.from("stories").insert({
-   user_id:currentUser.id,media_url:mediaUrl
+  const {error} = await supabase.from("stories").insert({
+   user_id:currentUser.id,
+   media_url:url
   });
 
   if(error) throw error;
 
-  $("uploadStatus").textContent="Story added! ✨";
-  e.target.value="";
+  $("uploadStatus").textContent = "Story added! ✨";
+  e.target.value = "";
   await loadStories();
  }catch(err){
-  $("uploadStatus").textContent="Story failed: "+err.message;
+  $("uploadStatus").textContent = "Story failed: "+err.message;
  }
 });
 
+/* LOAD STORIES */
 async function loadStories(){
- const {data,error}=await supabase.from("stories")
+ const {data,error} = await supabase.from("stories")
   .select("*,profiles(username,avatar_url)")
   .gt("expires_at",new Date().toISOString())
   .order("created_at",{ascending:false});
 
- if(error) throw error;
+ if(error){
+  console.error("Stories:",error);
+  return;
+ }
 
- $("stories").innerHTML="";
+ $("stories").innerHTML = "";
+
  (data||[]).forEach(s=>{
-  const div=document.createElement("div");
-  div.className="story";
-  const avatar=safeURL(s.profiles?.avatar_url) ||
+  const div = document.createElement("div");
+  div.className = "story";
+
+  const img = document.createElement("img");
+  img.src = safeURL(s.profiles?.avatar_url) ||
    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
 
-  div.innerHTML=`<img src="${avatar}" alt=""><span>${escapeHTML(s.profiles?.username || "User")}</span>`;
-  div.onclick=()=>window.open(safeURL(s.media_url),"_blank","noopener");
+  const label = document.createElement("span");
+  label.textContent = s.profiles?.username || "User";
+
+  div.append(img,label);
+  div.onclick = ()=>window.open(safeURL(s.media_url),"_blank");
   $("stories").appendChild(div);
  });
 }
 
-window.logout = async()=>{
- const {error}=await supabase.auth.signOut();
- if(error){alert(error.message);return;}
- location.reload();
-};
-
-window.showPage = (name,el)=>{
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- $(name).classList.add("active");
- document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
- if(el) el.classList.add("active");
- window.scrollTo(0,0);
-};
-
-window.toggleDark = ()=>document.body.classList.toggle("dark");
-
-window.editProfile = async()=>{
- if(!currentProfile) return;
-
- const name=prompt("Enter your display name:",currentProfile.full_name || "");
- if(name===null) return;
-
- const bio=prompt("Enter your bio:",currentProfile.bio || "");
- if(bio===null) return;
-
- const {error}=await supabase.from("profiles")
-  .update({full_name:name,bio}).eq("id",currentUser.id);
-
- if(error){alert(error.message);return;}
- await loadProfile();
-};
-
-/* START AURA */
-async function initializeAura(){
- try{
-  if(!SUPABASE_KEY || SUPABASE_KEY==="PASTE_YOUR_PUBLISHABLE_KEY_HERE"){
-   throw new Error("Please add your Supabase Publishable Key in the code.");
-  }
-
-  supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
-  window.auraSupabase=supabase;
-
-  const {data,error}=await supabase.auth.getSession();
-  if(error) throw error;
-
-  if(data.session?.user){
-   await startApp(data.session.user);
-  }else{
-   $("authScreen").classList.remove("hidden");
-  }
-
-  supabase.auth.onAuthStateChange((event,session)=>{
-   if(session?.user){
-    setTimeout(async()=>{
-     try{await startApp(session.user);}
-     catch(err){console.error(err);showMessage(err.message);}
-    },0);
-   }else{
-    currentUser=null;
-    currentProfile=null;
-    $("authScreen").classList.remove("hidden");
-   }
-  });
-
- }catch(err){
-  console.error("AURA initialization error:",err);
-  $("authScreen").classList.remove("hidden");
-  showMessage("Connection error: "+err.message);
- }
-}
-
-initializeAura();
+/* START */
+initialize();
 </script>
 </body>
 </html>
