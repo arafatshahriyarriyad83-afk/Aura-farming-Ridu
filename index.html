@@ -126,6 +126,9 @@ textarea.field{resize:vertical;min-height:95px}
 .authswitch button{flex:1}
 .linkbtn{border:0;background:none;color:var(--accent);font-weight:700;padding:10px}
 .toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%);z-index:100;background:var(--text);color:var(--surface);padding:12px 18px;border-radius:14px;font-size:12px;box-shadow:var(--shadow);max-width:90%;text-align:center}
+.profilelink{cursor:pointer}
+.profilelink:hover{opacity:.8}
+.userprofile-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
 @media(max-width:800px){.layout{display:block;margin:15px auto}.sidebar{display:none}.inboxlayout{grid-template-columns:115px minmax(0,1fr)}.chatlist{padding:3px}.person{padding:9px 5px;gap:6px}.person .avatar{width:30px;height:30px}.person .username{font-size:10px}.person .subinfo{display:none}}
 @media(min-width:801px){.bottomnav{position:fixed;left:50%;right:auto;transform:translateX(-50%);width:auto;border:1px solid var(--line);border-radius:20px;bottom:16px;box-shadow:var(--shadow);padding:10px 25px}}
 @media(max-width:430px){.topbar{height:62px}.logo{font-size:26px}.layout{padding-left:10px;padding-right:10px}.stories{padding:14px;gap:12px}.inboxlayout{grid-template-columns:90px minmax(0,1fr)}.chathead{padding:10px}.messages{padding:10px}.gridposts{gap:3px}}
@@ -240,6 +243,30 @@ textarea.field{resize:vertical;min-height:95px}
     <h2 class="sectiontitle" style="margin:22px 4px 10px">Your posts</h2>
     <div class="gridposts" id="myPosts"></div>
    </section>
+
+   <section id="userProfile" class="page">
+    <div class="panel" style="overflow:hidden">
+     <div class="profilecover"></div>
+     <div class="profiletop">
+      <img id="otherPic" class="avatar" src="" alt="Profile photo">
+      <h2 id="otherName">AURA User</h2>
+      <div class="muted smalltext" id="otherUsername">@username</div>
+      <p class="caption" id="otherBio" style="margin-top:10px"></p>
+      <div class="stats">
+       <div class="stat"><strong id="otherPostCount">0</strong><span>Posts</span></div>
+       <div class="stat"><strong id="otherFollowerCount">0</strong><span>Followers</span></div>
+       <div class="stat"><strong id="otherFollowingCount">0</strong><span>Following</span></div>
+      </div>
+      <div class="userprofile-actions">
+       <button class="primary" id="otherFollowButton">Follow</button>
+       <button class="secondary" id="otherMessageButton">Message</button>
+       <button class="secondary" id="backFromProfile">Back</button>
+      </div>
+     </div>
+    </div>
+    <h2 class="sectiontitle" style="margin:22px 4px 10px">Posts</h2>
+    <div class="gridposts" id="otherPosts"></div>
+   </section>
   </main>
 
   <aside class="sidebar">
@@ -287,6 +314,8 @@ let selectedAvatarFile = null;
 let authMode = "login";
 let chatChannel = null;
 let cachedPeople = [];
+let viewedProfile = null;
+let previousPage = "home";
 
 const fallbackAvatar = "data:image/svg+xml," + encodeURIComponent(
  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="50" fill="#dfc9f5"/><circle cx="50" cy="38" r="19" fill="#fff"/><path d="M15 100c2-27 16-39 35-39s33 12 35 39" fill="#fff"/></svg>'
@@ -485,8 +514,8 @@ async function loadFeed(){
    card.className="card post";
    card.innerHTML=`
     <div class="posthead">
-     <img class="avatar" src="${escapeHTML(avatar(p.avatar_url))}" alt="">
-     <div class="userinfo"><div class="username">${escapeHTML(p.username||"AURA user")}</div><div class="subinfo">${escapeHTML(formatDate(post.created_at))}</div></div>
+     <img class="avatar profilelink" src="${escapeHTML(avatar(p.avatar_url))}" alt="">
+     <div class="userinfo"><div class="username profilelink">${escapeHTML(p.username||"AURA user")}</div><div class="subinfo">${escapeHTML(formatDate(post.created_at))}</div></div>
      ${post.user_id!==currentUser.id?`<button class="secondary followbtn" data-user="${post.user_id}">${following.has(post.user_id)?"Following":"Follow"}</button>`:""}
     </div>
     ${media}
@@ -500,6 +529,9 @@ async function loadFeed(){
      <form class="commentform" data-post="${post.id}"><input id="comment-${post.id}" placeholder="Add a comment..." maxlength="500"><button>Post</button></form>
     </div>`;
    box.appendChild(card);
+   const postHead=card.querySelector(".posthead");
+   postHead.querySelector(".avatar").addEventListener("click",()=>openUserProfile(post.user_id));
+   postHead.querySelector(".username").addEventListener("click",()=>openUserProfile(post.user_id));
   });
   box.querySelectorAll(".likebtn").forEach(b=>b.addEventListener("click",()=>toggleLike(b.dataset.id,b)));
   box.querySelectorAll(".followbtn").forEach(b=>b.addEventListener("click",()=>toggleFollow(b.dataset.user,b)));
@@ -617,7 +649,7 @@ function renderExplore(posts){
   el.src=p.media_url;
   if(el.tagName==="VIDEO"){el.muted=true;el.loop=true;el.playsInline=true;}
   el.title=p.caption||"AURA post";
-  el.addEventListener("click",()=>window.open(p.media_url,"_blank"));
+  el.addEventListener("click",()=>openUserProfile(p.user_id));
   grid.appendChild(el);
  });
 }
@@ -663,6 +695,105 @@ async function loadMyProfile(){
   if(!myPosts?.length)grid.innerHTML='<div class="empty">You have not shared any posts yet.</div>';
  }catch(e){console.error(e);toast(e.message);}
 }
+
+async function openUserProfile(userId){
+ if(!userId)return;
+ if(userId===currentUser.id){
+  showPage("profile");
+  return;
+ }
+
+ try{
+  const {data:profile,error}=await supabase.from("profiles").select("*").eq("id",userId).single();
+  if(error)throw error;
+  if(!profile)throw new Error("Profile not found.");
+
+  previousPage=document.querySelector(".page.active")?.id||"home";
+  viewedProfile=profile;
+
+  $("otherPic").src=avatar(profile.avatar_url);
+  $("otherName").textContent=profile.full_name||profile.username||"AURA User";
+  $("otherUsername").textContent="@"+(profile.username||"user");
+  $("otherBio").textContent=profile.bio||"";
+
+  const [posts,followers,following,followCheck]=await Promise.all([
+   supabase.from("posts").select("*",{count:"exact"}).eq("user_id",userId).order("created_at",{ascending:false}),
+   supabase.from("follows").select("follower_id",{count:"exact",head:true}).eq("following_id",userId),
+   supabase.from("follows").select("following_id",{count:"exact",head:true}).eq("follower_id",userId),
+   supabase.from("follows").select("follower_id").eq("follower_id",currentUser.id).eq("following_id",userId).maybeSingle()
+  ]);
+
+  if(posts.error)throw posts.error;
+  if(followers.error)throw followers.error;
+  if(following.error)throw following.error;
+  if(followCheck.error)throw followCheck.error;
+
+  $("otherPostCount").textContent=posts.count??0;
+  $("otherFollowerCount").textContent=followers.count??0;
+  $("otherFollowingCount").textContent=following.count??0;
+
+  $("otherFollowButton").textContent=followCheck.data?"Following":"Follow";
+  $("otherFollowButton").dataset.following=followCheck.data?"yes":"no";
+
+  const grid=$("otherPosts");
+  grid.innerHTML="";
+  (posts.data||[]).forEach(post=>{
+   const el=document.createElement(post.media_type==="video"?"video":"img");
+   el.src=post.media_url;
+   if(el.tagName==="VIDEO"){
+    el.muted=true;
+    el.playsInline=true;
+    el.controls=true;
+   }
+   el.addEventListener("click",()=>window.open(post.media_url,"_blank"));
+   grid.appendChild(el);
+  });
+  if(!posts.data?.length)grid.innerHTML='<div class="empty">No posts yet.</div>';
+
+  showPage("userProfile");
+ }catch(e){
+  console.error(e);
+  toast(e.message||"Could not open profile.");
+ }
+}
+
+$("otherFollowButton").addEventListener("click",async()=>{
+ if(!viewedProfile)return;
+ const btn=$("otherFollowButton");
+ setBusy(btn,true,"Please wait...");
+ try{
+  const {data,error}=await supabase.from("follows").select("*")
+   .eq("follower_id",currentUser.id)
+   .eq("following_id",viewedProfile.id).maybeSingle();
+  if(error)throw error;
+
+  if(data){
+   const {error:e}=await supabase.from("follows").delete()
+    .eq("follower_id",currentUser.id)
+    .eq("following_id",viewedProfile.id);
+   if(e)throw e;
+  }else{
+   const {error:e}=await supabase.from("follows").insert({
+    follower_id:currentUser.id,
+    following_id:viewedProfile.id
+   });
+   if(e)throw e;
+  }
+  await openUserProfile(viewedProfile.id);
+ }catch(e){toast(e.message);}
+ finally{setBusy(btn,false);}
+});
+
+$("otherMessageButton").addEventListener("click",async()=>{
+ if(!viewedProfile)return;
+ const person=viewedProfile;
+ showPage("inbox");
+ await openChat(person);
+});
+
+$("backFromProfile").addEventListener("click",()=>{
+ showPage(previousPage==="userProfile"?"home":previousPage);
+});
 
 function openEditProfile(){
  selectedAvatarFile=null;
@@ -746,8 +877,14 @@ function renderChatPeople(people){
  if(!people.length){box.innerHTML='<div class="empty">No people found.</div>';return;}
  people.forEach(p=>{
   const el=document.createElement("div");el.className="person";
-  el.innerHTML=`<img class="avatar" src="${escapeHTML(avatar(p.avatar_url))}" alt=""><div class="userinfo"><div class="username">${escapeHTML(p.username||p.full_name||"User")}</div><div class="subinfo">${escapeHTML(p.full_name||"AURA member")}</div></div>`;
-  el.addEventListener("click",()=>openChat(p));
+  el.innerHTML=`<img class="avatar profilelink" src="${escapeHTML(avatar(p.avatar_url))}" alt=""><div class="userinfo"><div class="username profilelink">${escapeHTML(p.username||p.full_name||"User")}</div><div class="subinfo">${escapeHTML(p.full_name||"AURA member")}</div></div>`;
+  el.addEventListener("click",e=>{
+   if(e.target.closest(".avatar,.username")){
+    openUserProfile(p.id);
+   }else{
+    openChat(p);
+   }
+  });
   box.appendChild(el);
  });
 }
@@ -767,7 +904,9 @@ async function openChat(person){
    data=result.data;
   }
   currentChat={id:data.id,person};
-  $("chatHeader").innerHTML=`<img class="avatar small" src="${escapeHTML(avatar(person.avatar_url))}" alt=""><div><div class="username">${escapeHTML(person.full_name||person.username||"User")}</div><div class="subinfo">@${escapeHTML(person.username||"user")}</div></div>`;
+  $("chatHeader").innerHTML=`<img class="avatar small profilelink" src="${escapeHTML(avatar(person.avatar_url))}" alt=""><div><div class="username profilelink">${escapeHTML(person.full_name||person.username||"User")}</div><div class="subinfo">@${escapeHTML(person.username||"user")}</div></div>`;
+  $("chatHeader").querySelector(".avatar").addEventListener("click",()=>openUserProfile(person.id));
+  $("chatHeader").querySelector(".username").addEventListener("click",()=>openUserProfile(person.id));
   await loadMessages();
   if(chatChannel)supabase.removeChannel(chatChannel);
   chatChannel=supabase.channel("aura-chat-"+data.id)
