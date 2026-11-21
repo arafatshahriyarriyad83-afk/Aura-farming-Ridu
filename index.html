@@ -1569,6 +1569,71 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
 
   console.log("AURA Premium UI Patch Loaded ✨");
 })();
+
+/* =========================================
+   AURA — GLOBAL VIDEO PLAYBACK CONTROLLER
+   ========================================= */
+(() => {
+  if (window.AURA_VIDEO_CONTROL) return;
+  window.AURA_VIDEO_CONTROL = true;
+
+  let activeVideo = null;
+
+  function pauseOtherVideos(current) {
+    document.querySelectorAll("video").forEach(video => {
+      if (video !== current && !video.paused) {
+        video.pause();
+      }
+    });
+  }
+
+  document.addEventListener("play", event => {
+    const video = event.target;
+
+    if (!(video instanceof HTMLVideoElement)) return;
+
+    pauseOtherVideos(video);
+    activeVideo = video;
+  }, true);
+
+  document.addEventListener("pause", event => {
+    if (event.target === activeVideo) {
+      activeVideo = null;
+    }
+  }, true);
+
+  document.addEventListener("ended", event => {
+    if (event.target === activeVideo) {
+      activeVideo = null;
+    }
+  }, true);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      document.querySelectorAll("video").forEach(video => {
+        video.pause();
+      });
+      activeVideo = null;
+    }
+  });
+
+  window.addEventListener("pagehide", () => {
+    document.querySelectorAll("video").forEach(video => {
+      video.pause();
+    });
+    activeVideo = null;
+  });
+
+  // Story viewer opens: pause feed and chat videos.
+  window.AURA_PAUSE_ALL_VIDEOS = function() {
+    document.querySelectorAll("video").forEach(video => {
+      video.pause();
+    });
+    activeVideo = null;
+  };
+
+  console.log("AURA Global Video Control Ready");
+})();
 </script>
 </body>
 </html>
