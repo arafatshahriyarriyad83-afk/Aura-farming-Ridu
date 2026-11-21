@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f8f5ff">
 <title>AURA — Your Aesthetic World</title>
+<link rel="manifest" href="./manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 
@@ -261,6 +262,7 @@ textarea.field{resize:vertical;min-height:95px}
       </div>
       <div class="btnrow">
        <button class="primary" id="editProfileButton">Edit profile</button>
+       <button class="secondary" id="enableNotifications">🔔 Enable Notifications</button>
        <button class="secondary" id="changePasswordButton">Change password</button>
        <button class="secondary" id="logoutButton">Log out</button>
       </div>
@@ -344,6 +346,8 @@ let cachedPeople = [];
 let viewedProfile = null;
 let previousPage = "home";
 
+const VAPID_PUBLIC_KEY = "BNm3yqEiPXuWbhM7rJiaseZ0CmOR8oDlnfwMqXurKFhR_VSALZO8ouKIkTVfNCqVP8evIMZq8GMQZ-mjYzWFU9s";
+
 const fallbackAvatar = "data:image/svg+xml," + encodeURIComponent(
  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="50" fill="#dfc9f5"/><circle cx="50" cy="38" r="19" fill="#fff"/><path d="M15 100c2-27 16-39 35-39s33 12 35 39" fill="#fff"/></svg>'
 );
@@ -381,6 +385,106 @@ function setBusy(button,busy,label){
   delete button.dataset.oldText;
  }
 }
+
+/* PUSH NOTIFICATIONS */
+
+function urlBase64ToUint8Array(base64String){
+ const padding="=".repeat((4-base64String.length%4)%4);
+ const base64=(base64String+padding).replace(/-/g,"+").replace(/_/g,"/");
+ const rawData=atob(base64);
+ return Uint8Array.from(rawData,c=>c.charCodeAt(0));
+}
+
+async function registerAURASW(){
+ if(!("serviceWorker" in navigator))return null;
+
+ try{
+  const registration=await navigator.serviceWorker.register("./sw.js");
+  await navigator.serviceWorker.ready;
+  return registration;
+ }catch(error){
+  console.error("Service worker registration failed:",error);
+  return null;
+ }
+}
+
+async function enablePushNotifications(){
+ const button=$("enableNotifications");
+
+ try{
+  if(!currentUser)throw new Error("Please log in first.");
+
+  if(!("serviceWorker" in navigator)||
+     !("PushManager" in window)||
+     !("Notification" in window)){
+   throw new Error("Push notifications are not supported by this browser.");
+  }
+
+  if(!window.isSecureContext){
+   throw new Error("Notifications need HTTPS. Open AURA using its GitHub Pages HTTPS address.");
+  }
+
+  setBusy(button,true,"Enabling...");
+
+  const permission=await Notification.requestPermission();
+
+  if(permission!=="granted"){
+   throw new Error("Please allow notifications in your browser settings.");
+  }
+
+  const registration=await registerAURASW();
+
+  if(!registration)throw new Error("Could not register the notification service worker.");
+
+  let subscription=await registration.pushManager.getSubscription();
+
+  if(!subscription){
+   subscription=await registration.pushManager.subscribe({
+    userVisibleOnly:true,
+    applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+   });
+  }
+
+  const endpoint=subscription.endpoint;
+
+  const {data:existing,error:selectError}=await supabase
+   .from("push_subscriptions")
+   .select("id,user_id")
+   .eq("endpoint",endpoint)
+   .maybeSingle();
+
+  if(selectError)throw selectError;
+
+  if(existing){
+   if(existing.user_id!==currentUser.id){
+    throw new Error("This browser subscription belongs to another AURA account. Sign in with that account or use a different browser profile.");
+   }
+  }else{
+   const {error:insertError}=await supabase
+    .from("push_subscriptions")
+    .insert({
+     user_id:currentUser.id,
+     endpoint:endpoint,
+     subscription:subscription.toJSON()
+    });
+
+   if(insertError)throw insertError;
+  }
+
+  button.textContent="🔔 Notifications Enabled";
+  toast("AURA notifications enabled!");
+
+ }catch(error){
+  console.error("Push notification error:",error);
+  toast(error.message||"Could not enable notifications.");
+ }finally{
+  if(button)button.disabled=false;
+ }
+}
+
+$("enableNotifications").addEventListener("click",enablePushNotifications);
+
+/* APP NAVIGATION */
 
 function showPage(page){
  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===page));
@@ -508,6 +612,7 @@ async function startApp(){
  try{
   await ensureProfile();
   showApp();
+  registerAURASW();
   showPage("home");
   await Promise.all([loadFeed(),loadStories(),loadMyProfile()]);
  }catch(e){
@@ -718,7 +823,7 @@ async function loadFeed(){
  }
 }
 
-/* LIKE: UPDATE ONLY THE SELECTED BUTTON, NO FEED RELOAD */
+/* LIKE */
 
 async function toggleLike(postId,button){
  if(button.disabled)return;
@@ -771,7 +876,7 @@ async function toggleLike(postId,button){
  }
 }
 
-/* COMMENT: ADD ONLY THE NEW COMMENT, NO FEED RELOAD */
+/* COMMENT */
 
 async function addComment(postId,content,form){
  content=content.trim();
