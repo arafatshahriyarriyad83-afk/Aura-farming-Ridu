@@ -39,10 +39,10 @@ border-bottom:1px solid rgba(168,85,247,.2)
 .logo{display:flex;align-items:center;gap:9px;font-family:'Playfair Display',serif;
 font-size:25px;font-weight:800;letter-spacing:4px;color:#d8baff}
 .aura-mark{width:32px;height:32px;filter:drop-shadow(0 0 9px #a855f7)}
-.header-icons{display:flex;gap:13px}
+.header-icons{display:flex;gap:9px}
 .header-icons button{
 border:1px solid var(--line);background:linear-gradient(145deg,#171326,#0d0b17);
-color:#d8baff;font-size:21px;width:42px;height:42px;border-radius:14px;position:relative
+color:#d8baff;font-size:20px;width:40px;height:40px;border-radius:14px;position:relative
 }
 .badge{display:none;position:absolute;top:-5px;right:-7px;min-width:18px;height:18px;
 padding:0 5px;border-radius:20px;background:#a855f7;color:white;font-size:10px;
@@ -66,14 +66,15 @@ border-radius:22px;overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow)}
 .avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#211a30;
 border:2px solid #a855f7;box-shadow:0 0 12px rgba(168,85,247,.25)}
 .user-info{flex:1;min-width:0}
-.user-info strong{font-size:13px;font-weight:800}
+.user-info strong{font-size:13px;font-weight:800;cursor:pointer}
 .user-info small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
 .follow{border:0;background:var(--gradient);color:white;padding:8px 15px;border-radius:20px;font-size:11px;font-weight:800}
+.follow.following{background:#282039;border:1px solid #7043a5;color:#d9c4ff}
+.more-btn{border:0;background:none;color:#d7c9ed;font-size:23px;padding:3px 7px}
 .post-image{width:100%;max-height:560px;min-height:180px;object-fit:cover;display:block;background:#151020}
 .post-actions{display:flex;align-items:center;gap:16px;padding:13px 14px 9px}
 .action{border:0;background:none;font-size:25px;color:#d9c8f2;line-height:1}
-.action.liked{color:#e879ff}
-.action.saved{color:#a985ff}
+.action.liked{color:#e879ff}.action.saved{color:#a985ff}
 .like-count{font-size:12px;color:var(--muted);margin-left:auto}
 .caption{padding:0 14px 13px;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
 .comment-list{padding:0 14px 10px;font-size:12px}
@@ -85,7 +86,7 @@ padding:10px 14px;background:#0b0913;color:var(--text);outline:none}
 .search,.field{width:100%;padding:14px 16px;border-radius:15px;border:1px solid var(--line);
 background:var(--card);color:var(--text);font-size:14px;outline:none;margin:10px 0}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.grid img,.grid video{width:100%;height:210px;object-fit:cover;border-radius:15px;background:#151020;border:1px solid #282039}
+.grid img,.grid video{width:100%;height:210px;object-fit:cover;border-radius:15px;background:#151020;border:1px solid #282039;cursor:pointer}
 .profile-top{text-align:center;padding:22px 0}
 .profile-pic{width:112px;height:112px;border-radius:50%;object-fit:cover;padding:4px;
 border:3px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--gradient) border-box;
@@ -97,13 +98,15 @@ box-shadow:0 0 28px rgba(155,92,255,.35)}
 .stats small{color:var(--muted);font-size:11px}
 .edit,.primary{background:var(--gradient);color:white;border:0;border-radius:14px;
 padding:12px 20px;font-weight:800;margin:5px;box-shadow:0 0 18px rgba(155,92,255,.22)}
+.secondary{background:#211a30;color:#e1caff;border:1px solid #493267;border-radius:13px;padding:11px 16px;font-weight:700;margin:5px}
+.danger{background:#391927;color:#ffb5cb;border:1px solid #7b3450;border-radius:13px;padding:10px 14px;font-weight:700}
 .bottom{position:fixed;bottom:0;left:0;right:0;max-width:600px;margin:auto;height:76px;
 background:rgba(10,8,18,.96);backdrop-filter:blur(24px);border-top:1px solid rgba(168,85,247,.22);
 display:flex;justify-content:space-around;align-items:center;z-index:60;padding-bottom:env(safe-area-inset-bottom)}
 .nav{border:0;background:none;font-size:25px;color:#777087;position:relative;width:48px;height:48px;border-radius:15px}
 .nav.active{color:#d1a4ff;background:rgba(155,92,255,.15);transform:translateY(-3px);text-shadow:0 0 12px #a855f7}
 .nav.active:after{content:"";position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
-width:5px;height:5px;border-radius:50%;background:#bb79ff;box-shadow:0 0 10px #a855f7}
+width:5px;height:5px;border-radius:50%;background:#bb79ff;box-shadow:0 0 10px #a855ff}
 .create-box{background:linear-gradient(145deg,#141021,#0e0c18);border:1px solid #2b2040;
 padding:27px 18px;text-align:center;border-radius:23px;margin-top:20px;box-shadow:var(--shadow)}
 .create-box textarea{width:100%;padding:14px;border:1px solid var(--line);border-radius:15px;
@@ -118,7 +121,7 @@ z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;
 .auth-card{width:100%;max-width:390px;background:linear-gradient(145deg,#171326,#0d0b17);
 padding:27px;border-radius:27px;border:1px solid #382454;box-shadow:0 20px 65px rgba(98,38,180,.2)}
 .auth-brand{display:flex;flex-direction:column;align-items:center;margin-bottom:18px}
-.auth-mark{width:76px;height:76px;filter:drop-shadow(0 0 17px #a855f7);margin-bottom:8px}
+.auth-mark{width:76px;height:76px;filter:drop-shadow(0 0 17px #a855ff);margin-bottom:8px}
 .auth-logo{font-family:'Playfair Display',serif;font-size:34px;font-weight:800;letter-spacing:7px;
 background:var(--gradient);background-clip:text;-webkit-background-clip:text;color:transparent}
 .auth-card h2{text-align:center;font-family:'Playfair Display',serif;margin:10px}
@@ -137,7 +140,7 @@ z-index:200;max-width:90%;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.4)
 border:1px solid var(--line);border-radius:17px;margin:8px 0;text-align:left;width:100%;
 color:var(--text);transition:.2s}
 .chat-row:hover{border-color:#7043a5;box-shadow:0 0 15px rgba(155,92,255,.12)}
-.chat-row img{width:45px;height:45px;border-radius:50%;object-fit:cover;border:2px solid #a855f7}
+.chat-row img{width:45px;height:45px;border-radius:50%;object-fit:cover;border:2px solid #a855ff}
 .chat-row span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
 .chat-panel{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
 .chat-head{padding:13px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
@@ -148,7 +151,7 @@ display:flex;flex-direction:column;gap:10px}
 background:#282039;align-self:flex-start;overflow-wrap:anywhere;font-size:13px;color:#f7f3ff}
 .bubble.mine{background:linear-gradient(135deg,#633a91,#874bc0);align-self:flex-end;color:white;border-radius:17px 17px 5px 17px}
 .bubble small{display:block;font-size:10px;opacity:.7;margin-top:5px}
-.bubble img{max-width:100%;border-radius:10px;display:block;margin-top:5px}
+.bubble img,.bubble video{max-width:100%;border-radius:10px;display:block;margin-top:7px}
 .chat-compose{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line)}
 .chat-compose input[type=text]{min-width:0;flex:1;border:1px solid var(--line);border-radius:22px;
 padding:11px;background:#0b0913;color:var(--text);outline:none}
@@ -157,6 +160,31 @@ padding:11px;background:#0b0913;color:var(--text);outline:none}
 .chat-tools button{border:0;background:none;color:#c18aff}
 .chat-back{display:flex;align-items:center;gap:10px;margin-bottom:15px}
 .chat-back button{border:1px solid var(--line);background:var(--card);color:#d8baff;border-radius:12px;padding:9px 15px}
+.settings-row,.activity-row{display:flex;align-items:center;gap:13px;padding:15px;
+background:var(--card);border:1px solid var(--line);border-radius:15px;margin:10px 0}
+.settings-row button{margin-left:auto}
+.settings-row strong,.activity-row strong{font-size:13px}
+.settings-row small,.activity-row small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.activity-icon{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#291b40;color:#ddbaff;font-size:19px;flex-shrink:0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:150;display:none;align-items:center;justify-content:center;padding:15px}
+.modal.show{display:flex}
+.story-viewer{width:100%;max-width:440px;height:min(82vh,760px);background:#100e1c;border:1px solid #513477;border-radius:22px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.story-progress{display:flex;gap:4px;padding:12px 10px 5px;position:absolute;top:0;left:0;right:0;z-index:5}
+.story-progress span{height:3px;background:#ffffff55;border-radius:5px;flex:1;overflow:hidden}
+.story-progress span i{display:block;height:100%;width:0;background:white}
+.story-view-head{position:absolute;top:24px;left:12px;right:12px;z-index:6;display:flex;align-items:center;gap:9px}
+.story-view-head img{width:34px;height:34px;border-radius:50%;border:1px solid #fff}
+.story-view-head strong{font-size:12px;text-shadow:0 1px 5px #000}
+.story-view-head button{margin-left:auto;background:#171020aa;color:white;border:0;border-radius:10px;padding:7px 10px}
+.story-media{width:100%;height:100%;object-fit:contain;background:#050408}
+.story-tap{position:absolute;top:80px;bottom:0;width:35%;z-index:4}
+.story-tap.prev{left:0}.story-tap.next{right:0}
+.story-close{position:absolute;right:12px;top:68px;z-index:8;background:#171020aa;color:white;border:0;border-radius:50%;width:35px;height:35px}
+.viewer-delete{position:absolute;bottom:15px;right:15px;z-index:8}
+.profile-story{display:flex;justify-content:center;margin:12px}
+.profile-story .story{min-width:auto}
+.install-note{color:var(--muted);font-size:12px;line-height:1.6;padding:10px}
+body.dark{--bg:#080710}
 @media(min-width:601px){body{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
 @media(max-width:380px){.page{padding:15px}.heading{font-size:27px}.stats{gap:27px}.post-actions{gap:12px}}
 </style>
@@ -166,7 +194,7 @@ padding:11px;background:#0b0913;color:var(--text);outline:none}
 <div id="authScreen">
  <div class="auth-card">
   <div class="auth-brand">
-   <svg class="auth-mark" viewBox="0 0 100 100" fill="none" aria-label="AURA logo">
+   <svg class="auth-mark" viewBox="0 0 100 100" fill="none">
     <defs><linearGradient id="auraGradient" x1="10" y1="10" x2="90" y2="90"><stop stop-color="#792cff"/><stop offset=".55" stop-color="#b44cff"/><stop offset="1" stop-color="#e0aaff"/></linearGradient></defs>
     <path d="M50 7L91 50 50 93 9 50 50 7Z" stroke="url(#auraGradient)" stroke-width="5"/>
     <path d="M50 24L74 50 50 76 26 50 50 24Z" stroke="url(#auraGradient)" stroke-width="4"/>
@@ -192,15 +220,16 @@ padding:11px;background:#0b0913;color:var(--text);outline:none}
 <header>
  <div class="logo">
   <svg class="aura-mark" viewBox="0 0 100 100" fill="none">
-   <path d="M50 7L91 50 50 93 9 50 50 7Z" stroke="url(#auraGradient)" stroke-width="6"/>
+   <path d="M50 7L91 50 50 93 9 50 50 7Z" stroke="#a855ff" stroke-width="6"/>
    <path d="M50 25L74 50 50 75 26 50 50 25Z" stroke="#c18aff" stroke-width="4"/>
    <path d="M50 39L61 50 50 61 39 50 50 39Z" fill="#d8baff"/>
-  </svg>
-  <span>AURA</span>
+  </svg><span>AURA</span>
  </div>
  <div class="header-icons">
+  <button id="installButton" aria-label="Install AURA" title="Install AURA">↓</button>
   <button id="themeButton" aria-label="Toggle dark mode">☾</button>
-  <button id="inboxButton" aria-label="Open messages">✉<span id="headerUnreadBadge" class="badge"></span></button>
+  <button id="activityButton" aria-label="Activity">♧</button>
+  <button id="inboxButton" aria-label="Open messages">▤<span id="headerUnreadBadge" class="badge"></span></button>
  </div>
 </header>
 
@@ -237,7 +266,6 @@ padding:11px;background:#0b0913;color:var(--text);outline:none}
  <div id="peopleResults"></div><div id="chatList" class="chat-layout"></div>
 </section>
 
-<!-- SEPARATE CHAT PAGE -->
 <section class="page" id="chat">
  <div class="chat-back"><button id="backChats">← Back to Inbox</button></div>
  <div class="chat-panel">
@@ -252,7 +280,7 @@ padding:11px;background:#0b0913;color:var(--text);outline:none}
   </div>
   <form id="chatForm" class="chat-compose">
    <input id="chatText" type="text" maxlength="2000" placeholder="Write a message..." autocomplete="off">
-   <label class="primary" style="margin:0;padding:9px 12px;cursor:pointer">＋<input id="chatImage" type="file" accept="image/*" hidden></label>
+   <label class="primary" style="margin:0;padding:9px 12px;cursor:pointer">＋<input id="chatImage" type="file" accept="image/*,video/*" hidden></label>
    <button type="submit">Send</button>
   </form>
  </div>
@@ -267,20 +295,72 @@ padding:11px;background:#0b0913;color:var(--text);outline:none}
    <div><strong id="followerCount">0</strong><small>Followers</small></div>
    <div><strong id="followingCount">0</strong><small>Following</small></div>
   </div>
+  <div class="profile-story" id="myStoryShortcut"></div>
   <button class="edit" id="editProfileButton">Edit Profile</button>
-  <button class="edit" id="changePasswordButton">Change Password</button>
+  <button class="secondary" id="settingsButton">⚙ Settings</button>
   <button class="edit" id="logoutButton">Log out</button>
  </div>
  <div class="grid" id="myPosts"></div>
+</section>
+
+<section class="page" id="viewProfile">
+ <div class="chat-back"><button id="backProfile">← Back</button></div>
+ <div class="profile-top">
+  <img class="profile-pic" id="viewPic" alt="">
+  <div class="profile-name" id="viewName"></div><p class="profile-bio" id="viewBio"></p>
+  <div class="stats">
+   <div><strong id="viewPostCount">0</strong><small>Posts</small></div>
+   <div><strong id="viewFollowerCount">0</strong><small>Followers</small></div>
+   <div><strong id="viewFollowingCount">0</strong><small>Following</small></div>
+  </div>
+  <div class="profile-story" id="viewStoryShortcut"></div>
+  <button class="follow" id="viewFollowButton">Follow</button>
+  <button class="secondary" id="viewMessageButton">Message</button>
+  <button class="secondary" id="viewMoreButton">⋯ Options</button>
+ </div>
+ <div class="grid" id="viewPosts"></div>
+</section>
+
+<section class="page" id="settings">
+ <div class="chat-back"><button id="backSettings">← Profile</button></div>
+ <div class="heading">Settings</div><div class="sub">Manage your AURA account.</div>
+ <div class="settings-row"><div>🔐</div><div><strong>Change Password</strong><small>Update your account password.</small></div><button class="secondary" id="settingsPassword">Change</button></div>
+ <div class="settings-row"><div>📲</div><div><strong>Install AURA</strong><small>Add AURA to your home screen.</small></div><button class="secondary" id="settingsInstall">Install</button></div>
+ <div class="settings-row"><div>🔔</div><div><strong>Notifications</strong><small>Manage message alerts.</small></div><button class="secondary" id="settingsNotify">Open</button></div>
+ <div class="settings-row"><div>🚫</div><div><strong>Blocked accounts</strong><small>Review accounts you blocked.</small></div><button class="secondary" id="blockedAccountsButton">View</button></div>
+ <div class="settings-row"><div>🌙</div><div><strong>Appearance</strong><small>Switch the app theme.</small></div><button class="secondary" id="settingsTheme">Toggle</button></div>
+ <p class="install-note">AURA settings. Some options depend on your browser and Supabase permissions.</p>
+</section>
+
+<section class="page" id="activity">
+ <div class="chat-back"><button id="backActivity">← Home</button></div>
+ <div class="heading">Activity</div><div class="sub">Recent activity around your posts and profile.</div>
+ <div id="activityList"></div>
+</section>
+
+<section class="page" id="blocked">
+ <div class="chat-back"><button id="backBlocked">← Settings</button></div>
+ <div class="heading">Blocked accounts</div><div class="sub">Accounts you have blocked.</div>
+ <div id="blockedList"></div>
 </section>
 
 <nav class="bottom">
  <button class="nav active" data-page="home" aria-label="Home">⌂</button>
  <button class="nav" data-page="explore" aria-label="Explore">⌕</button>
  <button class="nav" data-page="create" aria-label="Create">⊕</button>
- <button class="nav" data-page="inbox" aria-label="Inbox">✉<span id="navUnreadBadge" class="badge"></span></button>
+ <button class="nav" data-page="inbox" aria-label="Inbox">▤<span id="navUnreadBadge" class="badge"></span></button>
  <button class="nav" data-page="profile" aria-label="Profile">◉</button>
 </nav>
+
+<div class="modal" id="storyModal">
+ <div class="story-viewer">
+  <div class="story-progress" id="storyProgress"></div>
+  <div class="story-view-head"><img id="storyAvatar" alt=""><strong id="storyUsername"></strong><button id="storyClose">✕</button></div>
+  <div id="storyMediaHolder" style="width:100%;height:100%"></div>
+  <div class="story-tap prev" id="storyPrev"></div><div class="story-tap next" id="storyNext"></div>
+  <button class="danger viewer-delete hidden" id="deleteStoryButton">Delete Story</button>
+ </div>
+</div>
 
 <script type="module">
 import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
@@ -293,6 +373,7 @@ const $=id=>document.getElementById(id);
 const FALLBACK_AVATAR="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
 
 let currentUser=null,currentProfile=null,signupMode=false,postsCache=[],activeConversation=null,activePerson=null,chatChannel=null,presenceChannel=null,replyTo=null,globalMessageChannel=null,appStartPromise=null,startedUserId=null,unreadCount=0;
+let followingIds=new Set(),blockedIds=new Set(),storyGroups=[],activeStoryGroup=[],activeStoryIndex=0,storyTimer=null,storyVideo=null,storyStartedAt=0,installPrompt=null,chatRefreshTimer=null,chatLoading=false;
 
 const showMessage=m=>$("message").textContent=m;
 function toast(m){
@@ -302,7 +383,13 @@ function toast(m){
 }
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function validPassword(p){return p.length>=8&&/[A-Z]/.test(p)&&/[a-z]/.test(p)&&/[0-9]/.test(p)&&/[^A-Za-z0-9]/.test(p);}
-
+function mediaIsVideo(url){return /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url||"")||String(url||"").includes("story-video-")||String(url||"").includes("message-video-");}
+function showPage(name,button){
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===name));
+ document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n===button));
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function profilePage(){showPage("profile",document.querySelector('[data-page="profile"]'));}
 function authMethodChanged(){
  const phone=$("authMethod").value==="phone";
  $("email").classList.toggle("hidden",phone);$("phone").classList.toggle("hidden",!phone);
@@ -363,7 +450,6 @@ $("verifyOtpButton").addEventListener("click",async()=>{
   }
  }catch(e){showMessage(e.message);}
 });
-
 $("forgotButton").addEventListener("click",async()=>{
  if($("authMethod").value!=="email"){showMessage("Phone password recovery needs a configured SMS provider. Use email recovery for now.");return}
  const email=$("email").value.trim();if(!email){showMessage("Enter your email address first.");return}
@@ -387,14 +473,23 @@ async function loadProfile(){
  $("myBio").textContent=data.bio||"Living in my own little world 🌷";$("myPic").src=data.avatar_url||FALLBACK_AVATAR;
 }
 async function safeLoad(label,fn){try{await fn()}catch(error){console.error(label+":",error);toast(label+" could not load. Check Supabase permissions.");}}
-
+async function loadFollowing(){
+ const {data,error}=await supabase.from("follows").select("following_id").eq("follower_id",currentUser.id);
+ if(error)throw error;followingIds=new Set((data||[]).map(x=>x.following_id));
+}
+async function loadBlocked(){
+ const {data,error}=await supabase.from("user_blocks").select("blocked_id").eq("blocker_id",currentUser.id);
+ if(error)throw error;blockedIds=new Set((data||[]).map(x=>x.blocked_id));
+}
 async function startApp(user){
  if(appStartPromise&&currentUser?.id===user.id)return appStartPromise;
  if(startedUserId===user.id&&currentUser?.id===user.id){$("authScreen").classList.add("hidden");return}
  currentUser=user;
  appStartPromise=(async()=>{
   $("authScreen").classList.add("hidden");
-  await loadProfile();if("serviceWorker"in navigator)registerAURASW();
+  await loadProfile();
+  await Promise.all([safeLoad("Following",loadFollowing),safeLoad("Blocked accounts",loadBlocked)]);
+  if("serviceWorker"in navigator)registerAURASW();
   await Promise.all([safeLoad("Feed",loadFeed),safeLoad("Stories",loadStories),safeLoad("Profile stats",loadMyStats)]);
   await refreshUnreadCount();subscribeGlobalMessages();updateNotificationStatus();
  })();
@@ -424,30 +519,23 @@ async function logout(){
 }
 $("logoutButton").addEventListener("click",logout);
 
-/* PAGE NAVIGATION */
-function showPage(name,button){
- document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===name));
- document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n===button));
- window.scrollTo({top:0,behavior:"smooth"});
-}
-function openInbox(){
- showPage("inbox",document.querySelector('[data-page="inbox"]'));
- if(currentUser)loadChatList();
-}
-function openChatPage(){
- showPage("chat",null);
-}
+/* NAVIGATION */
+function openInbox(){showPage("inbox",document.querySelector('[data-page="inbox"]'));if(currentUser)loadChatList();}
+function openChatPage(){showPage("chat",null);}
 document.querySelectorAll(".nav").forEach(b=>b.addEventListener("click",()=>{
  showPage(b.dataset.page,b);
  if(b.dataset.page==="inbox"&&currentUser)loadChatList();
 }));
 $("inboxButton").addEventListener("click",openInbox);
+$("activityButton").addEventListener("click",()=>openActivity());
 
-$("themeButton").addEventListener("click",()=>{
+$("themeButton").addEventListener("click",toggleTheme);
+$("settingsTheme").addEventListener("click",toggleTheme);
+function toggleTheme(){
  document.body.classList.toggle("dark");
  $("themeButton").textContent=document.body.classList.contains("dark")?"☀":"☾";
  localStorage.setItem("aura-dark",document.body.classList.contains("dark")?"1":"0");
-});
+}
 if(localStorage.getItem("aura-dark")==="1")document.body.classList.add("dark");
 
 $("editProfileButton").addEventListener("click",async()=>{
@@ -457,13 +545,19 @@ $("editProfileButton").addEventListener("click",async()=>{
  const {error}=await supabase.from("profiles").update({full_name:name.trim(),bio:bio.trim()}).eq("id",currentUser.id);
  if(error){toast(error.message);return}await loadProfile();toast("Profile updated ✨");
 });
-$("changePasswordButton").addEventListener("click",async()=>{
+function changePassword(){
  const p=prompt("Enter your new password (8+ chars, uppercase, lowercase, number and symbol):");if(p===null)return;
  if(!validPassword(p)){toast("Password does not meet the security requirements.");return}
- const {error}=await supabase.auth.updateUser({password:p});
- if(error)toast(error.message);else toast("Password updated.");
-});
+ supabase.auth.updateUser({password:p}).then(({error})=>error?toast(error.message):toast("Password updated."));
+}
+$("settingsPassword").addEventListener("click",changePassword);
+$("settingsButton").addEventListener("click",()=>showPage("settings",null));
+$("backSettings").addEventListener("click",profilePage);
+$("settingsNotify").addEventListener("click",openInbox);
+$("blockedAccountsButton").addEventListener("click",loadBlockedAccounts);
+$("backBlocked").addEventListener("click",()=>showPage("settings",null));
 
+/* SAVED POSTS */
 function savedPostsKey(){return "aura_saved_posts_"+(currentUser?.id||"guest");}
 function getSavedPosts(){try{return JSON.parse(localStorage.getItem(savedPostsKey())||"[]")}catch(e){return []}}
 function isPostSaved(id){return getSavedPosts().includes(String(id))}
@@ -472,9 +566,11 @@ function toggleSavedPost(id){
  localStorage.setItem(savedPostsKey(),JSON.stringify(next));renderFeed();toast(next.includes(key)?"Post saved ✨":"Post removed from saved");
 }
 
+/* FEED + FOLLOW + POST OPTIONS */
 async function loadFeed(){
  const {data,error}=await supabase.from("posts").select("*,profiles(username,full_name,avatar_url),likes(user_id),comments(id,user_id,content,created_at,profiles(username))").order("created_at",{ascending:false});
- if(error)throw error;postsCache=data||[];renderFeed();renderGallery();
+ if(error)throw error;
+ postsCache=(data||[]).filter(p=>!blockedIds.has(p.user_id));renderFeed();renderGallery();
 }
 function renderFeed(){
  const feed=$("feed");feed.innerHTML="";
@@ -482,12 +578,14 @@ function renderFeed(){
  postsCache.forEach(post=>{
   const profile=post.profiles||{},username=profile.username||"AURA User",avatar=profile.avatar_url||FALLBACK_AVATAR;
   const liked=(post.likes||[]).some(x=>x.user_id===currentUser.id),saved=isPostSaved(post.id),comments=post.comments||[],video=post.media_type==="video";
+  const mine=post.user_id===currentUser.id,isFollowing=followingIds.has(post.user_id);
   const article=document.createElement("article");article.className="post";
   article.innerHTML=`
-   <div class="post-user"><img class="avatar" src="${esc(avatar)}" alt="">
-   <div class="user-info"><strong>${esc(username)}</strong><small>${new Date(post.created_at).toLocaleString()}</small></div>
-   ${post.user_id!==currentUser.id?`<button class="follow" data-follow="${esc(post.user_id)}">Follow</button>`:""}</div>
-   ${video?`<video class="post-image" src="${esc(post.media_url)}" controls playsinline></video>`:`<img class="post-image" src="${esc(post.media_url)}" alt="Post" loading="lazy">`}
+   <div class="post-user"><img class="avatar" src="${esc(avatar)}" alt="" data-profile="${esc(post.user_id)}">
+   <div class="user-info"><strong data-profile="${esc(post.user_id)}">${esc(username)}</strong><small>${new Date(post.created_at).toLocaleString()}</small></div>
+   ${!mine?`<button class="follow ${isFollowing?"following":""}" data-follow="${esc(post.user_id)}">${isFollowing?"Following":"Follow"}</button>`:""}
+   <button class="more-btn" data-post-menu="${esc(post.id)}" aria-label="Post options">⋯</button></div>
+   ${video?`<video class="post-image" src="${esc(post.media_url)}" controls playsinline preload="metadata"></video>`:`<img class="post-image" src="${esc(post.media_url)}" alt="Post" loading="lazy">`}
    <div class="post-actions">
    <button class="action ${liked?"liked":""}" data-like="${esc(post.id)}">${liked?"♥":"♡"}</button>
    <button class="action" data-focus-comment>♧</button><button class="action" data-share="${esc(post.id)}">↗</button>
@@ -503,11 +601,9 @@ function renderFeed(){
  feed.querySelectorAll("[data-comment]").forEach(f=>f.addEventListener("submit",submitComment));
  feed.querySelectorAll("[data-focus-comment]").forEach(b=>b.addEventListener("click",()=>b.closest(".post").querySelector('input[name="content"]').focus()));
  feed.querySelectorAll("[data-save]").forEach(b=>b.addEventListener("click",()=>toggleSavedPost(b.dataset.save)));
- feed.querySelectorAll("[data-share]").forEach(b=>b.addEventListener("click",async()=>{
-  try{if(navigator.share)await navigator.share({title:"AURA",text:"AURA post",url:location.href});
-  else{await navigator.clipboard.writeText(location.href);toast("Website link copied.");}}
-  catch(e){if(e.name!=="AbortError")toast("Could not share.");}
- }));
+ feed.querySelectorAll("[data-share]").forEach(b=>b.addEventListener("click",sharePost));
+ feed.querySelectorAll("[data-post-menu]").forEach(b=>b.addEventListener("click",()=>postOptions(b.dataset.postMenu)));
+ feed.querySelectorAll("[data-profile]").forEach(b=>b.addEventListener("click",()=>openUserProfile(b.dataset.profile)));
 }
 async function toggleLike(id){
  const {data:existing,error}=await supabase.from("likes").select("id").eq("post_id",id).eq("user_id",currentUser.id).maybeSingle();
@@ -521,10 +617,38 @@ async function submitComment(e){
  if(error)toast(error.message);else await loadFeed();
 }
 async function toggleFollow(target){
- const {data:existing,error}=await supabase.from("follows").select("id").eq("follower_id",currentUser.id).eq("following_id",target).maybeSingle();
- if(error){toast(error.message);return}
- const r=existing?await supabase.from("follows").delete().eq("id",existing.id):await supabase.from("follows").insert({follower_id:currentUser.id,following_id:target});
- if(r.error)toast(r.error.message);else{await loadFeed();await loadMyStats();}
+ if(!target||target===currentUser.id)return;
+ const existing=followingIds.has(target);
+ const r=existing
+  ?await supabase.from("follows").delete().eq("follower_id",currentUser.id).eq("following_id",target)
+  :await supabase.from("follows").insert({follower_id:currentUser.id,following_id:target});
+ if(r.error){toast(r.error.message);return}
+ if(existing)followingIds.delete(target);else followingIds.add(target);
+ await Promise.all([loadFeed(),loadMyStats()]);
+ updateViewedFollowButton(target);
+ toast(existing?"Unfollowed":"Following ✨");
+}
+function updateViewedFollowButton(id){
+ if(activeViewedProfile?.id===id){const b=$("viewFollowButton");b.textContent=followingIds.has(id)?"Following":"Follow";b.classList.toggle("following",followingIds.has(id));}
+}
+async function postOptions(id){
+ const post=postsCache.find(p=>String(p.id)===String(id));if(!post)return;
+ if(post.user_id===currentUser.id){
+  if(confirm("Delete this post permanently?")){
+   const {error}=await supabase.from("posts").delete().eq("id",id).eq("user_id",currentUser.id);
+   if(error)toast("Delete failed: "+error.message);else{toast("Post deleted.");await loadFeed();await loadMyStats();}
+  }
+ }else{
+  const choice=prompt("Post options:\n1. View profile\n2. Block user\n3. Report user\n\nEnter 1, 2 or 3:");
+  if(choice==="1")openUserProfile(post.user_id);
+  if(choice==="2")await blockUser(post.user_id);
+  if(choice==="3")await reportUser(post.user_id);
+ }
+}
+async function sharePost(){
+ try{if(navigator.share)await navigator.share({title:"AURA",text:"AURA post",url:location.href});
+ else{await navigator.clipboard.writeText(location.href);toast("Website link copied.");}}
+ catch(e){if(e.name!=="AbortError")toast("Could not share.");}
 }
 async function loadMyStats(){
  const [p,f,fo]=await Promise.all([
@@ -535,22 +659,96 @@ async function loadMyStats(){
  if(p.error)throw p.error;if(f.error)throw f.error;if(fo.error)throw fo.error;
  $("postCount").textContent=p.count??0;$("followerCount").textContent=f.count??0;$("followingCount").textContent=fo.count??0;
 }
+function makeMediaElement(p){
+ const el=p.media_type==="video"?document.createElement("video"):document.createElement("img");el.src=p.media_url;
+ if(el.tagName==="VIDEO"){el.muted=true;el.preload="metadata";el.playsInline=true}else el.loading="lazy";
+ return el;
+}
 function renderGallery(){
  const g=$("gallery"),mine=$("myPosts");g.innerHTML="";mine.innerHTML="";
  postsCache.forEach(p=>{
-  const make=()=>{const el=p.media_type==="video"?document.createElement("video"):document.createElement("img");el.src=p.media_url;
-   if(el.tagName==="VIDEO"){el.muted=true;el.preload="metadata"}else el.loading="lazy";return el;};
-  g.appendChild(make());if(p.user_id===currentUser.id)mine.appendChild(make());
+  const a=makeMediaElement(p);a.addEventListener("click",()=>openUserProfile(p.user_id));g.appendChild(a);
+  if(p.user_id===currentUser.id){const b=makeMediaElement(p);b.addEventListener("click",()=>postOptions(p.id));mine.appendChild(b);}
  });
 }
 $("search").addEventListener("input",()=>{
  const q=$("search").value.toLowerCase();$("gallery").innerHTML="";
  postsCache.filter(p=>(p.profiles?.username||"").toLowerCase().includes(q)||(p.caption||"").toLowerCase().includes(q)).forEach(p=>{
-  const el=p.media_type==="video"?document.createElement("video"):document.createElement("img");el.src=p.media_url;
-  if(el.tagName==="VIDEO"){el.muted=true;el.preload="metadata"}$("gallery").appendChild(el);
+  const el=makeMediaElement(p);el.addEventListener("click",()=>openUserProfile(p.user_id));$("gallery").appendChild(el);
  });
 });
 
+/* PROFILE VIEW + BLOCK + REPORT */
+let activeViewedProfile=null;
+async function openUserProfile(id){
+ if(id===currentUser.id){profilePage();return}
+ if(blockedIds.has(id)){toast("You blocked this account.");return}
+ const {data:profile,error}=await supabase.from("profiles").select("*").eq("id",id).maybeSingle();
+ if(error||!profile){toast(error?.message||"Profile not found.");return}
+ activeViewedProfile=profile;
+ $("viewPic").src=profile.avatar_url||FALLBACK_AVATAR;
+ $("viewName").textContent=profile.full_name||profile.username||"AURA User";
+ $("viewBio").textContent=profile.bio||"";
+ const {data:posts,error:postError}=await supabase.from("posts").select("*").eq("user_id",id).order("created_at",{ascending:false});
+ if(postError){toast(postError.message);return}
+ $("viewPostCount").textContent=(posts||[]).length;
+ const [followers,following]=await Promise.all([
+  supabase.from("follows").select("id",{count:"exact",head:true}).eq("following_id",id),
+  supabase.from("follows").select("id",{count:"exact",head:true}).eq("follower_id",id)
+ ]);
+ $("viewFollowerCount").textContent=followers.count??0;$("viewFollowingCount").textContent=following.count??0;
+ const grid=$("viewPosts");grid.innerHTML="";
+ (posts||[]).forEach(p=>grid.appendChild(makeMediaElement(p)));
+ const fb=$("viewFollowButton");fb.textContent=followingIds.has(id)?"Following":"Follow";fb.classList.toggle("following",followingIds.has(id));
+ $("viewFollowButton").onclick=()=>toggleFollow(id);
+ $("viewMessageButton").onclick=()=>openChat({id,username:profile.username,full_name:profile.full_name,avatar_url:profile.avatar_url});
+ $("viewMoreButton").onclick=()=>userOptions(id);
+ const group=storyGroups.find(g=>g.user_id===id);
+ $("viewStoryShortcut").innerHTML="";
+ if(group){const wrap=document.createElement("div");wrap.className="story";const img=document.createElement("img");img.src=profile.avatar_url||FALLBACK_AVATAR;const label=document.createElement("span");label.textContent="Story";wrap.append(img,label);wrap.onclick=()=>openStoryGroup(id);$("viewStoryShortcut").appendChild(wrap);}
+ showPage("viewProfile",null);
+}
+$("backProfile").addEventListener("click",()=>showPage("home",document.querySelector('[data-page="home"]')));
+async function userOptions(id){
+ const choice=prompt("Account options:\n1. Block\n2. Report\n\nEnter 1 or 2:");
+ if(choice==="1")await blockUser(id);
+ if(choice==="2")await reportUser(id);
+}
+async function blockUser(id){
+ if(!id||id===currentUser.id)return;
+ if(!confirm("Block this account? Their posts and stories will be hidden from your AURA feed."))return;
+ const {error}=await supabase.from("user_blocks").insert({blocker_id:currentUser.id,blocked_id:id});
+ if(error){toast(error.code==="23505"?"This account is already blocked.":error.message);return}
+ blockedIds.add(id);toast("Account blocked.");
+ await loadFeed();await loadStories();
+ if(activeViewedProfile?.id===id)showPage("home",document.querySelector('[data-page="home"]'));
+}
+async function unblockUser(id){
+ const {error}=await supabase.from("user_blocks").delete().eq("blocker_id",currentUser.id).eq("blocked_id",id);
+ if(error){toast(error.message);return}
+ blockedIds.delete(id);toast("Account unblocked.");await loadBlockedAccounts();await loadFeed();await loadStories();
+}
+async function reportUser(id){
+ const reason=prompt("Why are you reporting this account?\nExamples: Spam, harassment, inappropriate content.");
+ if(!reason||reason.trim().length<2)return;
+ const details=prompt("Additional details (optional):")||null;
+ const {error}=await supabase.from("user_reports").insert({reporter_id:currentUser.id,reported_user_id:id,reason:reason.trim().slice(0,100),details:details?.slice(0,1000)||null});
+ if(error)toast("Report failed: "+error.message);else toast("Report submitted. Thank you.");
+}
+async function loadBlockedAccounts(){
+ await loadBlocked();const box=$("blockedList");box.innerHTML="";
+ if(!blockedIds.size){box.innerHTML='<div class="empty">You have not blocked anyone.</div>';showPage("blocked",null);return}
+ const {data,error}=await supabase.from("profiles").select("id,username,full_name,avatar_url").in("id",[...blockedIds]);
+ if(error){toast(error.message);return}
+ (data||[]).forEach(p=>{
+  const row=document.createElement("div");row.className="chat-row";
+  row.innerHTML=`<img src="${esc(p.avatar_url||FALLBACK_AVATAR)}"><div style="flex:1"><strong>${esc(p.username||p.full_name||"User")}</strong><span>Blocked account</span></div><button class="secondary">Unblock</button>`;
+  row.querySelector("button").onclick=()=>unblockUser(p.id);box.appendChild(row);
+ });
+ showPage("blocked",null);
+}
+
+/* MEDIA UPLOAD */
 async function uploadMedia(file,folder){
  if(!file.type.startsWith("image/")&&!file.type.startsWith("video/"))throw new Error("Choose an image or video.");
  if(file.size>50*1024*1024)throw new Error("Maximum file size is 50 MB.");
@@ -572,23 +770,91 @@ $("upload").addEventListener("change",async e=>{
 $("storyUpload").addEventListener("change",async e=>{
  const file=e.target.files[0];if(!file)return;
  try{
-  $("uploadStatus").textContent="Uploading story...";const url=await uploadMedia(file,"story");
+  $("uploadStatus").textContent="Uploading story...";
+  const isVideo=file.type.startsWith("video/");
+  const url=await uploadMedia(file,isVideo?"story-video":"story-image");
   const {error}=await supabase.from("stories").insert({user_id:currentUser.id,media_url:url});if(error)throw error;
   $("uploadStatus").textContent="Story added ✨";e.target.value="";await loadStories();
  }catch(err){$("uploadStatus").textContent="Story failed: "+err.message;}
 });
-async function loadStories(){
- const {data,error}=await supabase.from("stories").select("*,profiles(username,avatar_url)").order("created_at",{ascending:false});
- if(error){console.warn("Stories:",error.message);return}
- $("stories").innerHTML="";
- (data||[]).filter(s=>!s.created_at||Date.now()-new Date(s.created_at).getTime()<86400000).forEach(s=>{
-  const d=document.createElement("div");d.className="story";const img=document.createElement("img");
-  img.src=s.profiles?.avatar_url||FALLBACK_AVATAR;const label=document.createElement("span");label.textContent=s.profiles?.username||"User";
-  d.append(img,label);d.addEventListener("click",()=>window.open(s.media_url,"_blank","noopener,noreferrer"));$("stories").appendChild(d);
- });
-}
 
-/* DIRECT MESSAGES */
+/* STORY GROUPS + VIEWER */
+async function loadStories(){
+ const {data,error}=await supabase.from("stories").select("*,profiles(username,avatar_url)").order("created_at",{ascending:true});
+ if(error){console.warn("Stories:",error.message);return}
+ const valid=(data||[]).filter(s=>s.created_at&&Date.now()-new Date(s.created_at).getTime()<86400000&&!blockedIds.has(s.user_id));
+ const map=new Map();
+ valid.forEach(s=>{if(!map.has(s.user_id))map.set(s.user_id,[]);map.get(s.user_id).push(s);});
+ storyGroups=[...map.entries()].map(([user_id,stories])=>({user_id,stories,profile:stories[0].profiles||{}}));
+ storyGroups.sort((a,b)=>a.user_id===currentUser.id?-1:b.user_id===currentUser.id?1:0);
+ const box=$("stories");box.innerHTML="";
+ const own=document.createElement("div");own.className="story";
+ const ownImg=document.createElement("img");ownImg.src=currentProfile?.avatar_url||FALLBACK_AVATAR;
+ const ownLabel=document.createElement("span");ownLabel.textContent=map.has(currentUser.id)?"Your Story":"＋ Your Story";
+ own.append(ownImg,ownLabel);own.onclick=()=>map.has(currentUser.id)?openStoryGroup(currentUser.id):showPage("create",document.querySelector('[data-page="create"]'));box.appendChild(own);
+ storyGroups.filter(g=>g.user_id!==currentUser.id).forEach(g=>{
+  const d=document.createElement("div");d.className="story";const img=document.createElement("img");
+  img.src=g.profile.avatar_url||FALLBACK_AVATAR;const label=document.createElement("span");label.textContent=g.profile.username||"User";
+  d.append(img,label);d.addEventListener("click",()=>openStoryGroup(g.user_id));box.appendChild(d);
+ });
+ const my=$("myStoryShortcut");if(my){my.innerHTML="";if(map.has(currentUser.id)){const d=document.createElement("div");d.className="story";const im=document.createElement("img");im.src=currentProfile?.avatar_url||FALLBACK_AVATAR;const t=document.createElement("span");t.textContent="Your Story";d.append(im,t);d.onclick=()=>openStoryGroup(currentUser.id);my.appendChild(d);}}
+}
+function stopStoryTimer(){
+ if(storyTimer){clearTimeout(storyTimer);storyTimer=null;}
+ if(storyVideo){storyVideo.pause();storyVideo=null;}
+}
+function openStoryGroup(userId){
+ const group=storyGroups.find(g=>g.user_id===userId);if(!group||!group.stories.length)return;
+ activeStoryGroup=group.stories;activeStoryIndex=0;$("storyModal").classList.add("show");renderCurrentStory();
+}
+function renderCurrentStory(){
+ stopStoryTimer();
+ const s=activeStoryGroup[activeStoryIndex];if(!s){closeStoryViewer();return}
+ const profile=s.profiles||{};
+ $("storyAvatar").src=profile.avatar_url||FALLBACK_AVATAR;
+ $("storyUsername").textContent=profile.username||"AURA User";
+ $("deleteStoryButton").classList.toggle("hidden",s.user_id!==currentUser.id);
+ const progress=$("storyProgress");progress.innerHTML="";
+ activeStoryGroup.forEach((x,i)=>{
+  const bar=document.createElement("span"),fill=document.createElement("i");
+  if(i<activeStoryIndex)fill.style.width="100%";
+  bar.appendChild(fill);progress.appendChild(bar);
+ });
+ const holder=$("storyMediaHolder");holder.innerHTML="";
+ if(mediaIsVideo(s.media_url)){
+  const v=document.createElement("video");v.src=s.media_url;v.className="story-media";v.autoplay=true;v.playsInline=true;v.controls=false;
+  holder.appendChild(v);storyVideo=v;
+  v.addEventListener("loadedmetadata",()=>{const duration=Math.max(3000,(v.duration||10)*1000);animateStoryProgress(duration);});
+  v.addEventListener("ended",nextStory);
+  v.play().catch(()=>{v.controls=true;});
+ }else{
+  const img=document.createElement("img");img.src=s.media_url;img.className="story-media";holder.appendChild(img);animateStoryProgress(5000);
+ }
+}
+function animateStoryProgress(duration){
+ const fill=$("storyProgress").children[activeStoryIndex]?.firstChild;if(!fill)return;
+ fill.style.transition=`width ${duration}ms linear`;requestAnimationFrame(()=>fill.style.width="100%");
+ storyTimer=setTimeout(nextStory,duration);
+}
+function nextStory(){if(activeStoryIndex<activeStoryGroup.length-1){activeStoryIndex++;renderCurrentStory();}else closeStoryViewer();}
+function prevStory(){if(activeStoryIndex>0){activeStoryIndex--;renderCurrentStory();}}
+function closeStoryViewer(){stopStoryTimer();$("storyModal").classList.remove("show");activeStoryGroup=[];}
+$("storyClose").addEventListener("click",closeStoryViewer);
+$("storyNext").addEventListener("click",nextStory);
+$("storyPrev").addEventListener("click",prevStory);
+$("storyModal").addEventListener("click",e=>{if(e.target===$("storyModal"))closeStoryViewer();});
+$("deleteStoryButton").addEventListener("click",async()=>{
+ const s=activeStoryGroup[activeStoryIndex];if(!s||s.user_id!==currentUser.id)return;
+ if(!confirm("Delete this story?"))return;
+ const {error}=await supabase.from("stories").delete().eq("id",s.id).eq("user_id",currentUser.id);
+ if(error){toast(error.message);return}
+ toast("Story deleted.");activeStoryGroup.splice(activeStoryIndex,1);
+ if(!activeStoryGroup.length){closeStoryViewer();await loadStories();return}
+ if(activeStoryIndex>=activeStoryGroup.length)activeStoryIndex=activeStoryGroup.length-1;
+ renderCurrentStory();await loadStories();
+});
+
+/* CHAT */
 async function findOrCreateConversation(otherId){
  const ids=[currentUser.id,otherId].sort();
  let {data,error}=await supabase.from("conversations").select("*").eq("user1_id",ids[0]).eq("user2_id",ids[1]).maybeSingle();
@@ -602,42 +868,62 @@ async function findOrCreateConversation(otherId){
 }
 async function openChat(person){
  try{
+  if(blockedIds.has(person.id)){toast("You blocked this account. Unblock them first to message.");return}
   activePerson=person;activeConversation=await findOrCreateConversation(person.id);
   $("chatName").textContent=person.username||person.full_name||"AURA User";
   $("chatAvatar").src=person.avatar_url||FALLBACK_AVATAR;
-  openChatPage();
-  await loadMessages();subscribeChat();subscribePresence();
+  openChatPage();await loadMessages();subscribeChat();subscribePresence();
  }catch(e){toast("Could not open chat: "+e.message);}
 }
 async function loadMessages(){
- if(!activeConversation)return;
- const {data,error}=await supabase.from("messages").select("*").eq("conversation_id",activeConversation.id).order("created_at",{ascending:true});
- if(error){toast(error.message);return}
- const rows=data||[],ids=rows.filter(m=>m.sender_id!==currentUser.id).map(m=>m.id);
- if(ids.length){
-  const {data:seen}=await supabase.from("message_reads").select("message_id").eq("user_id",currentUser.id).in("message_id",ids);
-  const already=new Set((seen||[]).map(x=>x.message_id));
-  for(const id of ids)if(!already.has(id))await supabase.from("message_reads").insert({message_id:id,user_id:currentUser.id});
- }
- const {data:profiles}=await supabase.from("profiles").select("id,username");
- const names=new Map((profiles||[]).map(p=>[p.id,p.username]));
- const readRows=await supabase.from("message_reads").select("message_id,user_id");
- const readSet=new Set((readRows.data||[]).filter(x=>x.user_id===activePerson.id).map(x=>x.message_id));
- $("chatMessages").innerHTML="";
- rows.forEach(m=>{
-  const mine=m.sender_id===currentUser.id,div=document.createElement("div");div.className="bubble"+(mine?" mine":"");
-  div.innerHTML=`<div>${esc(m.content||"")}</div>${m.image_url?`<img src="${esc(m.image_url)}" alt="Shared image">`:""}
-  <small>${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${mine?(readSet.has(m.id)?" · Seen":" · Sent"):""} · ${esc(names.get(m.sender_id)||"User")}</small>
-  ${mine?`<button data-delete-message="${esc(m.id)}" style="border:0;background:none;color:inherit;font-size:10px;margin-top:4px">Delete</button>`:""}`;
-  $("chatMessages").appendChild(div);
- });
- $("chatMessages").scrollTop=$("chatMessages").scrollHeight;await refreshUnreadCount();
- $("chatMessages").querySelectorAll("[data-delete-message]").forEach(b=>b.addEventListener("click",()=>deleteMessage(b.dataset.deleteMessage)));
+ if(!activeConversation||chatLoading)return;
+ chatLoading=true;
+ try{
+  const {data,error}=await supabase.from("messages").select("*").eq("conversation_id",activeConversation.id).order("created_at",{ascending:true});
+  if(error)throw error;
+  const rows=data||[];
+  const incoming=rows.filter(m=>m.sender_id!==currentUser.id).map(m=>m.id);
+  if(incoming.length){
+   const {data:seen}=await supabase.from("message_reads").select("message_id").eq("user_id",currentUser.id).in("message_id",incoming);
+   const already=new Set((seen||[]).map(x=>x.message_id));
+   const missing=incoming.filter(id=>!already.has(id));
+   if(missing.length){
+    const inserts=missing.map(message_id=>({message_id,user_id:currentUser.id}));
+    const {error:readError}=await supabase.from("message_reads").insert(inserts);
+    if(readError)console.warn("Read receipt:",readError.message);
+   }
+  }
+  const ownIds=rows.filter(m=>m.sender_id===currentUser.id).map(m=>m.id);
+  let readSet=new Set();
+  if(ownIds.length){
+   const {data:reads}=await supabase.from("message_reads").select("message_id").eq("user_id",activePerson.id).in("message_id",ownIds);
+   readSet=new Set((reads||[]).map(x=>x.message_id));
+  }
+  $("chatMessages").innerHTML="";
+  rows.forEach(m=>{
+   const mine=m.sender_id===currentUser.id,div=document.createElement("div");div.className="bubble"+(mine?" mine":"");
+   let media="";
+   if(m.image_url){
+    if(mediaIsVideo(m.image_url))media=`<video src="${esc(m.image_url)}" controls playsinline preload="metadata"></video>`;
+    else media=`<img src="${esc(m.image_url)}" alt="Shared image" loading="lazy">`;
+   }
+   div.innerHTML=`<div>${esc(m.content||"").replace(/\n/g,"<br>")}</div>${media}
+   <small>${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${mine?(readSet.has(m.id)?" · Seen":" · Sent"):""}</small>
+   ${mine?`<button data-delete-message="${esc(m.id)}" style="border:0;background:none;color:inherit;font-size:10px;margin-top:4px">Delete</button>`:""}`;
+   $("chatMessages").appendChild(div);
+  });
+  $("chatMessages").scrollTop=$("chatMessages").scrollHeight;await refreshUnreadCount();
+  $("chatMessages").querySelectorAll("[data-delete-message]").forEach(b=>b.addEventListener("click",()=>deleteMessage(b.dataset.deleteMessage)));
+ }catch(e){toast("Messages could not load: "+e.message);}
+ finally{chatLoading=false;}
+}
+function scheduleChatRefresh(){
+ clearTimeout(chatRefreshTimer);chatRefreshTimer=setTimeout(()=>loadMessages(),250);
 }
 function subscribeChat(){
  if(chatChannel)supabase.removeChannel(chatChannel);
  chatChannel=supabase.channel("aura-chat-"+activeConversation.id)
- .on("postgres_changes",{event:"*",schema:"public",table:"messages",filter:"conversation_id=eq."+activeConversation.id},()=>loadMessages())
+ .on("postgres_changes",{event:"*",schema:"public",table:"messages",filter:"conversation_id=eq."+activeConversation.id},scheduleChatRefresh)
  .subscribe();
 }
 function subscribePresence(){
@@ -654,14 +940,20 @@ async function deleteMessage(id){
 async function sendChatMessage(content,imageUrl=null){
  if(!activeConversation)return;
  let body=content.trim();if(replyTo)body="↪ "+replyTo+"\n"+body;if(!body&&!imageUrl)return;
+ const sendButton=$("chatForm").querySelector('button[type="submit"]');sendButton.disabled=true;
  const {error}=await supabase.from("messages").insert({conversation_id:activeConversation.id,sender_id:currentUser.id,content:body||null,image_url:imageUrl});
+ sendButton.disabled=false;
  if(error){toast(error.message);return}
  $("chatText").value="";replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");await loadMessages();
 }
 $("chatForm").addEventListener("submit",e=>{e.preventDefault();sendChatMessage($("chatText").value);});
 $("chatImage").addEventListener("change",async e=>{
  const file=e.target.files[0];if(!file)return;
- try{const url=await uploadMedia(file,"message");await sendChatMessage("",url);}catch(err){toast(err.message);}e.target.value="";
+ try{
+  const video=file.type.startsWith("video/");
+  const url=await uploadMedia(file,video?"message-video":"message-image");
+  await sendChatMessage("",url);
+ }catch(err){toast(err.message);}e.target.value="";
 });
 $("emojiButton").addEventListener("click",()=>{$("chatText").value+=" 😊";$("chatText").focus();});
 $("replyCancel").addEventListener("click",()=>{replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");});
@@ -676,7 +968,7 @@ $("backChats").addEventListener("click",async()=>{
  activeConversation=null;activePerson=null;replyTo=null;openInbox();
 });
 
-/* INBOX LIST: ROW CLICK OPENS CHAT, NOT PROFILE */
+/* INBOX */
 async function loadChatList(){
  if(!currentUser)return;
  const {data,error}=await supabase.from("conversations").select("*")
@@ -684,31 +976,72 @@ async function loadChatList(){
  if(error){$("chatList").innerHTML='<div class="empty">Could not load chats. Check database permissions.</div>';return}
  const rows=data||[];$("chatList").innerHTML="";
  if(!rows.length){$("chatList").innerHTML='<div class="empty">No conversations yet. Search for a person above to start chatting.</div>';return}
- const otherIds=rows.map(c=>c.user1_id===currentUser.id?c.user2_id:c.user1_id);
+ const otherIds=rows.map(c=>c.user1_id===currentUser.id?c.user2_id:c.user1_id).filter(id=>!blockedIds.has(id));
+ if(!otherIds.length){$("chatList").innerHTML='<div class="empty">No conversations available.</div>';return}
  const {data:people}=await supabase.from("profiles").select("id,username,full_name,avatar_url").in("id",otherIds);
  const map=new Map((people||[]).map(p=>[p.id,p]));
  rows.forEach(c=>{
-  const id=c.user1_id===currentUser.id?c.user2_id:c.user1_id,p=map.get(id)||{id,username:"AURA User"};
+  const id=c.user1_id===currentUser.id?c.user2_id:c.user1_id;if(blockedIds.has(id))return;
+  const p=map.get(id)||{id,username:"AURA User"};
   const b=document.createElement("button");b.type="button";b.className="chat-row";
   b.innerHTML=`<img src="${esc(p.avatar_url||FALLBACK_AVATAR)}" alt=""><div><strong>${esc(p.username||p.full_name||"AURA User")}</strong><span>Open conversation · Message</span></div>`;
-  b.addEventListener("click",()=>openChat(p));
-  $("chatList").appendChild(b);
+  b.addEventListener("click",()=>openChat(p));$("chatList").appendChild(b);
  });
 }
-$("peopleSearch").addEventListener("input",async()=>{
- if(!currentUser)return;const q=$("peopleSearch").value.trim();
- if(q.length<2){$("peopleResults").innerHTML="";return}
- const {data,error}=await supabase.from("profiles").select("id,username,full_name,avatar_url").ilike("username","%"+q+"%").neq("id",currentUser.id).limit(8);
- if(error){$("peopleResults").textContent=error.message;return}
- $("peopleResults").innerHTML="";
- (data||[]).forEach(p=>{
-  const b=document.createElement("button");b.type="button";b.className="chat-row";
-  b.innerHTML=`<img src="${esc(p.avatar_url||FALLBACK_AVATAR)}" alt=""><div><strong>${esc(p.username||p.full_name)}</strong><span>Tap to message</span></div>`;
-  b.addEventListener("click",()=>openChat(p));$("peopleResults").appendChild(b);
- });
+let peopleSearchTimer=null;
+$("peopleSearch").addEventListener("input",()=>{
+ clearTimeout(peopleSearchTimer);
+ peopleSearchTimer=setTimeout(async()=>{
+  if(!currentUser)return;const q=$("peopleSearch").value.trim();
+  if(q.length<2){$("peopleResults").innerHTML="";return}
+  const {data,error}=await supabase.from("profiles").select("id,username,full_name,avatar_url").ilike("username","%"+q+"%").neq("id",currentUser.id).limit(8);
+  if(error){$("peopleResults").textContent=error.message;return}
+  $("peopleResults").innerHTML="";
+  (data||[]).filter(p=>!blockedIds.has(p.id)).forEach(p=>{
+   const b=document.createElement("button");b.type="button";b.className="chat-row";
+   b.innerHTML=`<img src="${esc(p.avatar_url||FALLBACK_AVATAR)}" alt=""><div><strong>${esc(p.username||p.full_name)}</strong><span>Tap to message</span></div>`;
+   b.addEventListener("click",()=>openChat(p));$("peopleResults").appendChild(b);
+  });
+ },300);
 });
 
-/* NOTIFICATIONS */
+/* ACTIVITY - derived from existing likes/comments/follows tables */
+async function openActivity(){
+ showPage("activity",null);const box=$("activityList");box.innerHTML='<div class="empty">Loading activity...</div>';
+ try{
+  const {data:myPosts,error:pErr}=await supabase.from("posts").select("id,caption").eq("user_id",currentUser.id);
+  if(pErr)throw pErr;
+  const postIds=(myPosts||[]).map(p=>p.id),items=[];
+  if(postIds.length){
+   const [likes,comments]=await Promise.all([
+    supabase.from("likes").select("user_id,post_id").in("post_id",postIds),
+    supabase.from("comments").select("user_id,post_id,content,created_at").in("post_id",postIds).order("created_at",{ascending:false}).limit(30)
+   ]);
+   if(likes.error)throw likes.error;if(comments.error)throw comments.error;
+   (likes.data||[]).forEach(x=>items.push({user_id:x.user_id,type:"like",post_id:x.post_id}));
+   (comments.data||[]).forEach(x=>items.push({user_id:x.user_id,type:"comment",post_id:x.post_id,content:x.content}));
+  }
+  const {data:follows,error:fErr}=await supabase.from("follows").select("follower_id").eq("following_id",currentUser.id);
+  if(fErr)throw fErr;(follows||[]).forEach(x=>items.push({user_id:x.follower_id,type:"follow"}));
+  const userIds=[...new Set(items.map(x=>x.user_id).filter(id=>id!==currentUser.id))];
+  const {data:profiles,error:prErr}=userIds.length?await supabase.from("profiles").select("id,username,avatar_url").in("id",userIds):{data:[],error:null};
+  if(prErr)throw prErr;
+  const people=new Map((profiles||[]).map(p=>[p.id,p]));
+  box.innerHTML="";
+  items.reverse().slice(0,50).forEach(item=>{
+   const p=people.get(item.user_id);if(!p)return;
+   const row=document.createElement("div");row.className="activity-row";
+   const icon=item.type==="like"?"♥":item.type==="comment"?"♧":"＋";
+   const text=item.type==="like"?"liked your post":item.type==="comment"?"commented on your post":"started following you";
+   row.innerHTML=`<div class="activity-icon">${icon}</div><div><strong>${esc(p.username||"Someone")}</strong> ${text}<small>${item.type==="comment"?esc(item.content||""):"AURA activity"}</small></div>`;
+   row.addEventListener("click",()=>openUserProfile(item.user_id));box.appendChild(row);
+  });
+  if(!box.children.length)box.innerHTML='<div class="empty"><h3>No activity yet</h3><p>Likes, comments and new followers will appear here.</p></div>';
+ }catch(e){box.innerHTML='<div class="empty">Activity could not load: '+esc(e.message)+'</div>';}
+}
+$("backActivity").addEventListener("click",()=>showPage("home",document.querySelector('[data-page="home"]')));
+
+/* UNREAD MESSAGES + PUSH */
 function updateUnreadBadges(){
  const value=unreadCount>99?"99+":String(unreadCount);
  [$("navUnreadBadge"),$("headerUnreadBadge")].forEach(el=>{if(!el)return;el.textContent=value;el.classList.toggle("show",unreadCount>0);});
@@ -733,7 +1066,7 @@ function subscribeGlobalMessages(){
  .on("postgres_changes",{event:"INSERT",schema:"public",table:"messages"},async payload=>{
   const msg=payload.new;if(!msg||msg.sender_id===currentUser.id)return;
   await refreshUnreadCount();
-  if(activeConversation&&msg.conversation_id===activeConversation.id){await loadMessages();return}
+  if(activeConversation&&msg.conversation_id===activeConversation.id){scheduleChatRefresh();return}
   toast("নতুন মেসেজ এসেছে 💌");
   if("Notification"in window&&Notification.permission==="granted"&&document.hidden){
    try{const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.showNotification("AURA — New Message",{body:"You have received a new message.",icon:"./icon-192.png",badge:"./icon-192.png",tag:"aura-message",data:{url:location.href}});}
@@ -780,14 +1113,33 @@ window.addEventListener("offline",()=>toast("You are offline. Check your interne
 window.addEventListener("focus",()=>{if(currentUser){refreshUnreadCount();updateNotificationStatus();}});
 updateNotificationStatus();
 
-/* VIDEO AUTOPLAY */
+/* PWA INSTALL */
+window.addEventListener("beforeinstallprompt",e=>{
+ e.preventDefault();installPrompt=e;$("installButton").classList.remove("hidden");
+});
+window.addEventListener("appinstalled",()=>{
+ installPrompt=null;toast("AURA installed successfully ✨");
+});
+async function installAURA(){
+ if(installPrompt){
+  installPrompt.prompt();const result=await installPrompt.userChoice;
+  if(result.outcome==="accepted")toast("AURA is being installed.");
+  installPrompt=null;return;
+ }
+ if(window.matchMedia("(display-mode: standalone)").matches){toast("AURA is already installed.");return}
+ toast("To install: open browser menu ⋮ and choose Add to Home screen or Install app.");
+}
+$("installButton").addEventListener("click",installAURA);
+$("settingsInstall").addEventListener("click",installAURA);
+
+/* VIDEO HANDLING */
 const auraVideoObserver=new IntersectionObserver(entries=>{
  entries.forEach(entry=>{
   const video=entry.target;
   if(entry.isIntersecting&&entry.intersectionRatio>=.65){
-   document.querySelectorAll("video").forEach(other=>{if(other!==video){other.pause();other.muted=true;}});
-   video.play().catch(()=>{video.muted=true;video.play().catch(()=>{});});
-  }else{video.pause();video.muted=true;}
+   document.querySelectorAll("#feed video,#gallery video,#myPosts video").forEach(other=>{if(other!==video){other.pause();}});
+   video.play().catch(()=>{});
+  }else video.pause();
  });
 },{threshold:[0,.65,1]});
 function auraObserveVideos(){
@@ -797,8 +1149,14 @@ function auraObserveVideos(){
 }
 new MutationObserver(auraObserveVideos).observe(document.body,{childList:true,subtree:true});
 auraObserveVideos();
-document.addEventListener("visibilitychange",()=>{if(document.hidden)document.querySelectorAll("video").forEach(v=>{v.pause();v.muted=true;});});
-window.addEventListener("pagehide",()=>document.querySelectorAll("video").forEach(v=>{v.pause();v.muted=true;}));
+document.addEventListener("visibilitychange",()=>{if(document.hidden)document.querySelectorAll("video").forEach(v=>v.pause());});
+window.addEventListener("pagehide",()=>document.querySelectorAll("video").forEach(v=>v.pause()));
+
+/* BUTTONS + CLEANUP */
+$("settingsButton").addEventListener("click",()=>showPage("settings",null));
+$("backSettings").addEventListener("click",profilePage);
+$("settingsTheme").addEventListener("click",toggleTheme);
+window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRefreshTimer);});
 </script>
 </body>
 </html>
