@@ -1635,6 +1635,55 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
   console.log("AURA Global Video Control Ready");
 })();
 
+
+/* =================================
+   AURA SINGLE VIDEO PLAYBACK FIX
+================================= */
+(() => {
+  if (window.AURA_SINGLE_VIDEO_FIX) return;
+  window.AURA_SINGLE_VIDEO_FIX = true;
+
+  // এক ভিডিও চললে বাকি সব ভিডিও Pause হবে
+  document.addEventListener("play", function(event) {
+    const currentVideo = event.target;
+
+    if (!(currentVideo instanceof HTMLVideoElement)) return;
+
+    document.querySelectorAll("video").forEach(video => {
+      if (video !== currentVideo && !video.paused) {
+        video.pause();
+      }
+    });
+  }, true);
+
+  // Story খোলার আগেই Feed-এর ভিডিও Pause
+  if (typeof window.openStoryGroup === "function") {
+    const originalOpenStoryGroup = window.openStoryGroup;
+
+    window.openStoryGroup = function(userId) {
+      document.querySelectorAll("video").forEach(video => {
+        video.pause();
+      });
+
+      return originalOpenStoryGroup.apply(this, arguments);
+    };
+  }
+
+  // Story বন্ধ করার সময়ও Story ভিডিও Pause
+  if (typeof window.closeStoryViewer === "function") {
+    const originalCloseStoryViewer = window.closeStoryViewer;
+
+    window.closeStoryViewer = function() {
+      document.querySelectorAll("#storyModal video").forEach(video => {
+        video.pause();
+      });
+
+      return originalCloseStoryViewer.apply(this, arguments);
+    };
+  }
+
+  console.log("AURA Single Video Playback Activated");
+})();
 </script>
 </body>
 </html>
