@@ -17,7 +17,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;max
 button,input,textarea,select{font:inherit}button{cursor:pointer}
 header{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:10;background:#faf8fcf2;backdrop-filter:blur(15px);border-bottom:1px solid var(--line)}
 .logo{font-family:'Playfair Display',serif;font-size:27px;letter-spacing:3px}
-.header-icons{display:flex;gap:16px}.header-icons button{border:0;background:none;color:var(--text);font-size:23px;position:relative}.badge{display:none;position:absolute;top:-5px;right:-9px;min-width:18px;height:18px;padding:0 5px;border-radius:20px;background:#e85d88;color:#fff;font-size:10px;font-weight:800;line-height:18px;text-align:center}.badge.show{display:inline-block}
+.header-icons{display:flex;gap:16px}.header-icons button{border:0;background:none;color:var(--text);font-size:23px;position:relative}
+.badge{display:none;position:absolute;top:-5px;right:-9px;min-width:18px;height:18px;padding:0 5px;border-radius:20px;background:#e85d88;color:#fff;font-size:10px;font-weight:800;line-height:18px;text-align:center}.badge.show{display:inline-block}
 .page{display:none;padding:20px}.page.active{display:block}
 .heading{font-family:'Playfair Display',serif;font-size:29px;margin:8px 0 5px}.sub{color:var(--muted);font-size:13px;margin-bottom:20px}
 .stories{display:flex;gap:16px;overflow-x:auto;padding:10px 0 20px;scrollbar-width:none}
@@ -167,7 +168,11 @@ async function startApp(user){
   $("authScreen").classList.add("hidden");
   await loadProfile();
   if("serviceWorker" in navigator)registerAURASW();
-  await Promise.all([loadFeed(),loadStories(),loadMyStats()]);
+  await Promise.all([
+   loadFeed().catch(e=>{console.warn("Feed:",e.message);$("feed").innerHTML='<div class="empty">Could not load posts. Check database permissions.</div>'}),
+   loadStories(),
+   loadMyStats().catch(e=>console.warn("Profile stats:",e.message))
+  ]);
   await refreshUnreadCount();
   subscribeGlobalMessages();
   updateNotificationStatus();
@@ -180,8 +185,8 @@ async function logout(){if(chatChannel)await supabase.removeChannel(chatChannel)
 $("logoutButton").addEventListener("click",logout);
 function showPage(name,button){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===name));document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n===button));window.scrollTo({top:0,behavior:"smooth"})}
 document.querySelectorAll(".nav").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page,b)));
-</script>
 
+/* All remaining app JavaScript stays inside this module script. */
 $("inboxButton").addEventListener("click",()=>showPage("inbox",document.querySelector('[data-page="inbox"]')));
 $("themeButton").addEventListener("click",()=>{document.body.classList.toggle("dark");$("themeButton").textContent=document.body.classList.contains("dark")?"☀":"☾";localStorage.setItem("aura-dark",document.body.classList.contains("dark")?"1":"0")});
 if(localStorage.getItem("aura-dark")==="1"){document.body.classList.add("dark");$("themeButton").textContent="☀"}
@@ -197,7 +202,7 @@ function renderFeed(){const feed=$("feed");feed.innerHTML="";if(!postsCache.leng
 async function toggleLike(id){const {data:existing,error}=await supabase.from("likes").select("id").eq("post_id",id).eq("user_id",currentUser.id).maybeSingle();if(error){toast(error.message);return}const r=existing?await supabase.from("likes").delete().eq("id",existing.id):await supabase.from("likes").insert({post_id:id,user_id:currentUser.id});if(r.error)toast(r.error.message);else await loadFeed()}
 async function submitComment(e){e.preventDefault();const form=e.currentTarget,content=new FormData(form).get("content").trim();if(!content)return;const {error}=await supabase.from("comments").insert({post_id:form.dataset.comment,user_id:currentUser.id,content});if(error)toast(error.message);else await loadFeed()}
 async function toggleFollow(target){const {data:existing,error}=await supabase.from("follows").select("id").eq("follower_id",currentUser.id).eq("following_id",target).maybeSingle();if(error){toast(error.message);return}const r=existing?await supabase.from("follows").delete().eq("id",existing.id):await supabase.from("follows").insert({follower_id:currentUser.id,following_id:target});if(r.error)toast(r.error.message);else{await loadFeed();await loadMyStats()}}
-async function loadMyStats(){const [p,f,fo]=await Promise.all([supabase.from("posts").select("id",{count:"exact",head:true}).eq("user_id",currentUser.id),supabase.from("follows").select("id",{count:"exact",head:true}).eq("following_id",currentUser.id),supabase.from("follows").select("id",{count:"exact",head:true}).eq("follower_id",currentUser.id)]);$("postCount").textContent=p.count??0;$("followerCount").textContent=f.count??0;$("followingCount").textContent=fo.count??0}
+async function loadMyStats(){const [p,f,fo]=await Promise.all([supabase.from("posts").select("id",{count:"exact",head:true}).eq("user_id",currentUser.id),supabase.from("follows").select("id",{count:"exact",head:true}).eq("following_id",currentUser.id),supabase.from("follows").select("id",{count:"exact",head:true}).eq("follower_id",currentUser.id)]);if(p.error)throw p.error;if(f.error)throw f.error;if(fo.error)throw fo.error;$("postCount").textContent=p.count??0;$("followerCount").textContent=f.count??0;$("followingCount").textContent=fo.count??0}
 function renderGallery(){const g=$("gallery"),mine=$("myPosts");g.innerHTML="";mine.innerHTML="";postsCache.forEach(p=>{const make=()=>{const el=p.media_type==="video"?document.createElement("video"):document.createElement("img");el.src=p.media_url;if(el.tagName==="VIDEO"){el.muted=true;el.preload="metadata"}else el.loading="lazy";return el};g.appendChild(make());if(p.user_id===currentUser.id)mine.appendChild(make())})}
 $("search").addEventListener("input",()=>{const q=$("search").value.toLowerCase();$("gallery").innerHTML="";postsCache.filter(p=>(p.profiles?.username||"").toLowerCase().includes(q)||(p.caption||"").toLowerCase().includes(q)).forEach(p=>{const el=p.media_type==="video"?document.createElement("video"):document.createElement("img");el.src=p.media_url;if(el.tagName==="VIDEO"){el.muted=true;el.preload="metadata"}$("gallery").appendChild(el)})});
 async function uploadMedia(file,folder){if(!file.type.startsWith("image/")&&!file.type.startsWith("video/"))throw new Error("Choose an image or video.");if(file.size>50*1024*1024)throw new Error("Maximum file size is 50 MB.");const ext=(file.name.split(".").pop()||"file").toLowerCase().replace(/[^a-z0-9]/g,""),path=`${currentUser.id}/${folder}-${Date.now()}.${ext}`;const {error}=await supabase.storage.from("aura-media").upload(path,file);if(error)throw error;return supabase.storage.from("aura-media").getPublicUrl(path).data.publicUrl}
@@ -223,6 +228,7 @@ $("chatMessages").addEventListener("dblclick",e=>{const bubble=e.target.closest(
 $("backChats").addEventListener("click",async()=>{$("chatRoom").classList.add("hidden");$("chatList").classList.remove("hidden");if(chatChannel)await supabase.removeChannel(chatChannel);if(presenceChannel)await supabase.removeChannel(presenceChannel);activeConversation=null;await loadChatList()});
 async function loadChatList(){if(!currentUser)return;const {data,error}=await supabase.from("conversations").select("*").or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`).order("created_at",{ascending:false});if(error){$("chatList").innerHTML='<div class="empty">Could not load chats. Check database permissions.</div>';return}const rows=data||[];$("chatList").innerHTML="";if(!rows.length){$("chatList").innerHTML='<div class="empty">No conversations yet. Search for a person above to start chatting.</div>';return}const otherIds=rows.map(c=>c.user1_id===currentUser.id?c.user2_id:c.user1_id);const {data:people}=await supabase.from("profiles").select("id,username,full_name,avatar_url").in("id",otherIds);const map=new Map((people||[]).map(p=>[p.id,p]));rows.forEach(c=>{const id=c.user1_id===currentUser.id?c.user2_id:c.user1_id,p=map.get(id)||{id,username:"AURA User"};const b=document.createElement("button");b.className="chat-row";b.innerHTML=`<img src="${esc(p.avatar_url||FALLBACK_AVATAR)}"><div><strong>${esc(p.username||p.full_name||"AURA User")}</strong><span>Open conversation</span></div>`;b.addEventListener("click",()=>openChat(p).catch(e=>toast(e.message)));$("chatList").appendChild(b)})}
 $("peopleSearch").addEventListener("input",async()=>{const q=$("peopleSearch").value.trim();if(q.length<2){$("peopleResults").innerHTML="";return}const {data,error}=await supabase.from("profiles").select("id,username,full_name,avatar_url").ilike("username","%"+q+"%").neq("id",currentUser.id).limit(8);if(error){$("peopleResults").textContent=error.message;return}$("peopleResults").innerHTML="";(data||[]).forEach(p=>{const b=document.createElement("button");b.className="chat-row";b.innerHTML=`<img src="${esc(p.avatar_url||FALLBACK_AVATAR)}"><div><strong>${esc(p.username||p.full_name)}</strong><span>Start a conversation</span></div>`;b.addEventListener("click",()=>openChat(p).catch(e=>toast(e.message)));$("peopleResults").appendChild(b)})});
+
 /* IN-APP + WEB PUSH NOTIFICATIONS */
 function updateUnreadBadges(){
  const value=unreadCount>99?"99+":String(unreadCount);
@@ -345,8 +351,8 @@ async function enablePushNotifications(){
  }
 }
 function updateNotificationStatus(){
- const button=document.getElementById("enableNotificationsButton");
- const status=document.getElementById("notificationStatus");
+ const button=$("enableNotifications");
+ const status=$("notificationStatus");
  const supported="Notification" in window;
  if(status){
   status.textContent=!supported?"Notifications are not supported":
@@ -355,11 +361,11 @@ function updateNotificationStatus(){
    "Notifications are not enabled";
  }
  if(button){
-  button.textContent=supported&&Notification.permission==="granted"?"Notifications Enabled":"Enable Notifications";
+  button.textContent=supported&&Notification.permission==="granted"?"Notifications Enabled":"🔔 Enable Notifications";
   button.disabled=!supported||Notification.permission==="granted";
  }
 }
-let notificationButton=document.getElementById("enableNotificationsButton");
+const notificationButton=$("enableNotifications");
 if(notificationButton){
  notificationButton.addEventListener("click",enablePushNotifications);
 }
@@ -388,4 +394,3 @@ updateNotificationStatus();
 </script>
 </body>
 </html>
-
