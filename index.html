@@ -9,189 +9,741 @@
 <title>AURA — Your Aesthetic World</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 
 <style>
-:root{--bg:#faf8fc;--card:#fff;--text:#272333;--muted:#928b9c;--pink:#e9b6d0;--purple:#a995ce;--line:#eee9f2;--accent:#ad87b9}
+:root{
+ --bg:#faf8fc;
+ --card:#fff;
+ --text:#272333;
+ --muted:#928b9c;
+ --pink:#efb5d2;
+ --purple:#a995ce;
+ --line:#eee9f2;
+ --accent:#ad87b9;
+ --gradient:linear-gradient(135deg,#e9b6d0,#ad9bd5);
+ --shadow:0 12px 35px rgba(65,39,79,.07);
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;max-width:600px;margin:auto;min-height:100vh;padding-bottom:82px;transition:.2s}
-button,input,textarea,select{font:inherit}button{cursor:pointer}
-header{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:10;background:#faf8fcf2;backdrop-filter:blur(15px);border-bottom:1px solid var(--line)}
-.logo{font-family:'Playfair Display',serif;font-size:27px;letter-spacing:3px}
-.header-icons{display:flex;gap:16px}.header-icons button{border:0;background:none;color:var(--text);font-size:23px;position:relative}
-.badge{display:none;position:absolute;top:-5px;right:-9px;min-width:18px;height:18px;padding:0 5px;border-radius:20px;background:#e85d88;color:#fff;font-size:10px;font-weight:800;line-height:18px;text-align:center}.badge.show{display:inline-block}
-.page{display:none;padding:20px}.page.active{display:block}
-.heading{font-family:'Playfair Display',serif;font-size:29px;margin:8px 0 5px}.sub{color:var(--muted);font-size:13px;margin-bottom:20px}
-.stories{display:flex;gap:16px;overflow-x:auto;padding:10px 0 20px;scrollbar-width:none}
-.story{min-width:65px;text-align:center;font-size:11px;cursor:pointer}.story img{width:61px;height:61px;border-radius:50%;object-fit:cover;padding:3px;border:2px solid var(--pink)}.story span{display:block;margin-top:5px;max-width:65px;overflow:hidden;text-overflow:ellipsis}
-.post{background:var(--card);border:1px solid var(--line);border-radius:19px;overflow:hidden;margin-bottom:23px;box-shadow:0 8px 28px #3322440b}
-.post-user{display:flex;align-items:center;gap:10px;padding:13px}.avatar{width:39px;height:39px;border-radius:50%;object-fit:cover;background:#eee}
-.user-info{flex:1;min-width:0}.user-info strong{font-size:13px}.user-info small{display:block;color:var(--muted);font-size:11px}
-.follow{border:0;background:#f5eaf2;color:#a05f8d;padding:8px 14px;border-radius:20px;font-weight:700}
-.post-image{width:100%;max-height:520px;min-height:180px;object-fit:cover;display:block;background:#eee}
-.post-actions{display:flex;align-items:center;gap:17px;padding:12px 14px}.action{border:0;background:none;font-size:23px;color:var(--text)}.action.liked{color:#ed729f}
-.like-count{font-size:12px;color:var(--muted);margin-left:auto}.caption{padding:0 14px 13px;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
-.comment-list{padding:0 14px 10px;font-size:12px}.comment-list p{margin:5px 0;overflow-wrap:anywhere}
-.comment-form{display:flex;gap:7px;padding:0 14px 14px}.comment-form input{flex:1;min-width:0;border:1px solid var(--line);border-radius:20px;padding:9px 12px;background:var(--bg);color:var(--text)}.comment-form button{border:0;background:none;color:#a05f8d;font-weight:700}
-.search,.field{width:100%;padding:13px 15px;border-radius:13px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:14px;outline:none;margin:10px 0}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid img,.grid video{width:100%;height:210px;object-fit:cover;border-radius:14px;background:#eee}
-.profile-top{text-align:center;padding:20px 0}.profile-pic{width:105px;height:105px;border-radius:50%;object-fit:cover;border:4px solid white;box-shadow:0 4px 20px #bba5c955}
-.profile-name{font-size:22px;font-weight:700;margin-top:12px}.profile-bio{color:var(--muted);font-size:13px;margin:7px}
-.stats{display:flex;justify-content:center;gap:35px;margin:24px}.stats strong{display:block;font-size:20px}.stats small{color:var(--muted)}
-.edit,.primary{background:#ad87b9;color:white;border:0;border-radius:12px;padding:12px 22px;font-weight:700;margin:5px}
-.bottom{position:fixed;bottom:0;left:0;right:0;max-width:600px;margin:auto;height:70px;background:#ffffffed;backdrop-filter:blur(15px);border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;z-index:20}
-.nav{border:0;background:none;font-size:24px;color:#a39aaa;position:relative}.nav.active{color:#b276ad;transform:scale(1.12)}
-.create-box{background:var(--card);border:1px dashed #cbb4d5;padding:25px 18px;text-align:center;border-radius:20px;margin-top:20px}
-.create-box textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;margin-top:15px;background:var(--bg);color:var(--text);resize:vertical;min-height:85px}
-.create-box input[type=file]{display:none}.empty{text-align:center;padding:38px 10px;color:var(--muted)}.hidden{display:none!important}
-#authScreen{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
-.auth-card{width:100%;max-width:390px;background:var(--card);padding:25px;border-radius:23px;border:1px solid var(--line);box-shadow:0 10px 40px #33224412}
-.auth-logo{text-align:center;font-family:'Playfair Display',serif;font-size:36px;letter-spacing:4px;margin-bottom:8px}
-.auth-card h2{text-align:center;font-family:'Playfair Display',serif;margin:10px}.auth-card p{text-align:center;color:var(--muted);font-size:13px;margin-bottom:15px}
-.auth-card input{width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;margin:6px 0;background:var(--bg);color:var(--text);outline:none}
-.auth-card button{width:100%;margin-top:9px}.auth-switch{text-align:center;margin-top:16px;font-size:13px}.auth-switch span{color:#a05f8d;font-weight:700;cursor:pointer}
-#message{font-size:12px;color:#a05f8d;margin-top:12px;text-align:center;line-height:1.5}
-.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:#30283a;color:#fff;padding:11px 16px;border-radius:22px;font-size:12px;z-index:200;max-width:90%;text-align:center}
-.dark{--bg:#17151d;--card:#24212b;--text:#f7f0fa;--muted:#aaa0b3;--line:#36303d}.dark header,.dark .bottom{background:#211e28ed}.dark .follow{background:#443247;color:#f3c8e2}
-.chat-layout{display:grid;gap:12px}.chat-row{display:flex;align-items:center;gap:11px;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;margin:8px 0;text-align:left;width:100%;color:var(--text)}
-.chat-row img{width:43px;height:43px;border-radius:50%;object-fit:cover}.chat-row span{display:block;color:var(--muted);font-size:12px}
-.chat-panel{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.chat-head{padding:12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}.chat-head button{border:0;background:none;color:var(--text);font-size:20px}
-.chat-messages{height:48vh;min-height:280px;max-height:520px;overflow:auto;padding:13px;display:flex;flex-direction:column;gap:9px}
-.bubble{max-width:82%;padding:10px 12px;border-radius:15px;background:#f0eaf4;align-self:flex-start;overflow-wrap:anywhere;font-size:13px}
-.bubble.mine{background:#dfc8e6;align-self:flex-end;color:#30233a}.bubble small{display:block;font-size:10px;opacity:.7;margin-top:5px}
-.bubble img{max-width:100%;border-radius:10px;display:block;margin-top:5px}
-.chat-compose{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line)}.chat-compose input[type=text]{min-width:0;flex:1;border:1px solid var(--line);border-radius:20px;padding:10px;background:var(--bg);color:var(--text)}
-.chat-compose button{border:0;border-radius:20px;padding:0 13px;background:#ad87b9;color:#fff}.chat-tools{display:flex;gap:8px;padding:0 10px 10px}.chat-tools button{border:0;background:none;color:var(--muted)}
-@media(min-width:601px){body{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
+html{scroll-behavior:smooth}
+body{
+ background:var(--bg);
+ color:var(--text);
+ font-family:'DM Sans',sans-serif;
+ max-width:600px;
+ margin:auto;
+ min-height:100vh;
+ padding-bottom:88px;
+ transition:background .3s,color .3s;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;transition:transform .2s,background .2s,opacity .2s}
+button:active{transform:scale(.94)}
+img,video{max-width:100%}
+
+header{
+ height:68px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 20px;
+ position:sticky;
+ top:0;
+ z-index:50;
+ background:rgba(250,248,252,.88);
+ backdrop-filter:blur(22px);
+ border-bottom:1px solid var(--line);
+}
+.logo{
+ font-family:'Playfair Display',serif;
+ font-size:29px;
+ font-weight:800;
+ letter-spacing:4px;
+ background:var(--gradient);
+ background-clip:text;
+ -webkit-background-clip:text;
+ color:transparent;
+}
+.header-icons{display:flex;gap:18px}
+.header-icons button{
+ border:0;
+ background:none;
+ color:var(--text);
+ font-size:23px;
+ position:relative;
+}
+.header-icons button:active{color:var(--accent)}
+
+.badge{
+ display:none;
+ position:absolute;
+ top:-5px;
+ right:-9px;
+ min-width:18px;
+ height:18px;
+ padding:0 5px;
+ border-radius:20px;
+ background:#e85d88;
+ color:#fff;
+ font-size:10px;
+ font-weight:800;
+ line-height:18px;
+ text-align:center;
+}
+.badge.show{display:inline-block}
+
+.page{display:none;padding:20px;animation:pageIn .35s ease}
+.page.active{display:block}
+@keyframes pageIn{
+ from{opacity:0;transform:translateY(9px)}
+ to{opacity:1;transform:translateY(0)}
+}
+.heading{
+ font-family:'Playfair Display',serif;
+ font-size:30px;
+ margin:8px 0 5px;
+ letter-spacing:-.5px;
+}
+.sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+
+.stories{
+ display:flex;
+ gap:17px;
+ overflow-x:auto;
+ padding:12px 0 22px;
+ scrollbar-width:none;
+}
+.stories::-webkit-scrollbar{display:none}
+.story{
+ min-width:66px;
+ text-align:center;
+ font-size:11px;
+ cursor:pointer;
+ transition:transform .2s;
+}
+.story:active{transform:scale(.93)}
+.story img{
+ width:64px;
+ height:64px;
+ border-radius:50%;
+ object-fit:cover;
+ padding:3px;
+ border:2px solid transparent;
+ background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--gradient) border-box;
+ box-shadow:0 4px 15px rgba(173,135,185,.15);
+}
+.story span{
+ display:block;
+ margin-top:6px;
+ max-width:66px;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.post{
+ background:var(--card);
+ border:1px solid var(--line);
+ border-radius:22px;
+ overflow:hidden;
+ margin-bottom:24px;
+ box-shadow:var(--shadow);
+ animation:postIn .4s ease;
+}
+@keyframes postIn{
+ from{opacity:0;transform:translateY(12px)}
+ to{opacity:1;transform:translateY(0)}
+}
+.post-user{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ padding:14px;
+}
+.avatar{
+ width:40px;
+ height:40px;
+ border-radius:50%;
+ object-fit:cover;
+ background:#eee;
+ border:2px solid #f0d8e9;
+}
+.user-info{flex:1;min-width:0}
+.user-info strong{font-size:13px;font-weight:800}
+.user-info small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+
+.follow{
+ border:0;
+ background:var(--gradient);
+ color:white;
+ padding:8px 15px;
+ border-radius:20px;
+ font-size:11px;
+ font-weight:800;
+ box-shadow:0 4px 12px #ad87b933;
+}
+.post-image{
+ width:100%;
+ max-height:560px;
+ min-height:180px;
+ object-fit:cover;
+ display:block;
+ background:#eee;
+}
+.post-actions{
+ display:flex;
+ align-items:center;
+ gap:16px;
+ padding:13px 14px 9px;
+}
+.action{
+ border:0;
+ background:none;
+ font-size:25px;
+ color:var(--text);
+ line-height:1;
+}
+.action.liked{color:#ed729f;animation:heartPop .3s ease}
+.action.saved{color:#a985c5}
+@keyframes heartPop{
+ 50%{transform:scale(1.35)}
+}
+.like-count{
+ font-size:12px;
+ color:var(--muted);
+ margin-left:auto;
+}
+.caption{
+ padding:0 14px 13px;
+ font-size:13px;
+ line-height:1.7;
+ overflow-wrap:anywhere;
+}
+.comment-list{padding:0 14px 10px;font-size:12px}
+.comment-list p{margin:6px 0;overflow-wrap:anywhere}
+.comment-form{display:flex;gap:7px;padding:0 14px 15px}
+.comment-form input{
+ flex:1;
+ min-width:0;
+ border:1px solid var(--line);
+ border-radius:22px;
+ padding:10px 14px;
+ background:var(--bg);
+ color:var(--text);
+ outline:none;
+}
+.comment-form input:focus,.search:focus,.field:focus{
+ border-color:var(--accent);
+ box-shadow:0 0 0 3px #ad87b922;
+}
+.comment-form button{
+ border:0;
+ background:none;
+ color:#a05f8d;
+ font-weight:800;
+}
+
+.search,.field{
+ width:100%;
+ padding:14px 16px;
+ border-radius:15px;
+ border:1px solid var(--line);
+ background:var(--card);
+ color:var(--text);
+ font-size:14px;
+ outline:none;
+ margin:10px 0;
+ transition:.2s;
+}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:10px;
+}
+.grid img,.grid video{
+ width:100%;
+ height:210px;
+ object-fit:cover;
+ border-radius:15px;
+ background:#eee;
+ transition:transform .25s,filter .25s;
+}
+.grid img:active,.grid video:active{transform:scale(.97)}
+
+.profile-top{
+ text-align:center;
+ padding:22px 0;
+}
+.profile-pic{
+ width:112px;
+ height:112px;
+ border-radius:50%;
+ object-fit:cover;
+ padding:4px;
+ border:3px solid transparent;
+ background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--gradient) border-box;
+ box-shadow:0 8px 25px #bba5c955;
+}
+.profile-name{font-size:23px;font-weight:800;margin-top:13px}
+.profile-bio{color:var(--muted);font-size:13px;margin:7px}
+.stats{
+ display:flex;
+ justify-content:center;
+ gap:42px;
+ margin:25px;
+}
+.stats strong{display:block;font-size:21px}
+.stats small{color:var(--muted);font-size:11px}
+
+.edit,.primary{
+ background:var(--gradient);
+ color:white;
+ border:0;
+ border-radius:14px;
+ padding:12px 20px;
+ font-weight:800;
+ margin:5px;
+ box-shadow:0 6px 16px #ad87b933;
+ transition:transform .2s,box-shadow .2s;
+}
+.edit:hover,.primary:hover{
+ transform:translateY(-2px);
+ box-shadow:0 9px 22px #ad87b944;
+}
+
+.bottom{
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ max-width:600px;
+ margin:auto;
+ height:76px;
+ background:rgba(255,255,255,.9);
+ backdrop-filter:blur(24px);
+ border-top:1px solid var(--line);
+ display:flex;
+ justify-content:space-around;
+ align-items:center;
+ z-index:60;
+ padding-bottom:env(safe-area-inset-bottom);
+}
+.nav{
+ border:0;
+ background:none;
+ font-size:25px;
+ color:#a39aaa;
+ position:relative;
+ width:48px;
+ height:48px;
+ border-radius:15px;
+ transition:.25s;
+}
+.nav.active{
+ color:#a779bd;
+ background:#f4eaf6;
+ transform:translateY(-3px);
+}
+.nav.active:after{
+ content:"";
+ position:absolute;
+ bottom:-5px;
+ left:50%;
+ transform:translateX(-50%);
+ width:5px;
+ height:5px;
+ border-radius:50%;
+ background:var(--accent);
+}
+
+.create-box{
+ background:var(--card);
+ border:1px solid var(--line);
+ padding:27px 18px;
+ text-align:center;
+ border-radius:23px;
+ margin-top:20px;
+ box-shadow:var(--shadow);
+}
+.create-box textarea{
+ width:100%;
+ padding:14px;
+ border:1px solid var(--line);
+ border-radius:15px;
+ margin-top:15px;
+ background:var(--bg);
+ color:var(--text);
+ resize:vertical;
+ min-height:95px;
+ outline:none;
+}
+.create-box textarea:focus{border-color:var(--accent)}
+.create-box input[type=file]{display:none}
+.empty{
+ text-align:center;
+ padding:42px 10px;
+ color:var(--muted);
+}
+.empty h3{color:var(--text);margin-bottom:7px}
+.hidden{display:none!important}
+
+#authScreen{
+ position:fixed;
+ inset:0;
+ background:var(--bg);
+ z-index:100;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+ overflow:auto;
+}
+.auth-card{
+ width:100%;
+ max-width:390px;
+ background:var(--card);
+ padding:27px;
+ border-radius:27px;
+ border:1px solid var(--line);
+ box-shadow:0 20px 65px #33224418;
+ animation:authIn .5s ease;
+}
+@keyframes authIn{
+ from{opacity:0;transform:translateY(20px) scale(.98)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+.auth-logo{
+ text-align:center;
+ font-family:'Playfair Display',serif;
+ font-size:39px;
+ font-weight:800;
+ letter-spacing:5px;
+ margin-bottom:8px;
+ background:var(--gradient);
+ background-clip:text;
+ -webkit-background-clip:text;
+ color:transparent;
+}
+.auth-card h2{
+ text-align:center;
+ font-family:'Playfair Display',serif;
+ margin:10px;
+}
+.auth-card p{
+ text-align:center;
+ color:var(--muted);
+ font-size:13px;
+ margin-bottom:15px;
+}
+.auth-card input{
+ width:100%;
+ padding:13px;
+ border:1px solid var(--line);
+ border-radius:13px;
+ margin:6px 0;
+ background:var(--bg);
+ color:var(--text);
+ outline:none;
+}
+.auth-card input:focus{border-color:var(--accent)}
+.auth-card button{width:100%;margin-top:9px}
+.auth-switch{text-align:center;margin-top:16px;font-size:13px}
+.auth-switch span{color:#a05f8d;font-weight:800;cursor:pointer}
+#message{
+ font-size:12px;
+ color:#a05f8d;
+ margin-top:12px;
+ text-align:center;
+ line-height:1.5;
+}
+
+.toast{
+ position:fixed;
+ left:50%;
+ bottom:91px;
+ transform:translateX(-50%);
+ background:#30283a;
+ color:#fff;
+ padding:12px 18px;
+ border-radius:24px;
+ font-size:12px;
+ z-index:200;
+ max-width:90%;
+ text-align:center;
+ box-shadow:0 8px 25px #0002;
+ animation:toastIn .3s ease;
+}
+@keyframes toastIn{
+ from{opacity:0;transform:translate(-50%,12px)}
+ to{opacity:1;transform:translate(-50%,0)}
+}
+
+.dark{
+ --bg:#17151d;
+ --card:#24212b;
+ --text:#f7f0fa;
+ --muted:#aaa0b3;
+ --line:#36303d;
+ --shadow:0 12px 35px rgba(0,0,0,.2);
+}
+.dark header,.dark .bottom{background:rgba(33,30,40,.92)}
+.dark .follow{background:linear-gradient(135deg,#9c6b9c,#7863a8);color:#fff}
+.dark .nav.active{background:#3a2d43;color:#e4bce8}
+.dark .bubble{background:#393240;color:#fff}
+.dark .bubble.mine{background:#755b83;color:#fff}
+.dark .comment-form input{background:#302b37}
+.dark .post-image{background:#302b37}
+
+.chat-layout{display:grid;gap:12px}
+.chat-row{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ padding:13px;
+ background:var(--card);
+ border:1px solid var(--line);
+ border-radius:17px;
+ margin:8px 0;
+ text-align:left;
+ width:100%;
+ color:var(--text);
+ transition:.2s;
+}
+.chat-row:active{transform:scale(.98)}
+.chat-row img{
+ width:45px;
+ height:45px;
+ border-radius:50%;
+ object-fit:cover;
+ border:2px solid #efd6e9;
+}
+.chat-row span{
+ display:block;
+ color:var(--muted);
+ font-size:12px;
+ margin-top:3px;
+}
+.chat-panel{
+ background:var(--card);
+ border:1px solid var(--line);
+ border-radius:20px;
+ overflow:hidden;
+ box-shadow:var(--shadow);
+}
+.chat-head{
+ padding:13px;
+ display:flex;
+ align-items:center;
+ gap:10px;
+ border-bottom:1px solid var(--line);
+}
+.chat-head button{
+ border:0;
+ background:none;
+ color:var(--text);
+ font-size:23px;
+}
+.chat-messages{
+ height:48vh;
+ min-height:280px;
+ max-height:520px;
+ overflow:auto;
+ padding:14px;
+ display:flex;
+ flex-direction:column;
+ gap:10px;
+}
+.bubble{
+ max-width:82%;
+ padding:11px 13px;
+ border-radius:17px 17px 17px 5px;
+ background:#f0eaf4;
+ align-self:flex-start;
+ overflow-wrap:anywhere;
+ font-size:13px;
+}
+.bubble.mine{
+ background:linear-gradient(135deg,#dfc8e6,#e8c9df);
+ align-self:flex-end;
+ color:#30233a;
+ border-radius:17px 17px 5px 17px;
+}
+.bubble small{
+ display:block;
+ font-size:10px;
+ opacity:.7;
+ margin-top:5px;
+}
+.bubble img{
+ max-width:100%;
+ border-radius:10px;
+ display:block;
+ margin-top:5px;
+}
+.chat-compose{
+ display:flex;
+ gap:6px;
+ padding:10px;
+ border-top:1px solid var(--line);
+}
+.chat-compose input[type=text]{
+ min-width:0;
+ flex:1;
+ border:1px solid var(--line);
+ border-radius:22px;
+ padding:11px;
+ background:var(--bg);
+ color:var(--text);
+ outline:none;
+}
+.chat-compose button{
+ border:0;
+ border-radius:22px;
+ padding:0 15px;
+ background:var(--gradient);
+ color:#fff;
+ font-weight:800;
+}
+.chat-tools{display:flex;gap:8px;padding:0 10px 10px}
+.chat-tools button{border:0;background:none;color:var(--muted)}
+
+@media(min-width:601px){
+ body{border-left:1px solid var(--line);border-right:1px solid var(--line)}
+}
+@media(max-width:380px){
+ .page{padding:15px}
+ .heading{font-size:27px}
+ .stats{gap:27px}
+ .post-actions{gap:12px}
+}
 </style>
 </head>
 
 <body>
 
 <div id="authScreen">
-<div class="auth-card">
-<div class="auth-logo">AURA.</div>
-<h2 id="authTitle">Welcome to AURA</h2>
-<p id="authSubtitle">Your little world starts here ✨</p>
-<select id="authMethod" class="field">
-<option value="email">Email</option>
-<option value="phone">Phone number</option>
-</select>
-<div id="signupName" class="hidden">
-<input id="fullName" placeholder="Your full name">
-<input id="username" placeholder="Choose a username">
-</div>
-<input id="email" type="email" placeholder="Email address" autocomplete="email">
-<input id="phone" class="hidden" type="tel" placeholder="+8801XXXXXXXXX" autocomplete="tel">
-<input id="password" type="password" placeholder="Password (8+ characters)" autocomplete="current-password">
-<div id="otpBox" class="hidden">
-<input id="otp" inputmode="numeric" maxlength="6" placeholder="6-digit verification code">
-<button class="primary" id="verifyOtpButton">Verify code</button>
-</div>
-<button class="primary" id="authButton">Login</button>
-<button class="edit" id="forgotButton">Forgot password?</button>
-<div id="message" aria-live="polite"></div>
-<div class="auth-switch"><span id="switchText">Create an account</span></div>
-</div>
+ <div class="auth-card">
+  <div class="auth-logo">AURA.</div>
+  <h2 id="authTitle">Welcome to AURA</h2>
+  <p id="authSubtitle">Your little world starts here ✨</p>
+  <select id="authMethod" class="field">
+   <option value="email">Email</option>
+   <option value="phone">Phone number</option>
+  </select>
+  <div id="signupName" class="hidden">
+   <input id="fullName" placeholder="Your full name">
+   <input id="username" placeholder="Choose a username">
+  </div>
+  <input id="email" type="email" placeholder="Email address" autocomplete="email">
+  <input id="phone" class="hidden" type="tel" placeholder="+8801XXXXXXXXX" autocomplete="tel">
+  <input id="password" type="password" placeholder="Password (8+ characters)" autocomplete="current-password">
+  <div id="otpBox" class="hidden">
+   <input id="otp" inputmode="numeric" maxlength="6" placeholder="6-digit verification code">
+   <button class="primary" id="verifyOtpButton">Verify code</button>
+  </div>
+  <button class="primary" id="authButton">Login</button>
+  <button class="edit" id="forgotButton">Forgot password?</button>
+  <div id="message" aria-live="polite"></div>
+  <div class="auth-switch"><span id="switchText">Create an account</span></div>
+ </div>
 </div>
 
 <header>
-<div class="logo">AURA.</div>
-<div class="header-icons">
-<button id="themeButton" aria-label="Toggle dark mode">☾</button>
-<button id="inboxButton" aria-label="Open messages">✉<span id="headerUnreadBadge" class="badge"></span></button>
-</div>
+ <div class="logo">AURA.</div>
+ <div class="header-icons">
+  <button id="themeButton" aria-label="Toggle dark mode">☾</button>
+  <button id="inboxButton" aria-label="Open messages">✉<span id="headerUnreadBadge" class="badge"></span></button>
+ </div>
 </header>
 
 <section class="page active" id="home">
-<div class="heading">Your little world ✨</div>
-<div class="sub">A place for beautiful things.</div>
-<div class="stories" id="stories"></div>
-<div id="feed"></div>
+ <div class="heading">Your little world ✨</div>
+ <div class="sub">A place for beautiful things.</div>
+ <div class="stories" id="stories"></div>
+ <div id="feed"></div>
 </section>
 
 <section class="page" id="explore">
-<div class="heading">Explore</div>
-<div class="sub">Find your kind of beauty.</div>
-<input class="search" id="search" placeholder="Search posts by username or caption">
-<div class="grid" id="gallery"></div>
+ <div class="heading">Explore</div>
+ <div class="sub">Find your kind of beauty.</div>
+ <input class="search" id="search" placeholder="Search posts by username or caption">
+ <div class="grid" id="gallery"></div>
 </section>
 
 <section class="page" id="create">
-<div class="heading">Create something</div>
-<div class="sub">Share your little universe.</div>
-<div class="create-box">
-<div style="font-size:42px">✧</div>
-<h3>Share a post</h3>
-<textarea id="captionInput" placeholder="Write a caption..."></textarea>
-<label class="primary" style="display:inline-block;cursor:pointer">
-<input type="file" accept="image/*,video/*" id="upload">＋ Choose Photo / Video
-</label>
-<p id="uploadStatus" style="font-size:12px;color:var(--muted);margin-top:12px"></p>
-<hr style="border:0;border-top:1px solid var(--line);margin:25px 0">
-<h3>Share a Story</h3>
-<p style="color:var(--muted);font-size:13px;margin:7px">Stories are shown for 24 hours.</p>
-<label class="primary" style="display:inline-block;cursor:pointer">
-<input type="file" accept="image/*,video/*" id="storyUpload">＋ Choose Story
-</label>
-</div>
+ <div class="heading">Create something</div>
+ <div class="sub">Share your little universe.</div>
+ <div class="create-box">
+  <div style="font-size:42px">✧</div>
+  <h3>Share a post</h3>
+  <textarea id="captionInput" placeholder="Write a caption..."></textarea>
+  <label class="primary" style="display:inline-block;cursor:pointer">
+   <input type="file" accept="image/*,video/*" id="upload">＋ Choose Photo / Video
+  </label>
+  <p id="uploadStatus" style="font-size:12px;color:var(--muted);margin-top:12px"></p>
+  <hr style="border:0;border-top:1px solid var(--line);margin:25px 0">
+  <h3>Share a Story</h3>
+  <p style="color:var(--muted);font-size:13px;margin:7px">Stories are shown for 24 hours.</p>
+  <label class="primary" style="display:inline-block;cursor:pointer">
+   <input type="file" accept="image/*,video/*" id="storyUpload">＋ Choose Story
+  </label>
+ </div>
 </section>
 
 <section class="page" id="inbox">
-<div class="heading">Messages</div>
-<div class="sub">Your conversations on AURA.</div>
-<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 16px">
-<button class="primary" id="enableNotifications" type="button">🔔 Enable Notifications</button>
-<small id="notificationStatus" style="color:var(--muted)">Get alerts for new messages.</small>
-</div>
-<input class="search" id="peopleSearch" placeholder="Find a person by username">
-<div id="peopleResults"></div>
-<div id="chatList" class="chat-layout"></div>
-<div id="chatRoom" class="hidden chat-panel">
-<div class="chat-head">
-<button id="backChats">‹</button>
-<img id="chatAvatar" class="avatar" alt="">
-<strong id="chatName">Chat</strong>
-<span id="presenceLabel" style="margin-left:auto;font-size:11px;color:var(--muted)">Offline</span>
-</div>
-<div id="chatMessages" class="chat-messages"></div>
-<div class="chat-tools">
-<button id="emojiButton">😊 Emoji</button>
-<button id="replyCancel" class="hidden">Cancel reply</button>
-<span id="replyLabel" style="font-size:11px;color:var(--muted)"></span>
-</div>
-<form id="chatForm" class="chat-compose">
-<input id="chatText" type="text" maxlength="2000" placeholder="Write a message..." autocomplete="off">
-<label class="primary" style="margin:0;padding:9px 12px;cursor:pointer">＋<input id="chatImage" type="file" accept="image/*" hidden></label>
-<button type="submit">Send</button>
-</form>
-</div>
+ <div class="heading">Messages</div>
+ <div class="sub">Your conversations on AURA.</div>
+ <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 16px">
+  <button class="primary" id="enableNotifications" type="button">🔔 Enable Notifications</button>
+  <small id="notificationStatus" style="color:var(--muted)">Get alerts for new messages.</small>
+ </div>
+ <input class="search" id="peopleSearch" placeholder="Find a person by username">
+ <div id="peopleResults"></div>
+ <div id="chatList" class="chat-layout"></div>
+ <div id="chatRoom" class="hidden chat-panel">
+  <div class="chat-head">
+   <button id="backChats">‹</button>
+   <img id="chatAvatar" class="avatar" alt="">
+   <strong id="chatName">Chat</strong>
+   <span id="presenceLabel" style="margin-left:auto;font-size:11px;color:var(--muted)">Offline</span>
+  </div>
+  <div id="chatMessages" class="chat-messages"></div>
+  <div class="chat-tools">
+   <button id="emojiButton">😊 Emoji</button>
+   <button id="replyCancel" class="hidden">Cancel reply</button>
+   <span id="replyLabel" style="font-size:11px;color:var(--muted)"></span>
+  </div>
+  <form id="chatForm" class="chat-compose">
+   <input id="chatText" type="text" maxlength="2000" placeholder="Write a message..." autocomplete="off">
+   <label class="primary" style="margin:0;padding:9px 12px;cursor:pointer">＋<input id="chatImage" type="file" accept="image/*" hidden></label>
+   <button type="submit">Send</button>
+  </form>
+ </div>
 </section>
 
 <section class="page" id="profile">
-<div class="profile-top">
-<img class="profile-pic" id="myPic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" alt="Profile picture">
-<div class="profile-name" id="myName">AURA User</div>
-<p class="profile-bio" id="myBio">Living in my own little world 🌷</p>
-<div class="stats">
-<div><strong id="postCount">0</strong><small>Posts</small></div>
-<div><strong id="followerCount">0</strong><small>Followers</small></div>
-<div><strong id="followingCount">0</strong><small>Following</small></div>
-</div>
-<button class="edit" id="editProfileButton">Edit Profile</button>
-<button class="edit" id="changePasswordButton">Change Password</button>
-<button class="edit" id="logoutButton">Log out</button>
-</div>
-<div class="grid" id="myPosts"></div>
+ <div class="profile-top">
+  <img class="profile-pic" id="myPic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" alt="Profile picture">
+  <div class="profile-name" id="myName">AURA User</div>
+  <p class="profile-bio" id="myBio">Living in my own little world 🌷</p>
+  <div class="stats">
+   <div><strong id="postCount">0</strong><small>Posts</small></div>
+   <div><strong id="followerCount">0</strong><small>Followers</small></div>
+   <div><strong id="followingCount">0</strong><small>Following</small></div>
+  </div>
+  <button class="edit" id="editProfileButton">Edit Profile</button>
+  <button class="edit" id="changePasswordButton">Change Password</button>
+  <button class="edit" id="logoutButton">Log out</button>
+ </div>
+ <div class="grid" id="myPosts"></div>
 </section>
 
 <nav class="bottom">
-<button class="nav active" data-page="home">⌂</button>
-<button class="nav" data-page="explore">⌕</button>
-<button class="nav" data-page="create">⊕</button>
-<button class="nav" data-page="inbox">✉<span id="navUnreadBadge" class="badge"></span></button>
-<button class="nav" data-page="profile">◉</button>
+ <button class="nav active" data-page="home" aria-label="Home">⌂</button>
+ <button class="nav" data-page="explore" aria-label="Explore">⌕</button>
+ <button class="nav" data-page="create" aria-label="Create">⊕</button>
+ <button class="nav" data-page="inbox" aria-label="Inbox">✉<span id="navUnreadBadge" class="badge"></span></button>
+ <button class="nav" data-page="profile" aria-label="Profile">◉</button>
 </nav>
 
 <script type="module">
@@ -340,7 +892,6 @@ async function loadProfile(){
  $("myPic").src=data.avatar_url||FALLBACK_AVATAR;
 }
 
-/* Safe loading: one failed section will not stop the whole app. */
 async function safeLoad(label,fn){
  try{await fn()}
  catch(error){
@@ -429,6 +980,7 @@ function showPage(name,button){
 }
 document.querySelectorAll(".nav").forEach(b=>b.addEventListener("click",()=>{
  showPage(b.dataset.page,b);
+ if(b.dataset.page==="inbox"&&currentUser)loadChatList();
 }));
 
 $("inboxButton").addEventListener("click",()=>{
@@ -467,6 +1019,25 @@ $("changePasswordButton").addEventListener("click",async()=>{
  else toast("Password updated. If email confirmation is required, check your inbox.");
 });
 
+function savedPostsKey(){
+ return "aura_saved_posts_"+(currentUser?.id||"guest");
+}
+function getSavedPosts(){
+ try{return JSON.parse(localStorage.getItem(savedPostsKey())||"[]")}
+ catch(e){return []}
+}
+function isPostSaved(id){
+ return getSavedPosts().includes(String(id));
+}
+function toggleSavedPost(id){
+ const saved=getSavedPosts();
+ const key=String(id);
+ const next=saved.includes(key)?saved.filter(x=>x!==key):[...saved,key];
+ localStorage.setItem(savedPostsKey(),JSON.stringify(next));
+ renderFeed();
+ toast(next.includes(key)?"Post saved ✨":"Post removed from saved");
+}
+
 async function loadFeed(){
  const {data,error}=await supabase.from("posts")
  .select("*,profiles(username,full_name,avatar_url),likes(user_id),comments(id,user_id,content,created_at,profiles(username))")
@@ -489,6 +1060,7 @@ function renderFeed(){
   const username=profile.username||"AURA User";
   const avatar=profile.avatar_url||FALLBACK_AVATAR;
   const liked=(post.likes||[]).some(x=>x.user_id===currentUser.id);
+  const saved=isPostSaved(post.id);
   const comments=post.comments||[];
   const video=post.media_type==="video";
   const article=document.createElement("article");
@@ -504,6 +1076,7 @@ function renderFeed(){
     <button class="action ${liked?"liked":""}" data-like="${esc(post.id)}">${liked?"♥":"♡"}</button>
     <button class="action" data-focus-comment>♧</button>
     <button class="action" data-share="${esc(post.id)}">↗</button>
+    <button class="action ${saved?"saved":""}" data-save="${esc(post.id)}">${saved?"▣":"▢"}</button>
     <span class="like-count">${(post.likes||[]).length} likes</span>
    </div>
    <div class="caption"><b>${esc(username)}</b> ${esc(post.caption||"")}</div>
@@ -518,6 +1091,7 @@ function renderFeed(){
  feed.querySelectorAll("[data-follow]").forEach(b=>b.addEventListener("click",()=>toggleFollow(b.dataset.follow)));
  feed.querySelectorAll("[data-comment]").forEach(f=>f.addEventListener("submit",submitComment));
  feed.querySelectorAll("[data-focus-comment]").forEach(b=>b.addEventListener("click",()=>b.closest(".post").querySelector('input[name="content"]').focus()));
+ feed.querySelectorAll("[data-save]").forEach(b=>b.addEventListener("click",()=>toggleSavedPost(b.dataset.save)));
  feed.querySelectorAll("[data-share]").forEach(b=>b.addEventListener("click",async()=>{
   try{
    if(navigator.share)await navigator.share({title:"AURA",text:"AURA post",url:location.href});
@@ -700,15 +1274,15 @@ async function loadMessages(){
  const rows=data||[];
  const ids=rows.filter(m=>m.sender_id!==currentUser.id).map(m=>m.id);
  if(ids.length){
-  const {data:seen}=await supabase.from("message_read").select("message_id").eq("user_id",currentUser.id).in("message_id",ids);
+  const {data:seen}=await supabase.from("message_reads").select("message_id").eq("user_id",currentUser.id).in("message_id",ids);
   const already=new Set((seen||[]).map(x=>x.message_id));
   for(const id of ids){
-   if(!already.has(id))await supabase.from("message_read").insert({message_id:id,user_id:currentUser.id});
+   if(!already.has(id))await supabase.from("message_reads").insert({message_id:id,user_id:currentUser.id});
   }
  }
  const {data:profiles}=await supabase.from("profiles").select("id,username");
  const names=new Map((profiles||[]).map(p=>[p.id,p.username]));
- const readRows=await supabase.from("message_read").select("message_id,user_id");
+ const readRows=await supabase.from("message_reads").select("message_id,user_id");
  const readSet=new Set((readRows.data||[]).filter(x=>x.user_id===activePerson.id).map(x=>x.message_id));
  $("chatMessages").innerHTML="";
  rows.forEach(m=>{
@@ -858,6 +1432,7 @@ $("peopleSearch").addEventListener("input",async()=>{
   b.addEventListener("click",()=>openChat(p).catch(e=>toast(e.message)));
   $("peopleResults").appendChild(b);
  });
+
 });
 
 /* IN-APP + WEB PUSH NOTIFICATIONS */
@@ -883,7 +1458,7 @@ async function refreshUnreadCount(){
   if(mErr)throw mErr;
   const messageIds=(incoming||[]).map(x=>x.id);
   if(!messageIds.length){unreadCount=0;updateUnreadBadges();return}
-  const {data:readRows,error:rErr}=await supabase.from("message_read").select("message_id")
+  const {data:readRows,error:rErr}=await supabase.from("message_reads").select("message_id")
   .eq("user_id",currentUser.id).in("message_id",messageIds);
   if(rErr)throw rErr;
   const readSet=new Set((readRows||[]).map(x=>x.message_id));
@@ -1031,7 +1606,6 @@ document.addEventListener("click",e=>{
 });
 
 updateNotificationStatus();
-
 </script>
 </body>
 </html>
