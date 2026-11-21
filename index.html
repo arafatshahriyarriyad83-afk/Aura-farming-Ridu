@@ -1606,6 +1606,73 @@ document.addEventListener("click",e=>{
 });
 
  updateNotificationStatus();
+
+/* AURA SMART VIDEO AUTOPLAY SYSTEM */
+
+const auraVideoObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    const video = entry.target;
+
+    if (entry.isIntersecting && entry.intersectionRatio >= 0.65) {
+      document.querySelectorAll("video").forEach((otherVideo) => {
+        if (otherVideo !== video) {
+          otherVideo.pause();
+          otherVideo.muted = true;
+        }
+      });
+
+      video.play().catch(() => {
+        video.muted = true;
+        video.play().catch(() => {});
+      });
+
+    } else {
+      video.pause();
+      video.muted = true;
+    }
+  });
+}, {
+  threshold: [0, 0.65, 1]
+});
+
+function auraObserveVideos() {
+  document.querySelectorAll("video").forEach((video) => {
+    if (video.dataset.auraObserved) return;
+
+    video.dataset.auraObserved = "true";
+    video.playsInline = true;
+    video.preload = "metadata";
+
+    auraVideoObserver.observe(video);
+  });
+}
+
+const auraVideoMutationObserver = new MutationObserver(() => {
+  auraObserveVideos();
+});
+
+auraVideoMutationObserver.observe(document.body, {
+  childList: true,
+  subtree: true
+});
+
+auraObserveVideos();
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    document.querySelectorAll("video").forEach((video) => {
+      video.pause();
+      video.muted = true;
+    });
+  }
+});
+
+window.addEventListener("pagehide", () => {
+  document.querySelectorAll("video").forEach((video) => {
+    video.pause();
+    video.muted = true;
+  });
+});
 </script>
 </body>
 </html>
