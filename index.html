@@ -1157,6 +1157,418 @@ $("settingsButton").addEventListener("click",()=>showPage("settings",null));
 $("backSettings").addEventListener("click",profilePage);
 $("settingsTheme").addEventListener("click",toggleTheme);
 window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRefreshTimer);});
+
+/* =====================================
+   AURA PREMIUM UI PATCH
+===================================== */
+
+(() => {
+  // PREMIUM LIQUID GLASS DESIGN
+  const style = document.createElement("style");
+
+  style.textContent = `
+    .glass-icon {
+      width:44px!important;
+      height:44px!important;
+      border-radius:16px!important;
+      border:1px solid rgba(255,255,255,.19)!important;
+      background:
+        linear-gradient(145deg,rgba(255,255,255,.19),rgba(255,255,255,.025)),
+        rgba(105,75,150,.13)!important;
+      backdrop-filter:blur(22px) saturate(180%);
+      -webkit-backdrop-filter:blur(22px) saturate(180%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.2),
+        0 5px 20px rgba(135,70,255,.17);
+      display:grid;
+      place-items:center;
+      color:#ead8ff!important;
+      transition:.25s;
+    }
+
+    .glass-icon:active {
+      transform:scale(.88)!important;
+      box-shadow:inset 0 0 15px rgba(255,255,255,.2);
+    }
+
+    .glass-icon svg {
+      width:23px;
+      height:23px;
+      filter:drop-shadow(0 0 5px #bd8cff);
+    }
+
+    .post {
+      border:1px solid rgba(190,145,255,.17);
+      background:
+        linear-gradient(145deg,rgba(255,255,255,.045),transparent 45%),
+        linear-gradient(145deg,#171224,#0b0913);
+      box-shadow:0 15px 38px rgba(0,0,0,.28),
+                 0 5px 22px rgba(130,60,255,.09);
+      transition:border-color .25s,box-shadow .25s;
+    }
+
+    .post-user {
+      padding:16px;
+    }
+
+    .post-image {
+      max-height:620px;
+      object-fit:cover;
+    }
+
+    .post-actions {
+      padding:15px 16px 10px;
+      gap:19px;
+    }
+
+    .action {
+      transition:transform .2s,color .2s;
+    }
+
+    .action:active {
+      transform:scale(.78);
+    }
+
+    .more-btn {
+      width:38px;
+      height:38px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:13px;
+      background:rgba(255,255,255,.045);
+      font-size:23px;
+    }
+
+    .aura-sheet-overlay {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.67);
+      backdrop-filter:blur(9px);
+      z-index:300;
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:12px;
+    }
+
+    .aura-sheet-overlay.show {
+      display:flex;
+      animation:sheetFade .2s ease;
+    }
+
+    @keyframes sheetFade {
+      from{opacity:0}
+      to{opacity:1}
+    }
+
+    .aura-sheet {
+      width:100%;
+      max-width:560px;
+      background:linear-gradient(145deg,#211832,#100d1b);
+      border:1px solid rgba(210,170,255,.2);
+      border-radius:25px;
+      padding:12px;
+      padding-bottom:calc(15px + env(safe-area-inset-bottom));
+      box-shadow:0 15px 60px #0009;
+      animation:sheetUp .25s ease;
+    }
+
+    @keyframes sheetUp {
+      from{transform:translateY(35px);opacity:.5}
+      to{transform:translateY(0);opacity:1}
+    }
+
+    .sheet-handle {
+      width:38px;
+      height:4px;
+      border-radius:8px;
+      background:#75658b;
+      margin:2px auto 16px;
+    }
+
+    .sheet-title {
+      text-align:center;
+      font-size:14px;
+      font-weight:800;
+      color:#eadbff;
+      margin-bottom:13px;
+    }
+
+    .sheet-option {
+      display:flex;
+      align-items:center;
+      gap:14px;
+      width:100%;
+      padding:15px;
+      margin:5px 0;
+      border:1px solid rgba(255,255,255,.055);
+      border-radius:15px;
+      background:rgba(255,255,255,.045);
+      color:#f4eaff;
+      font-size:14px;
+      text-align:left;
+    }
+
+    .sheet-option span {
+      font-size:19px;
+      width:25px;
+      text-align:center;
+    }
+
+    .sheet-option:active {
+      background:rgba(170,110,255,.2);
+    }
+
+    .sheet-option.danger-option {
+      color:#ff9bb7;
+    }
+
+    .sheet-cancel {
+      width:100%;
+      margin-top:9px;
+      padding:14px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:15px;
+      background:#30233f;
+      color:white;
+      font-weight:800;
+    }
+
+    .settings-row {
+      background:linear-gradient(145deg,#171326,#100d19);
+      border-color:rgba(190,145,255,.15);
+    }
+
+    @media(max-width:380px) {
+      .header-icons {gap:6px}
+      .glass-icon {width:40px!important;height:40px!important}
+    }
+  `;
+
+  document.head.appendChild(style);
+
+  // REMOVE TOP DOWNLOAD BUTTON
+  $("installButton")?.remove();
+
+  // CUSTOM LIQUID GLASS INBOX ICON
+  const inboxSVG = `
+    <svg viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="1.7"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 5.5A3.5 3.5 0 0 1 8.5 2h7A3.5 3.5 0 0 1 19 5.5v10a3.5 3.5 0 0 1-3.5 3.5H8.5A3.5 3.5 0 0 1 5 15.5z"/>
+      <path d="M8 9h8M8 13h5"/>
+      <path d="M8 19v3l4-3 4 3v-3"/>
+    </svg>`;
+
+  const activitySVG = `
+    <svg viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="1.7"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 8.5c0 5-8 11-8 11s-8-6-8-11a4.5 4.5 0 0 1 8-2.8 4.5 4.5 0 0 1 8 2.8z"/>
+      <path d="M12 5v4M10 7h4"/>
+    </svg>`;
+
+  const inboxButton = $("inboxButton");
+
+  if (inboxButton) {
+    inboxButton.classList.add("glass-icon");
+    inboxButton.innerHTML = inboxSVG;
+    const badge = document.createElement("span");
+    badge.id = "headerUnreadBadge";
+    badge.className = "badge";
+    inboxButton.appendChild(badge);
+  }
+
+  const activityButton = $("activityButton");
+
+  if (activityButton) {
+    activityButton.classList.add("glass-icon");
+    activityButton.innerHTML = activitySVG;
+  }
+
+  // BOTTOM NAV INBOX ICON
+  const navInbox = document.querySelector('.nav[data-page="inbox"]');
+
+  if (navInbox) {
+    navInbox.innerHTML = inboxSVG;
+    navInbox.querySelector("svg").style.width = "25px";
+    navInbox.querySelector("svg").style.height = "25px";
+
+    const badge = document.createElement("span");
+    badge.id = "navUnreadBadge";
+    badge.className = "badge";
+    navInbox.appendChild(badge);
+  }
+
+  // MOVE LOGOUT INTO SETTINGS
+  const logoutButton = $("logoutButton");
+
+  if (logoutButton) {
+    const row = document.createElement("div");
+    row.className = "settings-row";
+
+    row.innerHTML = `
+      <div>🚪</div>
+      <div>
+        <strong>Log Out</strong>
+        <small>Sign out of your AURA account.</small>
+      </div>
+    `;
+
+    const button = document.createElement("button");
+    button.className = "danger";
+    button.textContent = "Log Out";
+
+    button.addEventListener("click", () => {
+      if (confirm("Are you sure you want to log out?")) {
+        logout();
+      }
+    });
+
+    row.appendChild(button);
+    $("settings").appendChild(row);
+
+    logoutButton.remove();
+  }
+
+  // INSTALL OPTION REMAINS INSIDE SETTINGS
+  // TOP DOWNLOAD BUTTON IS REMOVED ONLY.
+
+  // CREATE PREMIUM ACTION SHEET
+  const overlay = document.createElement("div");
+  overlay.className = "aura-sheet-overlay";
+  overlay.id = "auraActionSheet";
+
+  overlay.innerHTML = `
+    <div class="aura-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">AURA OPTIONS</div>
+      <div id="auraSheetOptions"></div>
+      <button class="sheet-cancel" id="auraSheetCancel">Cancel</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  let selectedPost = null;
+
+  function closeActionSheet() {
+    overlay.classList.remove("show");
+    selectedPost = null;
+  }
+
+  $("auraSheetCancel").addEventListener("click", closeActionSheet);
+
+  overlay.addEventListener("click", e => {
+    if (e.target === overlay) closeActionSheet();
+  });
+
+  function addSheetOption(icon, label, callback, danger = false) {
+    const button = document.createElement("button");
+    button.className = "sheet-option" + (danger ? " danger-option" : "");
+    button.innerHTML = `<span>${icon}</span>${label}`;
+
+    button.addEventListener("click", async () => {
+      const post = selectedPost;
+      closeActionSheet();
+      if (post) await callback(post);
+    });
+
+    $("auraSheetOptions").appendChild(button);
+  }
+
+  // REPLACE NUMBER-BASED POST MENU
+  postOptions = async function(id) {
+    const post = postsCache.find(p => String(p.id) === String(id));
+    if (!post) return;
+
+    selectedPost = post;
+    const box = $("auraSheetOptions");
+    box.innerHTML = "";
+
+    if (post.user_id === currentUser.id) {
+      addSheetOption("👤", "View My Profile", () => profilePage());
+
+      addSheetOption("🔖", "Save / Remove Saved Post", p => {
+        toggleSavedPost(p.id);
+      });
+
+      addSheetOption("🗑️", "Delete Post", async p => {
+        if (!confirm("Delete this post permanently?")) return;
+
+        const {error} = await supabase
+          .from("posts")
+          .delete()
+          .eq("id", p.id)
+          .eq("user_id", currentUser.id);
+
+        if (error) {
+          toast("Delete failed: " + error.message);
+        } else {
+          toast("Post deleted.");
+          await loadFeed();
+          await loadMyStats();
+        }
+      }, true);
+    } else {
+      addSheetOption("👤", "View Profile", p => {
+        openUserProfile(p.user_id);
+      });
+
+      addSheetOption("🔖", "Save Post", p => {
+        toggleSavedPost(p.id);
+      });
+
+      addSheetOption("🚫", "Block Account", p => {
+        blockUser(p.user_id);
+      }, true);
+
+      addSheetOption("⚑", "Report Account", p => {
+        reportUser(p.user_id);
+      }, true);
+    }
+
+    overlay.classList.add("show");
+  };
+
+  // VIDEO MUST STOP WHEN LEAVING CHAT
+  const originalShowPage = showPage;
+
+  showPage = function(name, button) {
+    if (name !== "chat") {
+      $("chatMessages")?.querySelectorAll("video").forEach(video => {
+        video.pause();
+        video.currentTime = video.currentTime;
+      });
+    }
+
+    originalShowPage(name, button);
+  };
+
+  $("backChats")?.addEventListener("click", () => {
+    $("chatMessages")?.querySelectorAll("video").forEach(video => {
+      video.pause();
+      video.currentTime = video.currentTime;
+    });
+  });
+
+  // PAUSE CHAT VIDEO WHEN PAGE BECOMES HIDDEN
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      $("chatMessages")?.querySelectorAll("video").forEach(video => {
+        video.pause();
+      });
+    }
+  });
+
+  // PAUSE WHEN APP NAVIGATES AWAY
+  window.addEventListener("pagehide", () => {
+    $("chatMessages")?.querySelectorAll("video").forEach(video => {
+      video.pause();
+    });
+  });
+
+  console.log("AURA Premium UI Patch Loaded ✨");
+})();
 </script>
 </body>
 </html>
