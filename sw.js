@@ -1,61 +1,75 @@
 
 const CACHE_NAME = "aura-cache-v1";
 
+const APP_FILES = [
+  "./",
+  "./index.html",
+  "./manifest.json"
+];
+
+// Install
 self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(APP_FILES);
+    })
+  );
+
   self.skipWaiting();
 });
 
+// Activate
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener("push", (event) => {
-  let data = {
-    title: "AURA",
-    body: "You have a new notification!",
-    url: "./"
-  };
-
-  if (event.data) {
-    try {
-      data = { ...data, ...event.data.json() };
-    } catch {
-      data.body = event.data.text();
-    }
-  }
-
   event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: "./aura-icon.svg",
-      badge: "./aura-icon.svg",
-      data: { url: data.url || "./" },
-      vibrate: [200, 100, 200]
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames
+          .filter((name) => name !== CACHE_NAME)
+          .map((name) => caches.delete(name))
+      );
     })
   );
+
+  self.clients.claim();
 });
 
-self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
+// Fetch
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
 
-  const url = new URL(
-    event.notification.data?.url || "./",
-    self.location.origin
-  ).href;
+  if (request.method !== "GET") return;
 
-  event.waitUntil(
-    self.clients.matchAll({
-      type: "window",
-      includeUncontrolled: true
-    }).then((clients) => {
-      for (const client of clients) {
-        if (client.url.startsWith(self.location.origin) && "focus" in client) {
-          client.navigate(url);
-          return client.focus();
+  const url = new URL(request.url);
+
+  // Supabase এবং বাইরের API request cache করবে না
+  if (
+    url.hostname.includes("supabase.co") ||
+    url.hostname.includes("googleapis.com")
+  ) {
+    return;
+  }
+
+  event.respondWith(
+    fetch(request)
+      .then((response) => {
+        if (
+          response &&
+          response.status === 200 &&
+          url.origin === self.location.origin
+        ) {
+          const responseClone = response.clone();
+
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseClone);
+          });
         }
-      }
 
-      return self.clients.openWindow(url);
-    })
+        return response;
+      })
+      .catch(() => {
+        return caches.match(request).then((cachedResponse) => {
+          return cachedResponse || caches.match("./index.html");
+        });
+      })
   );
 });
