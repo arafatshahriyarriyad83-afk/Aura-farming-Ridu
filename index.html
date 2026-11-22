@@ -2008,5 +2008,106 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
   }
 })();
 </script>
+<!-- AURA EXPLORE USER SEARCH -->
+<style>
+.aura-user-card{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;
+  margin-bottom:8px;border-radius:16px;
+  background:linear-gradient(145deg,#171326,#100e1c);
+  border:1px solid rgba(168,85,247,.25);
+  cursor:pointer;transition:.2s;grid-column:1/-1;
+}
+.aura-user-card:hover{border-color:#a855f7;transform:translateY(-2px);}
+.aura-user-card img{
+  width:46px;height:46px;border-radius:50%;object-fit:cover;
+  border:2px solid #a855f7;flex-shrink:0;
+}
+.aura-user-card strong{display:block;font-size:14px;color:#f7f3ff;}
+.aura-user-card span{display:block;font-size:12px;color:#9189a8;margin-top:2px;}
+.aura-user-tag{
+  margin-left:auto;font-size:11px;font-weight:700;
+  color:#d8baff;background:rgba(168,85,247,.16);
+  padding:6px 12px;border-radius:20px;
+}
+</style>
+
+<script>
+(() => {
+  const searchInput = document.getElementById("search");
+  const gallery = document.getElementById("gallery");
+  if (!searchInput || !gallery) return;
+
+  const SB_URL = "https://supabase.co";
+  const SB_KEY = "sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv";
+  const FALLBACK = "https://unsplash.com";
+  let timer = null;
+
+  searchInput.placeholder = "Search users or posts...";
+
+  searchInput.addEventListener("input", () => {
+    clearTimeout(timer);
+    const q = searchInput.value.trim();
+
+    // Remove old user cards immediately
+    gallery.querySelectorAll(".aura-user-card").forEach(el => el.remove());
+    if (q.length < 1) return;
+
+    timer = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `${SB_URL}/rest/v1/profiles?select=id,username,full_name,avatar_url&or=(username.ilike.*${encodeURIComponent(q)}*,full_name.ilike.*${encodeURIComponent(q)}*)&limit=10`,
+          { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+        );
+        const users = await res.json();
+        if (!Array.isArray(users) || !users.length) return;
+
+        gallery.querySelectorAll(".aura-user-card").forEach(el => el.remove());
+
+        users.reverse().forEach(u => {
+          const card = document.createElement("div");
+          card.className = "aura-user-card";
+          const name = u.full_name || u.username || "AURA User";
+          const uname = u.username ? "@" + u.username : "AURA Member";
+          const pic = u.avatar_url || FALLBACK;
+
+          card.innerHTML = `
+            <img src="${pic}" alt="">
+            <div>
+              <strong>${name.replace(/</g, "&lt;")}</strong>
+              <span>${uname.replace(/</g, "&lt;")}</span>
+            </div>
+            <div class="aura-user-tag">View Profile</div>
+          `;
+
+          card.addEventListener("click", () => {
+            // Trigger profile view using existing post/user click or direct profile open
+            const existingTrigger = document.querySelector(`[data-profile="${u.id}"]`);
+            if (existingTrigger) {
+              existingTrigger.click();
+            } else {
+              // Fallback: open via peopleSearch or direct profile page
+              const myName = document.getElementById("myName")?.textContent;
+              if (myName === name) {
+                document.querySelector('[data-page="profile"]')?.click();
+              } else {
+                const pSearch = document.getElementById("peopleSearch");
+                if (pSearch) {
+                  document.querySelector('[data-page="inbox"]')?.click();
+                  pSearch.value = u.username || name;
+                  pSearch.dispatchEvent(new Event("input"));
+                }
+              }
+            }
+          });
+
+          gallery.prepend(card);
+        });
+      } catch (e) {
+        console.warn("User search:", e);
+      }
+    }, 250);
+  });
+})();
+</script>
 </body>
 </html>
