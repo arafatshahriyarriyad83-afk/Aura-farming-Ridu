@@ -2226,6 +2226,7 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
     }
   }, true);
 
+ 
   document.getElementById("closeAuraCD")?.addEventListener("click", () => drawer.classList.remove("open"));
   drawer?.addEventListener("click", e => { if (e.target === drawer) drawer.classList.remove("open"); });
 
