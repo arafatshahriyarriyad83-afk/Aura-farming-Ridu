@@ -203,21 +203,14 @@ body.dark{--bg:#080710}
    <div class="auth-logo">AURA</div>
   </div>
   <h2 id="authTitle">Welcome to AURA</h2>
-  <p id="authSubtitle">Your Aura feed is here ✨</p>
+  <p id="authSubtitle">Your little world starts here ✨</p>
   <select id="authMethod" class="field"><option value="email">Email</option><option value="phone">Phone number</option></select>
   <div id="signupName" class="hidden"><input id="fullName" placeholder="Your full name"><input id="username" placeholder="Choose a username"></div>
   <input id="email" type="email" placeholder="Email address" autocomplete="email">
   <input id="phone" class="hidden" type="tel" placeholder="+8801XXXXXXXXX" autocomplete="tel">
   <input id="password" type="password" placeholder="Password (8+ characters)" autocomplete="current-password">
   <div id="otpBox" class="hidden"><input id="otp" inputmode="numeric" maxlength="6" placeholder="6-digit verification code"><button class="primary" id="verifyOtpButton">Verify code</button></div>
-  <button class="primary" id="authButton">Login</button><button
-  type="button"
-  class="secondary"
-  id="guestButton"
-  style="width:100%;margin-top:12px"
->
-  👀 Explore as Guest
-</button>
+  <button class="primary" id="authButton">Login</button>
   <button class="edit" id="forgotButton">Forgot password?</button>
   <div id="message" aria-live="polite"></div>
   <div class="auth-switch"><span id="switchText">Create an account</span></div>
@@ -375,27 +368,7 @@ import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
 const SUPABASE_URL="https://lntvyexkbxlfimlhjpvg.supabase.co";
 const SUPABASE_KEY="sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv";
 const VAPID_PUBLIC_KEY="BNm3yqEiPXuWbhM7rJiaseZ0CmOR8oDlnfwMqXurKFhR_VSALZO8ouKIkTVfNCqVP8evIMZq8GMQZ-mjYzWFU9s";
-const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);// AURA GUEST MODE
-$("guestButton")?.addEventListener("click", async () => {
-  const button = $("guestButton");
-  button.disabled = true;
-  button.textContent = "Please wait...";
-
-  try {
-    const { data, error } = await supabase.auth.signInAnonymously();
-
-    if (error) throw error;
-
-    if (data.user) {
-      await startApp(data.user);
-    }
-  } catch (error) {
-    toast("Guest login failed: " + error.message);
-  } finally {
-    button.disabled = false;
-    button.textContent = "👀 Explore as Guest";
-  }
-});
+const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const FALLBACK_AVATAR="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
 
