@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,46 +6,25 @@
 <meta name="theme-color" content="#080710">
 <link rel="manifest" href="./manifest.json">
 <title>AURA — Your Aesthetic World</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-
+<link rel="preconnect" href="https://googleapis.com">
+<link rel="preconnect" href="https://gstatic.com" crossorigin>
+<link href="https://googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{
---bg:#080710;--card:#100e1c;--card2:#171326;--text:#f7f3ff;
---muted:#9189a8;--pink:#d69cff;--purple:#9b5cff;--line:#282039;
---accent:#a855f7;--gradient:linear-gradient(135deg,#792cff,#b44cff 55%,#e0aaff);
---shadow:0 12px 40px rgba(116,45,255,.13)
-}
+:root{--bg:#080710;--card:#100e1c;--card2:#171326;--text:#f7f3ff;--muted:#9189a8;--pink:#d69cff;--purple:#9b5cff;--line:#282039;--accent:#a855f7;--gradient:linear-gradient(135deg,#792cff,#b44cff 55%,#e0aaff);--shadow:0 12px 40px rgba(116,45,255,.13)}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-background:radial-gradient(ellipse at 50% -15%,rgba(117,43,255,.17),transparent 45%),var(--bg);
-color:var(--text);font-family:'DM Sans',sans-serif;max-width:600px;margin:auto;
-min-height:100vh;padding-bottom:90px
-}
+html{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+body{background:radial-gradient(ellipse at 50% -15%,rgba(117,43,255,.17),transparent 45%),var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;max-width:600px;margin:auto;min-height:100vh;padding-bottom:90px;overscroll-behavior-y:contain}
 button,input,textarea,select{font:inherit}
 button{cursor:pointer;transition:.2s}
 button:active{transform:scale(.94)}
 img,video{max-width:100%}
 ::selection{background:#873cff;color:white}
-header{
-height:68px;display:flex;align-items:center;justify-content:space-between;
-padding:0 20px;position:sticky;top:0;z-index:50;
-background:rgba(8,7,16,.94);backdrop-filter:blur(24px);
-border-bottom:1px solid rgba(168,85,247,.2)
-}
-.logo{display:flex;align-items:center;gap:9px;font-family:'Playfair Display',serif;
-font-size:25px;font-weight:800;letter-spacing:4px;color:#d8baff}
+header{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:50;background:rgba(8,7,16,.94);backdrop-filter:blur(24px);border-bottom:1px solid rgba(168,85,247,.2)}
+.logo{display:flex;align-items:center;gap:9px;font-family:'Playfair Display',serif;font-size:25px;font-weight:800;letter-spacing:4px;color:#d8baff}
 .aura-mark{width:32px;height:32px;filter:drop-shadow(0 0 9px #a855f7)}
 .header-icons{display:flex;gap:9px}
-.header-icons button{
-border:1px solid var(--line);background:linear-gradient(145deg,#171326,#0d0b17);
-color:#d8baff;font-size:20px;width:40px;height:40px;border-radius:14px;position:relative
-}
-.badge{display:none;position:absolute;top:-5px;right:-7px;min-width:18px;height:18px;
-padding:0 5px;border-radius:20px;background:#a855f7;color:white;font-size:10px;
-font-weight:800;line-height:18px;text-align:center}
+.header-icons button{border:1px solid var(--line);background:linear-gradient(145deg,#171326,#0d0b17);color:#d8baff;font-size:20px;width:40px;height:40px;border-radius:14px;position:relative}
+.badge{display:none;position:absolute;top:-5px;right:-7px;min-width:18px;height:18px;padding:0 5px;border-radius:20px;background:#a855f7;color:white;font-size:10px;font-weight:800;line-height:18px;text-align:center}
 .badge.show{display:inline-block}
 .page{display:none;padding:20px;animation:pageIn .3s ease}
 .page.active{display:block}
@@ -56,15 +34,11 @@ font-weight:800;line-height:18px;text-align:center}
 .stories{display:flex;gap:17px;overflow-x:auto;padding:12px 0 22px;scrollbar-width:none}
 .stories::-webkit-scrollbar{display:none}
 .story{min-width:66px;text-align:center;font-size:11px;cursor:pointer;color:#d7c9ed}
-.story img{width:64px;height:64px;border-radius:50%;object-fit:cover;padding:3px;
-border:2px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--gradient) border-box;
-box-shadow:0 0 17px rgba(155,92,255,.3)}
+.story img{width:64px;height:64px;border-radius:50%;object-fit:cover;padding:3px;border:2px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--gradient) border-box;box-shadow:0 0 17px rgba(155,92,255,.3)}
 .story span{display:block;margin-top:6px;max-width:66px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.post{background:linear-gradient(145deg,#141021,#0e0c18);border:1px solid #2b2040;
-border-radius:22px;overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow)}
+.post{background:linear-gradient(145deg,#141021,#0e0c18);border:1px solid #2b2040;border-radius:22px;overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow);contain:layout style}
 .post-user{display:flex;align-items:center;gap:11px;padding:14px}
-.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#211a30;
-border:2px solid #a855f7;box-shadow:0 0 12px rgba(168,85,247,.25)}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#211a30;border:2px solid #a855f7;box-shadow:0 0 12px rgba(168,85,247,.25)}
 .user-info{flex:1;min-width:0}
 .user-info strong{font-size:13px;font-weight:800;cursor:pointer}
 .user-info small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
@@ -73,95 +47,72 @@ border:2px solid #a855f7;box-shadow:0 0 12px rgba(168,85,247,.25)}
 .more-btn{border:0;background:none;color:#d7c9ed;font-size:23px;padding:3px 7px}
 .post-image{width:100%;max-height:560px;min-height:180px;object-fit:cover;display:block;background:#151020}
 .post-actions{display:flex;align-items:center;gap:16px;padding:13px 14px 9px}
-.action{border:0;background:none;font-size:25px;color:#d9c8f2;line-height:1}
+.action{border:0;background:none;font-size:25px;color:#d9c8f2;line-height:1;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .action.liked{color:#e879ff}.action.saved{color:#a985ff}
 .like-count{font-size:12px;color:var(--muted);margin-left:auto}
 .caption{padding:0 14px 13px;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
 .comment-list{padding:0 14px 10px;font-size:12px}
 .comment-list p{margin:6px 0;overflow-wrap:anywhere}
 .comment-form{display:flex;gap:7px;padding:0 14px 15px}
-.comment-form input{flex:1;min-width:0;border:1px solid var(--line);border-radius:22px;
-padding:10px 14px;background:#0b0913;color:var(--text);outline:none}
+.comment-form input{flex:1;min-width:0;border:1px solid var(--line);border-radius:22px;padding:10px 14px;background:#0b0913;color:var(--text);outline:none}
 .comment-form button{border:0;background:none;color:#c18aff;font-weight:800}
-.search,.field{width:100%;padding:14px 16px;border-radius:15px;border:1px solid var(--line);
-background:var(--card);color:var(--text);font-size:14px;outline:none;margin:10px 0}
+.search,.field{width:100%;padding:14px 16px;border-radius:15px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:14px;outline:none;margin:10px 0}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .grid img,.grid video{width:100%;height:210px;object-fit:cover;border-radius:15px;background:#151020;border:1px solid #282039;cursor:pointer}
 .profile-top{text-align:center;padding:22px 0}
-.profile-pic{width:112px;height:112px;border-radius:50%;object-fit:cover;padding:4px;
-border:3px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--gradient) border-box;
-box-shadow:0 0 28px rgba(155,92,255,.35)}
+.profile-pic{width:112px;height:112px;border-radius:50%;object-fit:cover;padding:4px;border:3px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--gradient) border-box;box-shadow:0 0 28px rgba(155,92,255,.35)}
 .profile-name{font-size:23px;font-weight:800;margin-top:13px}
 .profile-bio{color:var(--muted);font-size:13px;margin:7px}
 .stats{display:flex;justify-content:center;gap:42px;margin:25px}
 .stats strong{display:block;font-size:21px;color:#e5caff}
 .stats small{color:var(--muted);font-size:11px}
-.edit,.primary{background:var(--gradient);color:white;border:0;border-radius:14px;
-padding:12px 20px;font-weight:800;margin:5px;box-shadow:0 0 18px rgba(155,92,255,.22)}
+.edit,.primary{background:var(--gradient);color:white;border:0;border-radius:14px;padding:12px 20px;font-weight:800;margin:5px;box-shadow:0 0 18px rgba(155,92,255,.22)}
 .secondary{background:#211a30;color:#e1caff;border:1px solid #493267;border-radius:13px;padding:11px 16px;font-weight:700;margin:5px}
 .danger{background:#391927;color:#ffb5cb;border:1px solid #7b3450;border-radius:13px;padding:10px 14px;font-weight:700}
-.bottom{position:fixed;bottom:0;left:0;right:0;max-width:600px;margin:auto;height:76px;
-background:rgba(10,8,18,.96);backdrop-filter:blur(24px);border-top:1px solid rgba(168,85,247,.22);
-display:flex;justify-content:space-around;align-items:center;z-index:60;padding-bottom:env(safe-area-inset-bottom)}
+.bottom{position:fixed;bottom:0;left:0;right:0;max-width:600px;margin:auto;height:76px;background:rgba(10,8,18,.96);backdrop-filter:blur(24px);border-top:1px solid rgba(168,85,247,.22);display:flex;justify-content:space-around;align-items:center;z-index:60;padding-bottom:env(safe-area-inset-bottom)}
 .nav{border:0;background:none;font-size:25px;color:#777087;position:relative;width:48px;height:48px;border-radius:15px}
 .nav.active{color:#d1a4ff;background:rgba(155,92,255,.15);transform:translateY(-3px);text-shadow:0 0 12px #a855f7}
-.nav.active:after{content:"";position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
-width:5px;height:5px;border-radius:50%;background:#bb79ff;box-shadow:0 0 10px #a855ff}
-.create-box{background:linear-gradient(145deg,#141021,#0e0c18);border:1px solid #2b2040;
-padding:27px 18px;text-align:center;border-radius:23px;margin-top:20px;box-shadow:var(--shadow)}
-.create-box textarea{width:100%;padding:14px;border:1px solid var(--line);border-radius:15px;
-margin-top:15px;background:#0b0913;color:var(--text);resize:vertical;min-height:95px;outline:none}
+.nav.active:after{content:"";position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:#bb79ff;box-shadow:0 0 10px #a855ff}
+.create-box{background:linear-gradient(145deg,#141021,#0e0c18);border:1px solid #2b2040;padding:27px 18px;text-align:center;border-radius:23px;margin-top:20px;box-shadow:var(--shadow)}
+.create-box textarea{width:100%;padding:14px;border:1px solid var(--line);border-radius:15px;margin-top:15px;background:#0b0913;color:var(--text);resize:vertical;min-height:95px;outline:none}
 .create-box input[type=file]{display:none}
 .empty{text-align:center;padding:42px 10px;color:var(--muted)}
 .empty h3{color:var(--text);margin-bottom:7px}
 .hidden{display:none!important}
-#authScreen{position:fixed;inset:0;
-background:radial-gradient(ellipse at 50% 0%,rgba(130,50,255,.2),transparent 55%),#080710;
-z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
-.auth-card{width:100%;max-width:390px;background:linear-gradient(145deg,#171326,#0d0b17);
-padding:27px;border-radius:27px;border:1px solid #382454;box-shadow:0 20px 65px rgba(98,38,180,.2)}
+#authScreen{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(130,50,255,.2),transparent 55%),#080710;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
+.auth-card{width:100%;max-width:390px;background:linear-gradient(145deg,#171326,#0d0b17);padding:27px;border-radius:27px;border:1px solid #382454;box-shadow:0 20px 65px rgba(98,38,180,.2)}
 .auth-brand{display:flex;flex-direction:column;align-items:center;margin-bottom:18px}
 .auth-mark{width:76px;height:76px;filter:drop-shadow(0 0 17px #a855ff);margin-bottom:8px}
-.auth-logo{font-family:'Playfair Display',serif;font-size:34px;font-weight:800;letter-spacing:7px;
-background:var(--gradient);background-clip:text;-webkit-background-clip:text;color:transparent}
+.auth-logo{font-family:'Playfair Display',serif;font-size:34px;font-weight:800;letter-spacing:7px;background:var(--gradient);background-clip:text;-webkit-background-clip:text;color:transparent}
 .auth-card h2{text-align:center;font-family:'Playfair Display',serif;margin:10px}
 .auth-card p{text-align:center;color:var(--muted);font-size:13px;margin-bottom:15px}
-.auth-card input{width:100%;padding:13px;border:1px solid var(--line);border-radius:13px;
-margin:6px 0;background:#0b0913;color:var(--text);outline:none}
+.auth-card input{width:100%;padding:13px;border:1px solid var(--line);border-radius:13px;margin:6px 0;background:#0b0913;color:var(--text);outline:none}
 .auth-card button{width:100%;margin-top:9px}
 .auth-switch{text-align:center;margin-top:16px;font-size:13px;color:var(--muted)}
 .auth-switch span{color:#c18aff;font-weight:800;cursor:pointer}
 #message{font-size:12px;color:#d3a4ff;margin-top:12px;text-align:center;line-height:1.5}
-.toast{position:fixed;left:50%;bottom:91px;transform:translateX(-50%);background:#211632;
-border:1px solid #7442a9;color:white;padding:12px 18px;border-radius:24px;font-size:12px;
-z-index:200;max-width:90%;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.4)}
+.toast{position:fixed;left:50%;bottom:91px;transform:translateX(-50%);background:#211632;border:1px solid #7442a9;color:white;padding:12px 18px;border-radius:24px;font-size:12px;z-index:200;max-width:90%;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.4)}
 .chat-layout{display:grid;gap:12px}
-.chat-row{display:flex;align-items:center;gap:11px;padding:13px;background:var(--card);
-border:1px solid var(--line);border-radius:17px;margin:8px 0;text-align:left;width:100%;
-color:var(--text);transition:.2s}
+.chat-row{display:flex;align-items:center;gap:11px;padding:13px;background:var(--card);border:1px solid var(--line);border-radius:17px;margin:8px 0;text-align:left;width:100%;color:var(--text);transition:.2s}
 .chat-row:hover{border-color:#7043a5;box-shadow:0 0 15px rgba(155,92,255,.12)}
 .chat-row img{width:45px;height:45px;border-radius:50%;object-fit:cover;border:2px solid #a855ff}
 .chat-row span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
 .chat-panel{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
 .chat-head{padding:13px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
 .chat-head button{border:0;background:none;color:var(--text);font-size:23px}
-.chat-messages{height:55vh;min-height:280px;max-height:560px;overflow:auto;padding:14px;
-display:flex;flex-direction:column;gap:10px}
-.bubble{max-width:82%;padding:11px 13px;border-radius:17px 17px 17px 5px;
-background:#282039;align-self:flex-start;overflow-wrap:anywhere;font-size:13px;color:#f7f3ff}
+.chat-messages{height:55vh;min-height:280px;max-height:560px;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.bubble{max-width:82%;padding:11px 13px;border-radius:17px 17px 17px 5px;background:#282039;align-self:flex-start;overflow-wrap:anywhere;font-size:13px;color:#f7f3ff}
 .bubble.mine{background:linear-gradient(135deg,#633a91,#874bc0);align-self:flex-end;color:white;border-radius:17px 17px 5px 17px}
 .bubble small{display:block;font-size:10px;opacity:.7;margin-top:5px}
 .bubble img,.bubble video{max-width:100%;border-radius:10px;display:block;margin-top:7px}
 .chat-compose{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line)}
-.chat-compose input[type=text]{min-width:0;flex:1;border:1px solid var(--line);border-radius:22px;
-padding:11px;background:#0b0913;color:var(--text);outline:none}
+.chat-compose input[type=text]{min-width:0;flex:1;border:1px solid var(--line);border-radius:22px;padding:11px;background:#0b0913;color:var(--text);outline:none}
 .chat-compose button{border:0;border-radius:22px;padding:0 15px;background:var(--gradient);color:white;font-weight:800}
 .chat-tools{display:flex;gap:8px;padding:0 10px 10px}
 .chat-tools button{border:0;background:none;color:#c18aff}
 .chat-back{display:flex;align-items:center;gap:10px;margin-bottom:15px}
 .chat-back button{border:1px solid var(--line);background:var(--card);color:#d8baff;border-radius:12px;padding:9px 15px}
-.settings-row,.activity-row{display:flex;align-items:center;gap:13px;padding:15px;
-background:var(--card);border:1px solid var(--line);border-radius:15px;margin:10px 0}
+.settings-row,.activity-row{display:flex;align-items:center;gap:13px;padding:15px;background:var(--card);border:1px solid var(--line);border-radius:15px;margin:10px 0}
 .settings-row button{margin-left:auto}
 .settings-row strong,.activity-row strong{font-size:13px}
 .settings-row small,.activity-row small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
@@ -179,7 +130,6 @@ background:var(--card);border:1px solid var(--line);border-radius:15px;margin:10
 .story-media{width:100%;height:100%;object-fit:contain;background:#050408}
 .story-tap{position:absolute;top:80px;bottom:0;width:35%;z-index:4}
 .story-tap.prev{left:0}.story-tap.next{right:0}
-.story-close{position:absolute;right:12px;top:68px;z-index:8;background:#171020aa;color:white;border:0;border-radius:50%;width:35px;height:35px}
 .viewer-delete{position:absolute;bottom:15px;right:15px;z-index:8}
 .profile-story{display:flex;justify-content:center;margin:12px}
 .profile-story .story{min-width:auto}
@@ -187,50 +137,30 @@ background:var(--card);border:1px solid var(--line);border-radius:15px;margin:10
 body.dark{--bg:#080710}
 @media(min-width:601px){body{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
 @media(max-width:380px){.page{padding:15px}.heading{font-size:27px}.stats{gap:27px}.post-actions{gap:12px}}
-
-/* AURA PREMIUM SEARCH ANIMATION */
-#search{
-  transition:all .35s ease;
-  border:1px solid rgba(168,121,255,.2);
-}
-#search:focus{
-  border-color:#a879ff;
-  box-shadow:0 0 0 4px rgba(168,121,255,.13),
-             0 0 22px rgba(168,121,255,.18);
-  transform:scale(1.015);
-}
-#gallery{
-  animation:auraSearchOpen .45s ease;
-}
-#gallery > *{
-  animation:auraSearchItem .4s ease both;
-}
-#gallery > *:nth-child(2){animation-delay:.04s}
-#gallery > *:nth-child(3){animation-delay:.08s}
-#gallery > *:nth-child(4){animation-delay:.12s}
-#gallery > *:nth-child(5){animation-delay:.16s}
-#gallery > *:nth-child(6){animation-delay:.20s}
-@keyframes auraSearchOpen{
-  from{opacity:0;transform:translateY(12px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@keyframes auraSearchItem{
-  from{opacity:0;transform:translateY(14px) scale(.97)}
-  to{opacity:1;transform:translateY(0) scale(1)}
-}
+#search{transition:all .35s ease;border:1px solid rgba(168,121,255,.2)}
+#search:focus{border-color:#a879ff;box-shadow:0 0 0 4px rgba(168,121,255,.13),0 0 22px rgba(168,121,255,.18);transform:scale(1.015)}
+.glass-icon{width:44px!important;height:44px!important;border-radius:16px!important;border:1px solid rgba(255,255,255,.19)!important;background:linear-gradient(145deg,rgba(255,255,255,.19),rgba(255,255,255,.025)),rgba(105,75,150,.13)!important;backdrop-filter:blur(22px) saturate(180%);box-shadow:inset 0 1px 1px rgba(255,255,255,.2),0 5px 20px rgba(135,70,255,.17);display:grid;place-items:center;color:#ead8ff!important}
+.glass-icon svg{width:23px;height:23px;filter:drop-shadow(0 0 5px #bd8cff)}
+.post-actions .action{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;padding:9px;border-radius:50%}
+.post-actions .action svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.post-actions .action svg.filled{fill:currentColor}
+.post-actions .action.liked{color:#ff477e}
+.post-actions .action.saved{color:#b69aff}
+.aura-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.67);backdrop-filter:blur(9px);z-index:300;display:none;align-items:flex-end;justify-content:center;padding:12px}
+.aura-sheet-overlay.show{display:flex}
+.aura-sheet{width:100%;max-width:560px;background:linear-gradient(145deg,#211832,#100d1b);border:1px solid rgba(210,170,255,.2);border-radius:25px;padding:12px 12px calc(15px + env(safe-area-inset-bottom));box-shadow:0 15px 60px #0009}
+.sheet-handle{width:38px;height:4px;border-radius:8px;background:#75658b;margin:2px auto 16px}
+.sheet-title{text-align:center;font-size:14px;font-weight:800;color:#eadbff;margin-bottom:13px}
+.sheet-option{display:flex;align-items:center;gap:14px;width:100%;padding:15px;margin:5px 0;border:1px solid rgba(255,255,255,.055);border-radius:15px;background:rgba(255,255,255,.045);color:#f4eaff;font-size:14px;text-align:left}
+.sheet-option.danger-option{color:#ff9bb7}
+.sheet-cancel{width:100%;margin-top:9px;padding:14px;border:1px solid rgba(255,255,255,.1);border-radius:15px;background:#30233f;color:white;font-weight:800}
 </style>
 </head>
 <body>
-
 <div id="authScreen">
  <div class="auth-card">
   <div class="auth-brand">
-   <svg class="auth-mark" viewBox="0 0 100 100" fill="none">
-    <defs><linearGradient id="auraGradient" x1="10" y1="10" x2="90" y2="90"><stop stop-color="#792cff"/><stop offset=".55" stop-color="#b44cff"/><stop offset="1" stop-color="#e0aaff"/></linearGradient></defs>
-    <path d="M50 7L91 50 50 93 9 50 50 7Z" stroke="url(#auraGradient)" stroke-width="5"/>
-    <path d="M50 24L74 50 50 76 26 50 50 24Z" stroke="url(#auraGradient)" stroke-width="4"/>
-    <path d="M50 39L61 50 50 61 39 50 50 39Z" fill="url(#auraGradient)"/>
-   </svg>
+   <svg class="auth-mark" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="auraGradient" x1="10" y1="10" x2="90" y2="90"><stop stop-color="#792cff"/><stop offset=".55" stop-color="#b44cff"/><stop offset="1" stop-color="#e0aaff"/></linearGradient></defs><path d="M50 7L91 50 50 93 9 50 50 7Z" stroke="url(#auraGradient)" stroke-width="5"/><path d="M50 24L74 50 50 76 26 50 50 24Z" stroke="url(#auraGradient)" stroke-width="4"/><path d="M50 39L61 50 50 61 39 50 50 39Z" fill="url(#auraGradient)"/></svg>
    <div class="auth-logo">AURA</div>
   </div>
   <h2 id="authTitle">Welcome to AURA</h2>
@@ -240,15 +170,10 @@ body.dark{--bg:#080710}
   <input id="email" type="email" placeholder="Email address" autocomplete="email">
   <input id="phone" class="hidden" type="tel" placeholder="+8801XXXXXXXXX" autocomplete="tel">
   <input id="password" type="password" placeholder="Password (8+ characters)" autocomplete="current-password">
-  <div id="otpBox" class="hidden"><input id="otp" inputmode="numeric" maxlength="6" placeholder="6-digit verification code"><button class="primary" id="verifyOtpButton">Verify code</button></div>
-  
-<button type="button" class="primary" id="authButton">Login</button>
-
-<button type="button" class="secondary" id="guestButton" style="width:100%;margin-top:12px">
-  👀 Explore as Guest
-</button>
-
-  <button class="edit" id="forgotButton">Forgot password?</button>
+  <div id="otpBox" class="hidden"><input id="otp" inputmode="numeric" maxlength="6" placeholder="6-digit verification code"><button type="button" class="primary" id="verifyOtpButton">Verify code</button></div>
+  <button type="button" class="primary" id="authButton">Login</button>
+  <button type="button" class="secondary" id="guestButton" style="width:100%;margin-top:12px">👀 Explore as Guest</button>
+  <button type="button" class="edit" id="forgotButton">Forgot password?</button>
   <div id="message" aria-live="polite"></div>
   <div class="auth-switch"><span id="switchText">Create an account</span></div>
  </div>
@@ -256,30 +181,17 @@ body.dark{--bg:#080710}
 
 <header>
  <div class="logo">
-  <svg class="aura-mark" viewBox="0 0 100 100" fill="none">
-   <path d="M50 7L91 50 50 93 9 50 50 7Z" stroke="#a855ff" stroke-width="6"/>
-   <path d="M50 25L74 50 50 75 26 50 50 25Z" stroke="#c18aff" stroke-width="4"/>
-   <path d="M50 39L61 50 50 61 39 50 50 39Z" fill="#d8baff"/>
-  </svg><span>AURA</span>
+  <svg class="aura-mark" viewBox="0 0 100 100" fill="none"><path d="M50 7L91 50 50 93 9 50 50 7Z" stroke="#a855ff" stroke-width="6"/><path d="M50 25L74 50 50 75 26 50 50 25Z" stroke="#c18aff" stroke-width="4"/><path d="M50 39L61 50 50 61 39 50 50 39Z" fill="#d8baff"/></svg><span>AURA</span>
  </div>
  <div class="header-icons">
-  <button id="installButton" aria-label="Install AURA" title="Install AURA">↓</button>
-  <button id="themeButton" aria-label="Toggle dark mode">☾</button>
-  <button id="activityButton" aria-label="Activity">♧</button>
-  <button id="inboxButton" aria-label="Open messages">▤<span id="headerUnreadBadge" class="badge"></span></button>
+  <button type="button" id="themeButton" aria-label="Toggle dark mode">☾</button>
+  <button type="button" id="activityButton" class="glass-icon" aria-label="Activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 8.5c0 5-8 11-8 11s-8-6-8-11a4.5 4.5 0 0 1 8-2.8 4.5 4.5 0 0 1 8 2.8z"/><path d="M12 5v4M10 7h4"/></svg></button>
+  <button type="button" id="inboxButton" class="glass-icon" aria-label="Open messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 2h7A3.5 3.5 0 0 1 19 5.5v10a3.5 3.5 0 0 1-3.5 3.5H8.5A3.5 3.5 0 0 1 5 15.5z"/><path d="M8 9h8M8 13h5"/><path d="M8 19v3l4-3 4 3v-3"/></svg><span id="headerUnreadBadge" class="badge"></span></button>
  </div>
 </header>
 
-<section class="page active" id="home">
- <div class="heading">Your little world ✨</div><div class="sub">A place for beautiful things.</div>
- <div class="stories" id="stories"></div><div id="feed"></div>
-</section>
-
-<section class="page" id="explore">
- <div class="heading">Explore</div><div class="sub">Find your kind of beauty.</div>
- <input class="search" id="search" placeholder="Search posts by username or caption"><div class="grid" id="gallery"></div>
-</section>
-
+<section class="page active" id="home"><div class="heading">Your little world ✨</div><div class="sub">A place for beautiful things.</div><div class="stories" id="stories"></div><div id="feed"></div></section>
+<section class="page" id="explore"><div class="heading">Explore</div><div class="sub">Find your kind of beauty.</div><input class="search" id="search" placeholder="Search posts by username or caption"><div class="grid" id="gallery"></div></section>
 <section class="page" id="create">
  <div class="heading">Create something</div><div class="sub">Share your little universe.</div>
  <div class="create-box">
@@ -292,127 +204,80 @@ body.dark{--bg:#080710}
   <label class="primary" style="display:inline-block;cursor:pointer"><input type="file" accept="image/*,video/*" id="storyUpload">＋ Choose Story</label>
  </div>
 </section>
-
 <section class="page" id="inbox">
  <div class="heading">Messages</div><div class="sub">Your conversations on AURA.</div>
- <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 16px">
-  <button class="primary" id="enableNotifications" type="button">🔔 Enable Notifications</button>
-  <small id="notificationStatus" style="color:var(--muted)">Get alerts for new messages.</small>
- </div>
- <input class="search" id="peopleSearch" placeholder="Find a person by username">
- <div id="peopleResults"></div><div id="chatList" class="chat-layout"></div>
+ <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 16px"><button class="primary" id="enableNotifications" type="button">🔔 Enable Notifications</button><small id="notificationStatus" style="color:var(--muted)">Get alerts for new messages.</small></div>
+ <input class="search" id="peopleSearch" placeholder="Find a person by username"><div id="peopleResults"></div><div id="chatList" class="chat-layout"></div>
 </section>
-
 <section class="page" id="chat">
- <div class="chat-back"><button id="backChats">← Back to Inbox</button></div>
+ <div class="chat-back"><button type="button" id="backChats">← Back to Inbox</button></div>
  <div class="chat-panel">
-  <div class="chat-head">
-   <img id="chatAvatar" class="avatar" alt="">
-   <div style="min-width:0"><strong id="chatName">Chat</strong><div id="presenceLabel" style="font-size:11px;color:var(--muted)">Offline</div></div>
-  </div>
+  <div class="chat-head"><img id="chatAvatar" class="avatar" alt=""><div style="min-width:0"><strong id="chatName">Chat</strong><div id="presenceLabel" style="font-size:11px;color:var(--muted)">Offline</div></div></div>
   <div id="chatMessages" class="chat-messages"></div>
-  <div class="chat-tools">
-   <button id="emojiButton">😊 Emoji</button><button id="replyCancel" class="hidden">Cancel reply</button>
-   <span id="replyLabel" style="font-size:11px;color:var(--muted)"></span>
-  </div>
-  <form id="chatForm" class="chat-compose">
-   <input id="chatText" type="text" maxlength="2000" placeholder="Write a message..." autocomplete="off">
-   <label class="primary" style="margin:0;padding:9px 12px;cursor:pointer">＋<input id="chatImage" type="file" accept="image/*,video/*" hidden></label>
-   <button type="submit">Send</button>
-  </form>
+  <div class="chat-tools"><button type="button" id="emojiButton">😊 Emoji</button><button type="button" id="replyCancel" class="hidden">Cancel reply</button><span id="replyLabel" style="font-size:11px;color:var(--muted)"></span></div>
+  <form id="chatForm" class="chat-compose"><input id="chatText" type="text" maxlength="2000" placeholder="Write a message..." autocomplete="off"><label class="primary" style="margin:0;padding:9px 12px;cursor:pointer">＋<input id="chatImage" type="file" accept="image/*,video/*" hidden></label><button type="submit">Send</button></form>
  </div>
 </section>
-
 <section class="page" id="profile">
  <div class="profile-top">
-  <img class="profile-pic" id="myPic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" alt="Profile picture">
+  <img class="profile-pic" id="myPic" src="https://unsplash.com" alt="Profile picture">
   <div class="profile-name" id="myName">AURA User</div><p class="profile-bio" id="myBio">Living in my own little world 🌷</p>
-  <div class="stats">
-   <div><strong id="postCount">0</strong><small>Posts</small></div>
-   <div><strong id="followerCount">0</strong><small>Followers</small></div>
-   <div><strong id="followingCount">0</strong><small>Following</small></div>
-  </div>
+  <div class="stats"><div><strong id="postCount">0</strong><small>Posts</small></div><div><strong id="followerCount">0</strong><small>Followers</small></div><div><strong id="followingCount">0</strong><small>Following</small></div></div>
   <div class="profile-story" id="myStoryShortcut"></div>
-  <button class="edit" id="editProfileButton">Edit Profile</button>
-  <button class="secondary" id="settingsButton">⚙ Settings</button>
-  <button class="edit" id="logoutButton">Log out</button>
+  <button type="button" class="edit" id="editProfileButton">Edit Profile</button>
+  <button type="button" class="secondary" id="settingsButton">⚙ Settings</button>
  </div>
  <div class="grid" id="myPosts"></div>
 </section>
-
 <section class="page" id="viewProfile">
- <div class="chat-back"><button id="backProfile">← Back</button></div>
+ <div class="chat-back"><button type="button" id="backProfile">← Back</button></div>
  <div class="profile-top">
-  <img class="profile-pic" id="viewPic" alt="">
-  <div class="profile-name" id="viewName"></div><p class="profile-bio" id="viewBio"></p>
-  <div class="stats">
-   <div><strong id="viewPostCount">0</strong><small>Posts</small></div>
-   <div><strong id="viewFollowerCount">0</strong><small>Followers</small></div>
-   <div><strong id="viewFollowingCount">0</strong><small>Following</small></div>
-  </div>
+  <img class="profile-pic" id="viewPic" alt=""><div class="profile-name" id="viewName"></div><p class="profile-bio" id="viewBio"></p>
+  <div class="stats"><div><strong id="viewPostCount">0</strong><small>Posts</small></div><div><strong id="viewFollowerCount">0</strong><small>Followers</small></div><div><strong id="viewFollowingCount">0</strong><small>Following</small></div></div>
   <div class="profile-story" id="viewStoryShortcut"></div>
-  <button class="follow" id="viewFollowButton">Follow</button>
-  <button class="secondary" id="viewMessageButton">Message</button>
-  <button class="secondary" id="viewMoreButton">⋯ Options</button>
+  <button type="button" class="follow" id="viewFollowButton">Follow</button>
+  <button type="button" class="secondary" id="viewMessageButton">Message</button>
+  <button type="button" class="secondary" id="viewMoreButton">⋯ Options</button>
  </div>
  <div class="grid" id="viewPosts"></div>
 </section>
-
 <section class="page" id="settings">
- <div class="chat-back"><button id="backSettings">← Profile</button></div>
+ <div class="chat-back"><button type="button" id="backSettings">← Profile</button></div>
  <div class="heading">Settings</div><div class="sub">Manage your AURA account.</div>
- <div class="settings-row"><div>🔐</div><div><strong>Change Password</strong><small>Update your account password.</small></div><button class="secondary" id="settingsPassword">Change</button></div>
- <div class="settings-row"><div>📲</div><div><strong>Install AURA</strong><small>Add AURA to your home screen.</small></div><button class="secondary" id="settingsInstall">Install</button></div>
- <div class="settings-row"><div>🔔</div><div><strong>Notifications</strong><small>Manage message alerts.</small></div><button class="secondary" id="settingsNotify">Open</button></div>
- <div class="settings-row"><div>🚫</div><div><strong>Blocked accounts</strong><small>Review accounts you blocked.</small></div><button class="secondary" id="blockedAccountsButton">View</button></div>
- <div class="settings-row"><div>🌙</div><div><strong>Appearance</strong><small>Switch the app theme.</small></div><button class="secondary" id="settingsTheme">Toggle</button></div>
+ <div class="settings-row"><div>🔐</div><div><strong>Change Password</strong><small>Update your account password.</small></div><button type="button" class="secondary" id="settingsPassword">Change</button></div>
+ <div class="settings-row"><div>📲</div><div><strong>Install AURA</strong><small>Add AURA to your home screen.</small></div><button type="button" class="secondary" id="settingsInstall">Install</button></div>
+ <div class="settings-row"><div>🔔</div><div><strong>Notifications</strong><small>Manage message alerts.</small></div><button type="button" class="secondary" id="settingsNotify">Open</button></div>
+ <div class="settings-row"><div>🚫</div><div><strong>Blocked accounts</strong><small>Review accounts you blocked.</small></div><button type="button" class="secondary" id="blockedAccountsButton">View</button></div>
+ <div class="settings-row"><div>🌙</div><div><strong>Appearance</strong><small>Switch the app theme.</small></div><button type="button" class="secondary" id="settingsTheme">Toggle</button></div>
+ <div class="settings-row"><div>🚪</div><div><strong>Log Out</strong><small>Sign out of your AURA account.</small></div><button type="button" class="danger" id="logoutButton">Log Out</button></div>
  <p class="install-note">AURA settings. Some options depend on your browser and Supabase permissions.</p>
 </section>
-
-<section class="page" id="activity">
- <div class="chat-back"><button id="backActivity">← Home</button></div>
- <div class="heading">Activity</div><div class="sub">Recent activity around your posts and profile.</div>
- <div id="activityList"></div>
-</section>
-
-<section class="page" id="blocked">
- <div class="chat-back"><button id="backBlocked">← Settings</button></div>
- <div class="heading">Blocked accounts</div><div class="sub">Accounts you have blocked.</div>
- <div id="blockedList"></div>
-</section>
+<section class="page" id="activity"><div class="chat-back"><button type="button" id="backActivity">← Home</button></div><div class="heading">Activity</div><div class="sub">Recent activity around your posts and profile.</div><div id="activityList"></div></section>
+<section class="page" id="blocked"><div class="chat-back"><button type="button" id="backBlocked">← Settings</button></div><div class="heading">Blocked accounts</div><div class="sub">Accounts you have blocked.</div><div id="blockedList"></div></section>
 
 <nav class="bottom">
- <button class="nav active" data-page="home" aria-label="Home">⌂</button>
- <button class="nav" data-page="explore" aria-label="Explore">⌕</button>
- <button class="nav" data-page="create" aria-label="Create">⊕</button>
- <button class="nav" data-page="inbox" aria-label="Inbox">▤<span id="navUnreadBadge" class="badge"></span></button>
- <button class="nav" data-page="profile" aria-label="Profile">◉</button>
+ <button type="button" class="nav active" data-page="home" aria-label="Home">⌂</button>
+ <button type="button" class="nav" data-page="explore" aria-label="Explore">⌕</button>
+ <button type="button" class="nav" data-page="create" aria-label="Create">⊕</button>
+ <button type="button" class="nav" data-page="inbox" aria-label="Inbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="width:25px;height:25px"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 2h7A3.5 3.5 0 0 1 19 5.5v10a3.5 3.5 0 0 1-3.5 3.5H8.5A3.5 3.5 0 0 1 5 15.5z"/><path d="M8 9h8M8 13h5"/><path d="M8 19v3l4-3 4 3v-3"/></svg><span id="navUnreadBadge" class="badge"></span></button>
+ <button type="button" class="nav" data-page="profile" aria-label="Profile">◉</button>
 </nav>
 
-<div class="modal" id="storyModal">
- <div class="story-viewer">
-  <div class="story-progress" id="storyProgress"></div>
-  <div class="story-view-head"><img id="storyAvatar" alt=""><strong id="storyUsername"></strong><button id="storyClose">✕</button></div>
-  <div id="storyMediaHolder" style="width:100%;height:100%"></div>
-  <div class="story-tap prev" id="storyPrev"></div><div class="story-tap next" id="storyNext"></div>
-  <button class="danger viewer-delete hidden" id="deleteStoryButton">Delete Story</button>
- </div>
-</div>
-
+<div class="modal" id="storyModal"><div class="story-viewer"><div class="story-progress" id="storyProgress"></div><div class="story-view-head"><img id="storyAvatar" alt=""><strong id="storyUsername"></strong><button type="button" id="storyClose">✕</button></div><div id="storyMediaHolder" style="width:100%;height:100%"></div><div class="story-tap prev" id="storyPrev"></div><div class="story-tap next" id="storyNext"></div><button type="button" class="danger viewer-delete hidden" id="deleteStoryButton">Delete Story</button></div></div>
+<div class="aura-sheet-overlay" id="auraActionSheet"><div class="aura-sheet"><div class="sheet-handle"></div><div class="sheet-title">AURA OPTIONS</div><div id="auraSheetOptions"></div><button type="button" class="sheet-cancel" id="auraSheetCancel">Cancel</button></div></div>
 <script type="module">
-import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import {createClient} from "https://jsdelivr.net";
 
-const SUPABASE_URL="https://lntvyexkbxlfimlhjpvg.supabase.co";
+const SUPABASE_URL="https://supabase.co";
 const SUPABASE_KEY="sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv";
 const VAPID_PUBLIC_KEY="BNm3yqEiPXuWbhM7rJiaseZ0CmOR8oDlnfwMqXurKFhR_VSALZO8ouKIkTVfNCqVP8evIMZq8GMQZ-mjYzWFU9s";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = id => document.getElementById(id);
-const FALLBACK_AVATAR = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
+const FALLBACK_AVATAR = "https://unsplash.com";
 
-
-let currentUser=null,currentProfile=null,signupMode=false,postsCache=[],activeConversation=null,activePerson=null,chatChannel=null,presenceChannel=null,replyTo=null,globalMessageChannel=null,appStartPromise=null,startedUserId=null,unreadCount=0;
-let followingIds=new Set(),blockedIds=new Set(),storyGroups=[],activeStoryGroup=[],activeStoryIndex=0,storyTimer=null,storyVideo=null,storyStartedAt=0,installPrompt=null,chatRefreshTimer=null,chatLoading=false;
+let currentUser=null,currentProfile=null,signupMode=false,postsCache=[],activeConversation=null,activePerson=null,chatChannel=null,presenceChannel=null,replyTo=null,globalMessageChannel=null,appStartPromise=null,startedUserId=null,unreadCount=0,isGuest=false;
+let followingIds=new Set(),blockedIds=new Set(),storyGroups=[],activeStoryGroup=[],activeStoryIndex=0,storyTimer=null,storyVideo=null,installPrompt=null,chatRefreshTimer=null,chatLoading=false;
 
 const showMessage=m=>$("message").textContent=m;
 function toast(m){
@@ -423,129 +288,81 @@ function toast(m){
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function validPassword(p){return p.length>=8&&/[A-Z]/.test(p)&&/[a-z]/.test(p)&&/[0-9]/.test(p)&&/[^A-Za-z0-9]/.test(p);}
 function mediaIsVideo(url){return /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url||"")||String(url||"").includes("story-video-")||String(url||"").includes("message-video-");}
+
+function requireAuth(){
+ if(isGuest||!currentUser){toast("Please login or create an account to use this feature ✨");$("authScreen").classList.remove("hidden");return false;}
+ return true;
+}
+
 function showPage(name,button){
+ if(name!=="chat")$("chatMessages")?.querySelectorAll("video").forEach(v=>v.pause());
  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===name));
  document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n===button));
  window.scrollTo({top:0,behavior:"smooth"});
 }
-function profilePage(){showPage("profile",document.querySelector('[data-page="profile"]'));}
-function authMethodChanged(){
+function profilePage(){if(!requireAuth())return;showPage("profile",document.querySelector('[data-page="profile"]'));}
+
+$("authMethod").addEventListener("change",()=>{
  const phone=$("authMethod").value==="phone";
  $("email").classList.toggle("hidden",phone);$("phone").classList.toggle("hidden",!phone);
  $("forgotButton").textContent=phone?"Phone password reset requires SMS setup":"Forgot password?";
-}
-$("authMethod").addEventListener("change",authMethodChanged);
-
-function setAuthMode(signup){
- signupMode=signup;$("authTitle").textContent=signup?"Create your account":"Welcome to AURA";
- $("authSubtitle").textContent=signup?"Join your little world ✨":"Your little world starts here ✨";
- $("authButton").textContent=signup?"Create Account":"Login";
- $("signupName").classList.toggle("hidden",!signup);
- $("switchText").textContent=signup?"Already have an account? Login":"Create an account";
- $("password").autocomplete=signup?"new-password":"current-password";showMessage("");
-}
-$("switchText").addEventListener("click",()=>setAuthMode(!signupMode));
-function selectedIdentity(){return $("authMethod").value==="phone"?{phone:$("phone").value.trim()}:{email:$("email").value.trim()};}
-
-
-$("authButton").addEventListener("click",async(event)=>{
- event.preventDefault();
-
- const button=$("authButton");
- if(button.disabled)return;
-
- const identity=selectedIdentity();
- const password=$("password").value;
- const method=$("authMethod").value;
-
- if(!(identity.email||identity.phone)||!password){
-  showMessage("Enter your login details.");
-  return;
- }
-
- button.disabled=true;
- button.textContent="Please wait...";
- showMessage("Connecting to AURA...");
-
- try{
-  if(signupMode){
-   const username=$("username").value.trim().toLowerCase().replace(/[^a-z0-9_.]/g,"");
-   const fullName=$("fullName").value.trim();
-
-   if(!username||!fullName)throw new Error("Enter your name and username.");
-   if(!validPassword(password))throw new Error("Password needs 8+ characters, uppercase, lowercase, a number and a symbol.");
-
-   const options={data:{username,full_name:fullName}};
-
-   if(method==="email"){
-    const {data,error}=await supabase.auth.signUp({
-     email:identity.email,
-     password,
-     options
-    });
-    if(error)throw error;
-
-    if(data.session&&data.user){
-     await saveProfile(data.user,username,fullName);
-     await startApp(data.user);
-    }else{
-     showMessage("Check your email for the confirmation message, then log in.");
-    }
-   }else{
-    const {error}=await supabase.auth.signUp({
-     phone:identity.phone,
-     password,
-     options
-    });
-    if(error)throw error;
-
-    sessionStorage.setItem("aura_pending_phone",identity.phone);
-    sessionStorage.setItem("aura_pending_name",fullName);
-    sessionStorage.setItem("aura_pending_username",username);
-
-    $("otpBox").classList.remove("hidden");
-    showMessage("Enter the SMS verification code.");
-   }
-  }else{
-   const {data,error}=await supabase.auth.signInWithPassword(
-    method==="email"
-     ?{email:identity.email,password}
-     :{phone:identity.phone,password}
-   );
-
-   if(error)throw error;
-   if(!data.user)throw new Error("Login failed. Please try again.");
-
-   await startApp(data.user);
-  }
- }catch(error){
-  console.error("AURA LOGIN ERROR:",error);
-  showMessage(error.message||"Login failed. Please try again.");
- }finally{
-  button.disabled=false;
-  button.textContent=signupMode?"Create Account":"Login";
- }
+});
+$("switchText").addEventListener("click",()=>{
+ signupMode=!signupMode;$("authTitle").textContent=signupMode?"Create your account":"Welcome to AURA";
+ $("authSubtitle").textContent=signupMode?"Join your little world ✨":"Your little world starts here ✨";
+ $("authButton").textContent=signupMode?"Create Account":"Login";
+ $("signupName").classList.toggle("hidden",!signupMode);
+ $("switchText").textContent=signupMode?"Already have an account? Login":"Create an account";
+ $("password").autocomplete=signupMode?"new-password":"current-password";showMessage("");
 });
 
+$("guestButton").addEventListener("click",async()=>{
+ isGuest=true;currentUser=null;$("authScreen").classList.add("hidden");
+ toast("Exploring AURA as Guest 👀");
+ await Promise.all([safeLoad("Feed",loadFeed),safeLoad("Stories",loadStories)]);
+});
 
+$("authButton").addEventListener("click",async(e)=>{
+ e.preventDefault();const btn=$("authButton");if(btn.disabled)return;
+ const method=$("authMethod").value,identity=method==="phone"?{phone:$("phone").value.trim()}:{email:$("email").value.trim()},password=$("password").value;
+ if(!(identity.email||identity.phone)||!password){showMessage("Enter your login details.");return;}
+ btn.disabled=true;btn.textContent="Please wait...";showMessage("Connecting to AURA...");
+ try{
+  if(signupMode){
+   const username=$("username").value.trim().toLowerCase().replace(/[^a-z0-9_.]/g,""),fullName=$("fullName").value.trim();
+   if(!username||!fullName)throw new Error("Enter your name and username.");
+   if(!validPassword(password))throw new Error("Password needs 8+ characters, uppercase, lowercase, a number and a symbol.");
+   const options={data:{username,full_name:fullName}};
+   if(method==="email"){
+    const {data,error}=await supabase.auth.signUp({email:identity.email,password,options});if(error)throw error;
+    if(data.session&&data.user){await saveProfile(data.user,username,fullName);await startApp(data.user);}
+    else showMessage("Check your email for the confirmation message, then log in.");
+   }else{
+    const {error}=await supabase.auth.signUp({phone:identity.phone,password,options});if(error)throw error;
+    sessionStorage.setItem("aura_pending_phone",identity.phone);sessionStorage.setItem("aura_pending_name",fullName);sessionStorage.setItem("aura_pending_username",username);
+    $("otpBox").classList.remove("hidden");showMessage("Enter the SMS verification code.");
+   }
+  }else{
+   const {data,error}=await supabase.auth.signInWithPassword(method==="email"?{email:identity.email,password}:{phone:identity.phone,password});
+   if(error)throw error;if(!data.user)throw new Error("Login failed. Please try again.");
+   await startApp(data.user);
+  }
+ }catch(err){showMessage(err.message||"Login failed.");}
+ finally{btn.disabled=false;btn.textContent=signupMode?"Create Account":"Login";}
+});
 $("verifyOtpButton").addEventListener("click",async()=>{
  const phone=sessionStorage.getItem("aura_pending_phone"),token=$("otp").value.trim();
- if(!phone||!/^\d{6}$/.test(token)){showMessage("Enter the 6-digit code.");return}
+ if(!phone||!/^\d{6}$/.test(token)){showMessage("Enter the 6-digit code.");return;}
  try{
   const {data,error}=await supabase.auth.verifyOtp({phone,token,type:"sms"});if(error)throw error;
-  if(data.user){
-   await saveProfile(data.user,sessionStorage.getItem("aura_pending_username"),sessionStorage.getItem("aura_pending_name"));
-   sessionStorage.removeItem("aura_pending_phone");await startApp(data.user);
-  }
+  if(data.user){await saveProfile(data.user,sessionStorage.getItem("aura_pending_username"),sessionStorage.getItem("aura_pending_name"));sessionStorage.removeItem("aura_pending_phone");await startApp(data.user);}
  }catch(e){showMessage(e.message);}
 });
 $("forgotButton").addEventListener("click",async()=>{
- if($("authMethod").value!=="email"){showMessage("Phone password recovery needs a configured SMS provider. Use email recovery for now.");return}
- const email=$("email").value.trim();if(!email){showMessage("Enter your email address first.");return}
- try{
-  const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.href});
-  if(error)throw error;showMessage("If the account exists, a password reset email has been requested.");
- }catch(e){showMessage(e.message);}
+ if($("authMethod").value!=="email"){showMessage("Phone password recovery needs SMS setup. Use email recovery.");return;}
+ const email=$("email").value.trim();if(!email){showMessage("Enter your email address first.");return;}
+ try{const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.href});if(error)throw error;showMessage("Password reset email requested.");}
+ catch(e){showMessage(e.message);}
 });
 
 async function saveProfile(user,username,fullName){
@@ -555,263 +372,148 @@ async function saveProfile(user,username,fullName){
 async function loadProfile(){
  const {data,error}=await supabase.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();if(error)throw error;
  if(!data){
-  const username=currentUser.user_metadata?.username||currentUser.email?.split("@")[0]||currentUser.phone?.slice(-8)||"aura_user";
-  const fullName=currentUser.user_metadata?.full_name||username;await saveProfile(currentUser,username,fullName);return loadProfile();
+  const username=currentUser.user_metadata?.username||currentUser.email?.split("@")[0]||"aura_user";
+  await saveProfile(currentUser,username,currentUser.user_metadata?.full_name||username);return loadProfile();
  }
  currentProfile=data;$("myName").textContent=data.full_name||data.username||"AURA User";
  $("myBio").textContent=data.bio||"Living in my own little world 🌷";$("myPic").src=data.avatar_url||FALLBACK_AVATAR;
 }
-async function safeLoad(label,fn){try{await fn()}catch(error){console.error(label+":",error);toast(label+" could not load. Check Supabase permissions.");}}
+async function safeLoad(label,fn){try{await fn();}catch(e){console.error(label,e);}}
 async function loadFollowing(){
+ if(!currentUser)return;
  const {data,error}=await supabase.from("follows").select("following_id").eq("follower_id",currentUser.id);
- if(error)throw error;followingIds=new Set((data||[]).map(x=>x.following_id));
+ if(!error)followingIds=new Set((data||[]).map(x=>x.following_id));
 }
 async function loadBlocked(){
+ if(!currentUser)return;
  const {data,error}=await supabase.from("user_blocks").select("blocked_id").eq("blocker_id",currentUser.id);
- if(error)throw error;blockedIds=new Set((data||[]).map(x=>x.blocked_id));
+ if(!error)blockedIds=new Set((data||[]).map(x=>x.blocked_id));
 }
 async function startApp(user){
  if(appStartPromise&&currentUser?.id===user.id)return appStartPromise;
- if(startedUserId===user.id&&currentUser?.id===user.id){$("authScreen").classList.add("hidden");return}
- currentUser=user;
+ if(startedUserId===user.id&&currentUser?.id===user.id){$("authScreen").classList.add("hidden");return;}
+ isGuest=false;currentUser=user;
  appStartPromise=(async()=>{
   $("authScreen").classList.add("hidden");
   await loadProfile();
-  await Promise.all([safeLoad("Following",loadFollowing),safeLoad("Blocked accounts",loadBlocked)]);
+  await Promise.all([safeLoad("Following",loadFollowing),safeLoad("Blocked",loadBlocked)]);
   if("serviceWorker"in navigator)registerAURASW();
-  await Promise.all([safeLoad("Feed",loadFeed),safeLoad("Stories",loadStories),safeLoad("Profile stats",loadMyStats)]);
+  await Promise.all([safeLoad("Feed",loadFeed),safeLoad("Stories",loadStories),safeLoad("Stats",loadMyStats)]);
   await refreshUnreadCount();subscribeGlobalMessages();updateNotificationStatus();
  })();
  try{await appStartPromise;startedUserId=user.id;}finally{appStartPromise=null;}
 }
+
 supabase.auth.onAuthStateChange((event,session)=>{
  if(session?.user){
   currentUser=session.user;
-  if(event==="SIGNED_IN"||event==="INITIAL_SESSION")setTimeout(()=>startApp(session.user).catch(e=>{
-   console.error(e);toast("App setup failed: "+e.message);$("authScreen").classList.remove("hidden");
-  }),0);
+  if(event==="SIGNED_IN"||event==="INITIAL_SESSION")setTimeout(()=>startApp(session.user).catch(e=>toast(e.message)),0);
  }else if(event==="SIGNED_OUT"){
   currentUser=null;currentProfile=null;startedUserId=null;appStartPromise=null;unreadCount=0;updateUnreadBadges();
   if(globalMessageChannel){supabase.removeChannel(globalMessageChannel);globalMessageChannel=null;}
-  $("authScreen").classList.remove("hidden");
+  if(!isGuest)$("authScreen").classList.remove("hidden");
  }
 });
 const {data:{session}}=await supabase.auth.getSession();
-if(session?.user){try{await startApp(session.user)}catch(e){console.error(e);showMessage(e.message);$("authScreen").classList.remove("hidden");}}
+if(session?.user){try{await startApp(session.user);}catch(e){$("authScreen").classList.remove("hidden");}}
 else $("authScreen").classList.remove("hidden");
 
-
-async function logout() {
-  const confirmed = confirm("Are you sure you want to log out?");
-  if (!confirmed) return;
-
-  const screen = document.createElement("div");
-  screen.id = "auraLogoutScreen";
-
-  screen.innerHTML = `
-    <div class="aura-logout-content">
-      <div class="aura-logout-logo">AURA</div>
-      <div class="aura-logout-spinner"></div>
-      <h2>See You Again ✨</h2>
-      <p>Signing you out securely...</p>
-    </div>
-  `;
-
-  document.body.appendChild(screen);
-
-  try {
-    if (chatChannel) await supabase.removeChannel(chatChannel);
-    if (presenceChannel) await supabase.removeChannel(presenceChannel);
-    if (globalMessageChannel) await supabase.removeChannel(globalMessageChannel);
-
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-
-    setTimeout(() => {
-      location.reload();
-    }, 1200);
-
-  } catch (e) {
-    screen.remove();
-    toast("Logout failed: " + e.message);
-  }
-}
-
-$("logoutButton")?.addEventListener("click", logout);
-
 async function logout(){
-  const confirmed = confirm("Are you sure you want to log out?");
-  if(!confirmed) return;
-
-  const screen = document.createElement("div");
-  screen.id = "auraLogoutScreen";
-
-  screen.innerHTML = `
-    <div class="aura-logout-content">
-      <div class="aura-logout-logo">AURA</div>
-      <div class="aura-logout-spinner"></div>
-      <h2>See You Again ✨</h2>
-      <p>Signing you out securely...</p>
-    </div>
-  `;
-
-  const css = document.createElement("style");
-  css.textContent = `
-    #auraLogoutScreen{
-      position:fixed;
-      inset:0;
-      z-index:999999;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(8,7,16,.97);
-      backdrop-filter:blur(20px);
-      animation:auraLogoutFade .4s ease;
-    }
-    .aura-logout-content{
-      text-align:center;
-      animation:auraLogoutUp .6s ease;
-    }
-    .aura-logout-logo{
-      font-size:38px;
-      font-weight:900;
-      letter-spacing:8px;
-      background:linear-gradient(135deg,#b58aff,#f27bc5);
-      background-clip:text;
-      -webkit-background-clip:text;
-      color:transparent;
-      margin-bottom:25px;
-    }
-    .aura-logout-spinner{
-      width:38px;
-      height:38px;
-      border:3px solid #ffffff20;
-      border-top-color:#b58aff;
-      border-radius:50%;
-      margin:0 auto 22px;
-      animation:auraLogoutSpin .8s linear infinite;
-    }
-    .aura-logout-content h2{
-      color:white;
-      font-size:22px;
-      margin-bottom:9px;
-    }
-    .aura-logout-content p{
-      color:#aaa2bd;
-      font-size:13px;
-    }
-    @keyframes auraLogoutSpin{
-      to{transform:rotate(360deg)}
-    }
-    @keyframes auraLogoutFade{
-      from{opacity:0}
-      to{opacity:1}
-    }
-    @keyframes auraLogoutUp{
-      from{opacity:0;transform:translateY(20px)}
-      to{opacity:1;transform:translateY(0)}
-    }
-  `;
-
-  document.head.appendChild(css);
-  document.body.appendChild(screen);
-
-  try{
-    const {error} = await supabase.auth.signOut();
-
-    if(error) throw error;
-
-    setTimeout(()=>{
-      location.reload();
-    },1200);
-
-  }catch(e){
-    screen.remove();
-    css.remove();
-    toast(e.message || "Logout failed.");
-  }
+ if(!confirm("Are you sure you want to log out?"))return;
+ try{
+  if(chatChannel)await supabase.removeChannel(chatChannel);
+  if(presenceChannel)await supabase.removeChannel(presenceChannel);
+  if(globalMessageChannel)await supabase.removeChannel(globalMessageChannel);
+  await supabase.auth.signOut();
+  location.reload();
+ }catch(e){toast("Logout failed: "+e.message);}
 }
-
 $("logoutButton").addEventListener("click",logout);
 
-
-/* NAVIGATION */
-function openInbox(){showPage("inbox",document.querySelector('[data-page="inbox"]'));if(currentUser)loadChatList();}
+function openInbox(){if(!requireAuth())return;showPage("inbox",document.querySelector('[data-page="inbox"]'));loadChatList();}
 function openChatPage(){showPage("chat",null);}
 document.querySelectorAll(".nav").forEach(b=>b.addEventListener("click",()=>{
- showPage(b.dataset.page,b);
- if(b.dataset.page==="inbox"&&currentUser)loadChatList();
+ const page=b.dataset.page;
+ if(["create","inbox","profile"].includes(page)&&!requireAuth())return;
+ showPage(page,b);
+ if(page==="inbox"&&currentUser)loadChatList();
 }));
 $("inboxButton").addEventListener("click",openInbox);
-$("activityButton").addEventListener("click",()=>openActivity());
+$("activityButton").addEventListener("click",()=>{if(requireAuth())openActivity();});
 
-$("themeButton").addEventListener("click",toggleTheme);
-$("settingsTheme").addEventListener("click",toggleTheme);
 function toggleTheme(){
  document.body.classList.toggle("dark");
  $("themeButton").textContent=document.body.classList.contains("dark")?"☀":"☾";
  localStorage.setItem("aura-dark",document.body.classList.contains("dark")?"1":"0");
 }
+$("themeButton").addEventListener("click",toggleTheme);
+$("settingsTheme").addEventListener("click",toggleTheme);
 if(localStorage.getItem("aura-dark")==="1")document.body.classList.add("dark");
 
 $("editProfileButton").addEventListener("click",async()=>{
- if(!currentProfile)return;
+ if(!requireAuth()||!currentProfile)return;
  const name=prompt("Enter your display name:",currentProfile.full_name||"");if(name===null)return;
  const bio=prompt("Enter your bio:",currentProfile.bio||"");if(bio===null)return;
  const {error}=await supabase.from("profiles").update({full_name:name.trim(),bio:bio.trim()}).eq("id",currentUser.id);
- if(error){toast(error.message);return}await loadProfile();toast("Profile updated ✨");
+ if(error){toast(error.message);return;}await loadProfile();toast("Profile updated ✨");
 });
-function changePassword(){
- const p=prompt("Enter your new password (8+ chars, uppercase, lowercase, number and symbol):");if(p===null)return;
- if(!validPassword(p)){toast("Password does not meet the security requirements.");return}
+$("settingsPassword").addEventListener("click",()=>{
+ if(!requireAuth())return;
+ const p=prompt("Enter new password (8+ chars, uppercase, lowercase, number, symbol):");if(p===null)return;
+ if(!validPassword(p)){toast("Password does not meet security requirements.");return;}
  supabase.auth.updateUser({password:p}).then(({error})=>error?toast(error.message):toast("Password updated."));
-}
-$("settingsPassword").addEventListener("click",changePassword);
+});
 $("settingsButton").addEventListener("click",()=>showPage("settings",null));
 $("backSettings").addEventListener("click",profilePage);
 $("settingsNotify").addEventListener("click",openInbox);
 $("blockedAccountsButton").addEventListener("click",loadBlockedAccounts);
 $("backBlocked").addEventListener("click",()=>showPage("settings",null));
-
-/* SAVED POSTS */
 function savedPostsKey(){return "aura_saved_posts_"+(currentUser?.id||"guest");}
-function getSavedPosts(){try{return JSON.parse(localStorage.getItem(savedPostsKey())||"[]")}catch(e){return []}}
-function isPostSaved(id){return getSavedPosts().includes(String(id))}
+function getSavedPosts(){try{return JSON.parse(localStorage.getItem(savedPostsKey())||"[]");}catch(e){return [];}}
+function isPostSaved(id){return getSavedPosts().includes(String(id));}
 function toggleSavedPost(id){
  const saved=getSavedPosts(),key=String(id),next=saved.includes(key)?saved.filter(x=>x!==key):[...saved,key];
- localStorage.setItem(savedPostsKey(),JSON.stringify(next));renderFeed();toast(next.includes(key)?"Post saved ✨":"Post removed from saved");
+ localStorage.setItem(savedPostsKey(),JSON.stringify(next));renderFeed();toast(next.includes(key)?"Post saved ✨":"Removed from saved");
 }
 
-/* FEED + FOLLOW + POST OPTIONS */
+const ACTION_ICONS={
+ like:`<svg viewBox="0 0 24 24"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"/></svg>`,
+ liked:`<svg viewBox="0 0 24 24" class="filled"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"/></svg>`,
+ comment:`<svg viewBox="0 0 24 24"><path d="M20 11.5a8.5 8.5 0 0 1-12.8 7.3L3 20l1.2-4.2A8.5 8.5 0 1 1 20 11.5Z"/></svg>`,
+ share:`<svg viewBox="0 0 24 24"><path d="M22 2 9.5 14.5M22 2l-8 20-4.5-7.5L2 10 22 2Z"/></svg>`,
+ save:`<svg viewBox="0 0 24 24"><path d="M6 3.5h12a1 1 0 0 1 1 1V22l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"/></svg>`,
+ saved:`<svg viewBox="0 0 24 24" class="filled"><path d="M6 3.5h12a1 1 0 0 1 1 1V22l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"/></svg>`
+};
+
 async function loadFeed(){
  const {data,error}=await supabase.from("posts").select("*,profiles(username,full_name,avatar_url),likes(user_id),comments(id,user_id,content,created_at,profiles(username))").order("created_at",{ascending:false});
  if(error)throw error;
  postsCache=(data||[]).filter(p=>!blockedIds.has(p.user_id));renderFeed();renderGallery();
 }
+
 function renderFeed(){
  const feed=$("feed");feed.innerHTML="";
- if(!postsCache.length){feed.innerHTML='<div class="empty"><h3>Your Mind Feed ✨</h3><p>Be the first to share something beautiful.</p></div>';return}
+ if(!postsCache.length){feed.innerHTML='<div class="empty"><h3>Your Mind Feed ✨</h3><p>Be the first to share something beautiful.</p></div>';return;}
  postsCache.forEach(post=>{
   const profile=post.profiles||{},username=profile.username||"AURA User",avatar=profile.avatar_url||FALLBACK_AVATAR;
-  const liked=(post.likes||[]).some(x=>x.user_id===currentUser.id),saved=isPostSaved(post.id),comments=post.comments||[],video=post.media_type==="video";
-  const mine=post.user_id===currentUser.id,isFollowing=followingIds.has(post.user_id);
+  const liked=currentUser&&(post.likes||[]).some(x=>x.user_id===currentUser.id),saved=isPostSaved(post.id),comments=post.comments||[],video=post.media_type==="video";
+  const mine=currentUser&&post.user_id===currentUser.id,isFollowing=followingIds.has(post.user_id);
   const article=document.createElement("article");article.className="post";
   article.innerHTML=`
    <div class="post-user"><img class="avatar" src="${esc(avatar)}" alt="" data-profile="${esc(post.user_id)}">
    <div class="user-info"><strong data-profile="${esc(post.user_id)}">${esc(username)}</strong><small>${new Date(post.created_at).toLocaleString()}</small></div>
-   ${!mine?`<button class="follow ${isFollowing?"following":""}" data-follow="${esc(post.user_id)}">${isFollowing?"Following":"Follow"}</button>`:""}
-   <button class="more-btn" data-post-menu="${esc(post.id)}" aria-label="Post options">⋯</button></div>
+   ${!mine?`<button type="button" class="follow ${isFollowing?"following":""}" data-follow="${esc(post.user_id)}">${isFollowing?"Following":"Follow"}</button>`:""}
+   <button type="button" class="more-btn" data-post-menu="${esc(post.id)}" aria-label="Post options">⋯</button></div>
    ${video?`<video class="post-image" src="${esc(post.media_url)}" controls playsinline preload="metadata"></video>`:`<img class="post-image" src="${esc(post.media_url)}" alt="Post" loading="lazy">`}
    <div class="post-actions">
-   <button class="action ${liked?"liked":""}" data-like="${esc(post.id)}">${liked?"♥":"♡"}</button>
-   <button class="action" data-focus-comment>♧</button><button class="action" data-share="${esc(post.id)}">↗</button>
-   
-<button class="action ${saved?"saved":""}" data-save="${esc(post.id)}" aria-label="Save post">🔖</button>
-
+   <button type="button" class="action ${liked?"liked":""}" data-like="${esc(post.id)}">${liked?ACTION_ICONS.liked:ACTION_ICONS.like}</button>
+   <button type="button" class="action" data-focus-comment>${ACTION_ICONS.comment}</button>
+   <button type="button" class="action" data-share="${esc(post.id)}">${ACTION_ICONS.share}</button>
+   <button type="button" class="action ${saved?"saved":""}" data-save="${esc(post.id)}" aria-label="Save post">${saved?ACTION_ICONS.saved:ACTION_ICONS.save}</button>
    <span class="like-count">${(post.likes||[]).length} likes</span></div>
    <div class="caption"><b>${esc(username)}</b> ${esc(post.caption||"")}</div>
    <div class="comment-list">${comments.slice(0,3).map(c=>`<p><b>${esc(c.profiles?.username||"User")}</b> ${esc(c.content)}</p>`).join("")}</div>
-   <form class="comment-form" data-comment="${esc(post.id)}"><input name="content" placeholder="Add a comment..." maxlength="500" required><button>Post</button></form>`;
+   <form class="comment-form" data-comment="${esc(post.id)}"><input name="content" placeholder="Add a comment..." maxlength="500" required><button type="submit">Post</button></form>`;
   feed.appendChild(article);
  });
  feed.querySelectorAll("[data-like]").forEach(b=>b.addEventListener("click",()=>toggleLike(b.dataset.like)));
@@ -823,212 +525,163 @@ function renderFeed(){
  feed.querySelectorAll("[data-post-menu]").forEach(b=>b.addEventListener("click",()=>postOptions(b.dataset.postMenu)));
  feed.querySelectorAll("[data-profile]").forEach(b=>b.addEventListener("click",()=>openUserProfile(b.dataset.profile)));
 }
+
 async function toggleLike(id){
+ if(!requireAuth())return;
  const {data:existing,error}=await supabase.from("likes").select("id").eq("post_id",id).eq("user_id",currentUser.id).maybeSingle();
- if(error){toast(error.message);return}
+ if(error){toast(error.message);return;}
  const r=existing?await supabase.from("likes").delete().eq("id",existing.id):await supabase.from("likes").insert({post_id:id,user_id:currentUser.id});
  if(r.error)toast(r.error.message);else await loadFeed();
 }
 async function submitComment(e){
- e.preventDefault();const form=e.currentTarget,content=new FormData(form).get("content").trim();if(!content)return;
+ e.preventDefault();if(!requireAuth())return;
+ const form=e.currentTarget,content=new FormData(form).get("content").trim();if(!content)return;
  const {error}=await supabase.from("comments").insert({post_id:form.dataset.comment,user_id:currentUser.id,content});
  if(error)toast(error.message);else await loadFeed();
 }
 async function toggleFollow(target){
- if(!target||target===currentUser.id)return;
+ if(!requireAuth()||!target||target===currentUser.id)return;
  const existing=followingIds.has(target);
- const r=existing
-  ?await supabase.from("follows").delete().eq("follower_id",currentUser.id).eq("following_id",target)
-  :await supabase.from("follows").insert({follower_id:currentUser.id,following_id:target});
- if(r.error){toast(r.error.message);return}
+ const r=existing?await supabase.from("follows").delete().eq("follower_id",currentUser.id).eq("following_id",target):await supabase.from("follows").insert({follower_id:currentUser.id,following_id:target});
+ if(r.error){toast(r.error.message);return;}
  if(existing)followingIds.delete(target);else followingIds.add(target);
  await Promise.all([loadFeed(),loadMyStats()]);
- updateViewedFollowButton(target);
+ if(activeViewedProfile?.id===target){const b=$("viewFollowButton");b.textContent=followingIds.has(target)?"Following":"Follow";b.classList.toggle("following",followingIds.has(target));}
  toast(existing?"Unfollowed":"Following ✨");
 }
-function updateViewedFollowButton(id){
- if(activeViewedProfile?.id===id){const b=$("viewFollowButton");b.textContent=followingIds.has(id)?"Following":"Follow";b.classList.toggle("following",followingIds.has(id));}
-}
-async function postOptions(id){
- const post=postsCache.find(p=>String(p.id)===String(id));if(!post)return;
- if(post.user_id===currentUser.id){
-  if(confirm("Delete this post permanently?")){
-   const {error}=await supabase.from("posts").delete().eq("id",id).eq("user_id",currentUser.id);
-   if(error)toast("Delete failed: "+error.message);else{toast("Post deleted.");await loadFeed();await loadMyStats();}
-  }
- }else{
-  const choice=prompt("Post options:\n1. View profile\n2. Block user\n3. Report user\n\nEnter 1, 2 or 3:");
-  if(choice==="1")openUserProfile(post.user_id);
-  if(choice==="2")await blockUser(post.user_id);
-  if(choice==="3")await reportUser(post.user_id);
- }
-}
 async function sharePost(){
- try{if(navigator.share)await navigator.share({title:"AURA",text:"AURA post",url:location.href});
- else{await navigator.clipboard.writeText(location.href);toast("Website link copied.");}}
- catch(e){if(e.name!=="AbortError")toast("Could not share.");}
+ try{if(navigator.share)await navigator.share({title:"AURA",text:"AURA post",url:location.href});else{await navigator.clipboard.writeText(location.href);toast("Link copied ✨");}}
+ catch(e){}
 }
 async function loadMyStats(){
+ if(!currentUser)return;
  const [p,f,fo]=await Promise.all([
   supabase.from("posts").select("id",{count:"exact",head:true}).eq("user_id",currentUser.id),
   supabase.from("follows").select("id",{count:"exact",head:true}).eq("following_id",currentUser.id),
   supabase.from("follows").select("id",{count:"exact",head:true}).eq("follower_id",currentUser.id)
  ]);
- if(p.error)throw p.error;if(f.error)throw f.error;if(fo.error)throw fo.error;
  $("postCount").textContent=p.count??0;$("followerCount").textContent=f.count??0;$("followingCount").textContent=fo.count??0;
 }
 function makeMediaElement(p){
  const el=p.media_type==="video"?document.createElement("video"):document.createElement("img");el.src=p.media_url;
- if(el.tagName==="VIDEO"){el.muted=true;el.preload="metadata";el.playsInline=true}else el.loading="lazy";
+ if(el.tagName==="VIDEO"){el.muted=true;el.preload="metadata";el.playsInline=true;}else el.loading="lazy";
  return el;
 }
 function renderGallery(){
  const g=$("gallery"),mine=$("myPosts");g.innerHTML="";mine.innerHTML="";
  postsCache.forEach(p=>{
   const a=makeMediaElement(p);a.addEventListener("click",()=>openUserProfile(p.user_id));g.appendChild(a);
-  if(p.user_id===currentUser.id){const b=makeMediaElement(p);b.addEventListener("click",()=>postOptions(p.id));mine.appendChild(b);}
+  if(currentUser&&p.user_id===currentUser.id){const b=makeMediaElement(p);b.addEventListener("click",()=>postOptions(p.id));mine.appendChild(b);}
  });
 }
-
-$("search").addEventListener("input", async()=>{
- const q=$("search").value.trim().toLowerCase();
- const gallery=$("gallery");
- gallery.innerHTML="";
-
- if(!q){
-  postsCache.forEach(p=>{
-   const el=makeMediaElement(p);
-   el.addEventListener("click",()=>openUserProfile(p.user_id));
-   gallery.appendChild(el);
-  });
-  return;
- }
-
- const {data:users,error}=await supabase
-  .from("profiles")
-  .select("id,username,full_name,avatar_url")
-  .or(`username.ilike.%${q}%,full_name.ilike.%${q}%`)
-  .limit(20);
-
- if(error){
-  toast(error.message);
-  return;
- }
-
+$("search").addEventListener("input",async()=>{
+ const q=$("search").value.trim().toLowerCase(),gallery=$("gallery");gallery.innerHTML="";
+ if(!q){renderGallery();return;}
+ const {data:users}=await supabase.from("profiles").select("id,username,full_name,avatar_url").or(`username.ilike.%${q}%,full_name.ilike.%${q}%`).limit(20);
  (users||[]).forEach(user=>{
-  const item=document.createElement("div");
-  item.style.cssText="display:flex;align-items:center;gap:12px;padding:12px;margin:8px 0;border-radius:14px;background:var(--card);cursor:pointer";
-
-  const img=document.createElement("img");
-  img.src=user.avatar_url||FALLBACK_AVATAR;
-  img.style.cssText="width:45px;height:45px;border-radius:50%;object-fit:cover";
-
-  const info=document.createElement("div");
-  info.style.flex="1";
-
-  const name=document.createElement("strong");
-  name.textContent=user.full_name||user.username||"AURA User";
-
-  const username=document.createElement("div");
-  username.textContent="@"+(user.username||"user");
-  username.style.cssText="font-size:12px;color:var(--muted)";
-
-  const userId=document.createElement("div");
-  userId.textContent="ID: "+user.id;
-  userId.style.cssText="font-size:10px;color:var(--muted);word-break:break-all";
-
-  info.append(name,username,userId);
-  item.append(img,info);
-
-  item.onclick=()=>openUserProfile(user.id);
-  gallery.appendChild(item);
+  const item=document.createElement("div");item.style.cssText="display:flex;align-items:center;gap:12px;padding:12px;margin:8px 0;border-radius:14px;background:var(--card);cursor:pointer;grid-column:1/-1";
+  item.innerHTML=`<img src="${esc(user.avatar_url||FALLBACK_AVATAR)}" style="width:45px;height:45px;border-radius:50%;object-fit:cover"><div><strong>${esc(user.full_name||user.username)}</strong><div style="font-size:12px;color:var(--muted)">@${esc(user.username)}</div></div>`;
+  item.onclick=()=>openUserProfile(user.id);gallery.appendChild(item);
  });
-
- postsCache.filter(p=>
-  (p.profiles?.username||"").toLowerCase().includes(q)||
-  (p.caption||"").toLowerCase().includes(q)
- ).forEach(p=>{
-  const el=makeMediaElement(p);
-  el.addEventListener("click",()=>openUserProfile(p.user_id));
-  gallery.appendChild(el);
+ postsCache.filter(p=>(p.profiles?.username||"").toLowerCase().includes(q)||(p.caption||"").toLowerCase().includes(q)).forEach(p=>{
+  const el=makeMediaElement(p);el.addEventListener("click",()=>openUserProfile(p.user_id));gallery.appendChild(el);
  });
-
- if(!gallery.children.length){
-  gallery.textContent="No users or posts found.";
- }
+ if(!gallery.children.length)gallery.textContent="No users or posts found.";
 });
+/* ACTION SHEET (POST OPTIONS) */
+let selectedPost=null;
+const sheetOverlay=$("auraActionSheet");
+function closeActionSheet(){sheetOverlay.classList.remove("show");selectedPost=null;}
+$("auraSheetCancel").addEventListener("click",closeActionSheet);
+sheetOverlay.addEventListener("click",e=>{if(e.target===sheetOverlay)closeActionSheet();});
+
+function addSheetOption(icon,label,callback,danger=false){
+ const btn=document.createElement("button");btn.type="button";btn.className="sheet-option"+(danger?" danger-option":"");
+ btn.innerHTML=`<span>${icon}</span>${label}`;
+ btn.addEventListener("click",async()=>{const post=selectedPost;closeActionSheet();if(post)await callback(post);});
+ $("auraSheetOptions").appendChild(btn);
+}
+function postOptions(id){
+ const post=postsCache.find(p=>String(p.id)===String(id));if(!post)return;
+ selectedPost=post;const box=$("auraSheetOptions");box.innerHTML="";
+ if(currentUser&&post.user_id===currentUser.id){
+  addSheetOption("👤","View My Profile",()=>profilePage());
+  addSheetOption("🔖","Save / Remove Saved Post",p=>toggleSavedPost(p.id));
+  addSheetOption("🗑️","Delete Post",async p=>{
+   if(!confirm("Delete this post permanently?"))return;
+   const {error}=await supabase.from("posts").delete().eq("id",p.id).eq("user_id",currentUser.id);
+   if(error)toast("Delete failed: "+error.message);else{toast("Post deleted.");await loadFeed();await loadMyStats();}
+  },true);
+ }else{
+  addSheetOption("👤","View Profile",p=>openUserProfile(p.user_id));
+  addSheetOption("🔖","Save Post",p=>toggleSavedPost(p.id));
+  addSheetOption("🚫","Block Account",p=>blockUser(p.user_id),true);
+  addSheetOption("⚑","Report Account",p=>reportUser(p.user_id),true);
+ }
+ sheetOverlay.classList.add("show");
+}
 
 /* PROFILE VIEW + BLOCK + REPORT */
 let activeViewedProfile=null;
 async function openUserProfile(id){
- if(id===currentUser.id){profilePage();return}
- if(blockedIds.has(id)){toast("You blocked this account.");return}
+ if(currentUser&&id===currentUser.id){profilePage();return;}
+ if(blockedIds.has(id)){toast("You blocked this account.");return;}
  const {data:profile,error}=await supabase.from("profiles").select("*").eq("id",id).maybeSingle();
- if(error||!profile){toast(error?.message||"Profile not found.");return}
- activeViewedProfile=profile;
- $("viewPic").src=profile.avatar_url||FALLBACK_AVATAR;
- $("viewName").textContent=profile.full_name||profile.username||"AURA User";
- $("viewBio").textContent=profile.bio||"";
- const {data:posts,error:postError}=await supabase.from("posts").select("*").eq("user_id",id).order("created_at",{ascending:false});
- if(postError){toast(postError.message);return}
+ if(error||!profile){toast("Profile not found.");return;}
+ activeViewedProfile=profile;$("viewPic").src=profile.avatar_url||FALLBACK_AVATAR;
+ $("viewName").textContent=profile.full_name||profile.username||"AURA User";$("viewBio").textContent=profile.bio||"";
+ const {data:posts}=await supabase.from("posts").select("*").eq("user_id",id).order("created_at",{ascending:false});
  $("viewPostCount").textContent=(posts||[]).length;
  const [followers,following]=await Promise.all([
   supabase.from("follows").select("id",{count:"exact",head:true}).eq("following_id",id),
   supabase.from("follows").select("id",{count:"exact",head:true}).eq("follower_id",id)
  ]);
  $("viewFollowerCount").textContent=followers.count??0;$("viewFollowingCount").textContent=following.count??0;
- const grid=$("viewPosts");grid.innerHTML="";
- (posts||[]).forEach(p=>grid.appendChild(makeMediaElement(p)));
+ const grid=$("viewPosts");grid.innerHTML="";(posts||[]).forEach(p=>grid.appendChild(makeMediaElement(p)));
  const fb=$("viewFollowButton");fb.textContent=followingIds.has(id)?"Following":"Follow";fb.classList.toggle("following",followingIds.has(id));
  $("viewFollowButton").onclick=()=>toggleFollow(id);
- $("viewMessageButton").onclick=()=>openChat({id,username:profile.username,full_name:profile.full_name,avatar_url:profile.avatar_url});
- $("viewMoreButton").onclick=()=>userOptions(id);
- const group=storyGroups.find(g=>g.user_id===id);
- $("viewStoryShortcut").innerHTML="";
- if(group){const wrap=document.createElement("div");wrap.className="story";const img=document.createElement("img");img.src=profile.avatar_url||FALLBACK_AVATAR;const label=document.createElement("span");label.textContent="Story";wrap.append(img,label);wrap.onclick=()=>openStoryGroup(id);$("viewStoryShortcut").appendChild(wrap);}
+ $("viewMessageButton").onclick=()=>{if(requireAuth())openChat({id,username:profile.username,full_name:profile.full_name,avatar_url:profile.avatar_url});};
+ $("viewMoreButton").onclick=()=>{if(requireAuth())userOptions(id);};
+ const group=storyGroups.find(g=>g.user_id===id);$("viewStoryShortcut").innerHTML="";
+ if(group){const wrap=document.createElement("div");wrap.className="story";wrap.innerHTML=`<img src="${esc(profile.avatar_url||FALLBACK_AVATAR)}"><span>Story</span>`;wrap.onclick=()=>openStoryGroup(id);$("viewStoryShortcut").appendChild(wrap);}
  showPage("viewProfile",null);
 }
 $("backProfile").addEventListener("click",()=>showPage("home",document.querySelector('[data-page="home"]')));
 async function userOptions(id){
  const choice=prompt("Account options:\n1. Block\n2. Report\n\nEnter 1 or 2:");
- if(choice==="1")await blockUser(id);
- if(choice==="2")await reportUser(id);
+ if(choice==="1")await blockUser(id);if(choice==="2")await reportUser(id);
 }
 async function blockUser(id){
- if(!id||id===currentUser.id)return;
- if(!confirm("Block this account? Their posts and stories will be hidden from your AURA feed."))return;
+ if(!requireAuth()||!id||id===currentUser.id)return;
+ if(!confirm("Block this account?"))return;
  const {error}=await supabase.from("user_blocks").insert({blocker_id:currentUser.id,blocked_id:id});
- if(error){toast(error.code==="23505"?"This account is already blocked.":error.message);return}
- blockedIds.add(id);toast("Account blocked.");
- await loadFeed();await loadStories();
+ if(error){toast(error.message);return;}
+ blockedIds.add(id);toast("Account blocked.");await loadFeed();await loadStories();
  if(activeViewedProfile?.id===id)showPage("home",document.querySelector('[data-page="home"]'));
 }
 async function unblockUser(id){
  const {error}=await supabase.from("user_blocks").delete().eq("blocker_id",currentUser.id).eq("blocked_id",id);
- if(error){toast(error.message);return}
+ if(error){toast(error.message);return;}
  blockedIds.delete(id);toast("Account unblocked.");await loadBlockedAccounts();await loadFeed();await loadStories();
 }
 async function reportUser(id){
- const reason=prompt("Why are you reporting this account?\nExamples: Spam, harassment, inappropriate content.");
- if(!reason||reason.trim().length<2)return;
- const details=prompt("Additional details (optional):")||null;
- const {error}=await supabase.from("user_reports").insert({reporter_id:currentUser.id,reported_user_id:id,reason:reason.trim().slice(0,100),details:details?.slice(0,1000)||null});
- if(error)toast("Report failed: "+error.message);else toast("Report submitted. Thank you.");
+ if(!requireAuth())return;
+ const reason=prompt("Why are you reporting this account?");if(!reason||reason.trim().length<2)return;
+ const {error}=await supabase.from("user_reports").insert({reporter_id:currentUser.id,reported_user_id:id,reason:reason.trim().slice(0,100)});
+ if(error)toast(error.message);else toast("Report submitted. Thank you.");
 }
 async function loadBlockedAccounts(){
- await loadBlocked();const box=$("blockedList");box.innerHTML="";
- if(!blockedIds.size){box.innerHTML='<div class="empty">You have not blocked anyone.</div>';showPage("blocked",null);return}
- const {data,error}=await supabase.from("profiles").select("id,username,full_name,avatar_url").in("id",[...blockedIds]);
- if(error){toast(error.message);return}
+ if(!requireAuth())return;await loadBlocked();const box=$("blockedList");box.innerHTML="";
+ if(!blockedIds.size){box.innerHTML='<div class="empty">You have not blocked anyone.</div>';showPage("blocked",null);return;}
+ const {data}=await supabase.from("profiles").select("id,username,full_name,avatar_url").in("id",[...blockedIds]);
  (data||[]).forEach(p=>{
   const row=document.createElement("div");row.className="chat-row";
-  row.innerHTML=`<img src="${esc(p.avatar_url||FALLBACK_AVATAR)}"><div style="flex:1"><strong>${esc(p.username||p.full_name||"User")}</strong><span>Blocked account</span></div><button class="secondary">Unblock</button>`;
+  row.innerHTML=`<img src="${esc(p.avatar_url||FALLBACK_AVATAR)}"><div style="flex:1"><strong>${esc(p.username||p.full_name||"User")}</strong><span>Blocked account</span></div><button type="button" class="secondary">Unblock</button>`;
   row.querySelector("button").onclick=()=>unblockUser(p.id);box.appendChild(row);
  });
  showPage("blocked",null);
 }
-
-/* MEDIA UPLOAD */
+/* MEDIA UPLOAD + STORIES */
 async function uploadMedia(file,folder){
  if(!file.type.startsWith("image/")&&!file.type.startsWith("video/"))throw new Error("Choose an image or video.");
  if(file.size>50*1024*1024)throw new Error("Maximum file size is 50 MB.");
@@ -1038,83 +691,64 @@ async function uploadMedia(file,folder){
  return supabase.storage.from("aura-media").getPublicUrl(path).data.publicUrl;
 }
 $("upload").addEventListener("change",async e=>{
- const file=e.target.files[0];if(!file)return;
+ if(!requireAuth())return;const file=e.target.files[0];if(!file)return;
  try{
   $("uploadStatus").textContent="Uploading...";const url=await uploadMedia(file,"post");
-  const type=file.type.startsWith("video/")?"video":"image";
-  const {error}=await supabase.from("posts").insert({user_id:currentUser.id,caption:$("captionInput").value.trim(),media_url:url,media_type:type});
+  const {error}=await supabase.from("posts").insert({user_id:currentUser.id,caption:$("captionInput").value.trim(),media_url:url,media_type:file.type.startsWith("video/")?"video":"image"});
   if(error)throw error;$("captionInput").value="";$("uploadStatus").textContent="Posted successfully ✨";e.target.value="";
   await loadFeed();await loadMyStats();showPage("home",document.querySelector('[data-page="home"]'));
  }catch(err){$("uploadStatus").textContent="Upload failed: "+err.message;}
 });
 $("storyUpload").addEventListener("change",async e=>{
- const file=e.target.files[0];if(!file)return;
+ if(!requireAuth())return;const file=e.target.files[0];if(!file)return;
  try{
-  $("uploadStatus").textContent="Uploading story...";
-  const isVideo=file.type.startsWith("video/");
-  const url=await uploadMedia(file,isVideo?"story-video":"story-image");
+  $("uploadStatus").textContent="Uploading story...";const url=await uploadMedia(file,file.type.startsWith("video/")?"story-video":"story-image");
   const {error}=await supabase.from("stories").insert({user_id:currentUser.id,media_url:url});if(error)throw error;
   $("uploadStatus").textContent="Story added ✨";e.target.value="";await loadStories();
  }catch(err){$("uploadStatus").textContent="Story failed: "+err.message;}
 });
 
-/* STORY GROUPS + VIEWER */
 async function loadStories(){
  const {data,error}=await supabase.from("stories").select("*,profiles(username,avatar_url)").order("created_at",{ascending:true});
- if(error){console.warn("Stories:",error.message);return}
+ if(error)return;
  const valid=(data||[]).filter(s=>s.created_at&&Date.now()-new Date(s.created_at).getTime()<86400000&&!blockedIds.has(s.user_id));
- const map=new Map();
- valid.forEach(s=>{if(!map.has(s.user_id))map.set(s.user_id,[]);map.get(s.user_id).push(s);});
+ const map=new Map();valid.forEach(s=>{if(!map.has(s.user_id))map.set(s.user_id,[]);map.get(s.user_id).push(s);});
  storyGroups=[...map.entries()].map(([user_id,stories])=>({user_id,stories,profile:stories[0].profiles||{}}));
- storyGroups.sort((a,b)=>a.user_id===currentUser.id?-1:b.user_id===currentUser.id?1:0);
+ if(currentUser)storyGroups.sort((a,b)=>a.user_id===currentUser.id?-1:b.user_id===currentUser.id?1:0);
  const box=$("stories");box.innerHTML="";
- const own=document.createElement("div");own.className="story";
- const ownImg=document.createElement("img");ownImg.src=currentProfile?.avatar_url||FALLBACK_AVATAR;
- const ownLabel=document.createElement("span");ownLabel.textContent=map.has(currentUser.id)?"Your Story":"＋ Your Story";
- own.append(ownImg,ownLabel);own.onclick=()=>map.has(currentUser.id)?openStoryGroup(currentUser.id):showPage("create",document.querySelector('[data-page="create"]'));box.appendChild(own);
- storyGroups.filter(g=>g.user_id!==currentUser.id).forEach(g=>{
-  const d=document.createElement("div");d.className="story";const img=document.createElement("img");
-  img.src=g.profile.avatar_url||FALLBACK_AVATAR;const label=document.createElement("span");label.textContent=g.profile.username||"User";
-  d.append(img,label);d.addEventListener("click",()=>openStoryGroup(g.user_id));box.appendChild(d);
+ if(currentUser){
+  const own=document.createElement("div");own.className="story";
+  own.innerHTML=`<img src="${esc(currentProfile?.avatar_url||FALLBACK_AVATAR)}"><span>${map.has(currentUser.id)?"Your Story":"＋ Your Story"}</span>`;
+  own.onclick=()=>map.has(currentUser.id)?openStoryGroup(currentUser.id):showPage("create",document.querySelector('[data-page="create"]'));box.appendChild(own);
+ }
+ storyGroups.filter(g=>!currentUser||g.user_id!==currentUser.id).forEach(g=>{
+  const d=document.createElement("div");d.className="story";
+  d.innerHTML=`<img src="${esc(g.profile.avatar_url||FALLBACK_AVATAR)}"><span>${esc(g.profile.username||"User")}</span>`;
+  d.addEventListener("click",()=>openStoryGroup(g.user_id));box.appendChild(d);
  });
- const my=$("myStoryShortcut");if(my){my.innerHTML="";if(map.has(currentUser.id)){const d=document.createElement("div");d.className="story";const im=document.createElement("img");im.src=currentProfile?.avatar_url||FALLBACK_AVATAR;const t=document.createElement("span");t.textContent="Your Story";d.append(im,t);d.onclick=()=>openStoryGroup(currentUser.id);my.appendChild(d);}}
 }
-function stopStoryTimer(){
- if(storyTimer){clearTimeout(storyTimer);storyTimer=null;}
- if(storyVideo){storyVideo.pause();storyVideo=null;}
-}
+function stopStoryTimer(){if(storyTimer){clearTimeout(storyTimer);storyTimer=null;}if(storyVideo){storyVideo.pause();storyVideo=null;}}
 function openStoryGroup(userId){
+ document.querySelectorAll("video").forEach(v=>v.pause());
  const group=storyGroups.find(g=>g.user_id===userId);if(!group||!group.stories.length)return;
  activeStoryGroup=group.stories;activeStoryIndex=0;$("storyModal").classList.add("show");renderCurrentStory();
 }
 function renderCurrentStory(){
- stopStoryTimer();
- const s=activeStoryGroup[activeStoryIndex];if(!s){closeStoryViewer();return}
- const profile=s.profiles||{};
- $("storyAvatar").src=profile.avatar_url||FALLBACK_AVATAR;
- $("storyUsername").textContent=profile.username||"AURA User";
- $("deleteStoryButton").classList.toggle("hidden",s.user_id!==currentUser.id);
+ stopStoryTimer();const s=activeStoryGroup[activeStoryIndex];if(!s){closeStoryViewer();return;}
+ $("storyAvatar").src=s.profiles?.avatar_url||FALLBACK_AVATAR;$("storyUsername").textContent=s.profiles?.username||"AURA User";
+ $("deleteStoryButton").classList.toggle("hidden",!currentUser||s.user_id!==currentUser.id);
  const progress=$("storyProgress");progress.innerHTML="";
- activeStoryGroup.forEach((x,i)=>{
-  const bar=document.createElement("span"),fill=document.createElement("i");
-  if(i<activeStoryIndex)fill.style.width="100%";
-  bar.appendChild(fill);progress.appendChild(bar);
- });
+ activeStoryGroup.forEach((x,i)=>{const bar=document.createElement("span"),fill=document.createElement("i");if(i<activeStoryIndex)fill.style.width="100%";bar.appendChild(fill);progress.appendChild(bar);});
  const holder=$("storyMediaHolder");holder.innerHTML="";
  if(mediaIsVideo(s.media_url)){
-  const v=document.createElement("video");v.src=s.media_url;v.className="story-media";v.autoplay=true;v.playsInline=true;v.controls=false;
-  holder.appendChild(v);storyVideo=v;
-  v.addEventListener("loadedmetadata",()=>{const duration=Math.max(3000,(v.duration||10)*1000);animateStoryProgress(duration);});
-  v.addEventListener("ended",nextStory);
-  v.play().catch(()=>{v.controls=true;});
- }else{
-  const img=document.createElement("img");img.src=s.media_url;img.className="story-media";holder.appendChild(img);animateStoryProgress(5000);
- }
+  const v=document.createElement("video");v.src=s.media_url;v.className="story-media";v.autoplay=true;v.playsInline=true;holder.appendChild(v);storyVideo=v;
+  v.addEventListener("loadedmetadata",()=>animateStoryProgress(Math.max(3000,(v.duration||10)*1000)));
+  v.addEventListener("ended",nextStory);v.play().catch(()=>{v.controls=true;});
+ }else{const img=document.createElement("img");img.src=s.media_url;img.className="story-media";holder.appendChild(img);animateStoryProgress(5000);}
 }
 function animateStoryProgress(duration){
  const fill=$("storyProgress").children[activeStoryIndex]?.firstChild;if(!fill)return;
- fill.style.transition=`width ${duration}ms linear`;requestAnimationFrame(()=>fill.style.width="100%");
- storyTimer=setTimeout(nextStory,duration);
+ fill.style.transition=`width ${duration}ms linear`;requestAnimationFrame(()=>fill.style.width="100%");storyTimer=setTimeout(nextStory,duration);
 }
 function nextStory(){if(activeStoryIndex<activeStoryGroup.length-1){activeStoryIndex++;renderCurrentStory();}else closeStoryViewer();}
 function prevStory(){if(activeStoryIndex>0){activeStoryIndex--;renderCurrentStory();}}
@@ -1124,57 +758,43 @@ $("storyNext").addEventListener("click",nextStory);
 $("storyPrev").addEventListener("click",prevStory);
 $("storyModal").addEventListener("click",e=>{if(e.target===$("storyModal"))closeStoryViewer();});
 $("deleteStoryButton").addEventListener("click",async()=>{
- const s=activeStoryGroup[activeStoryIndex];if(!s||s.user_id!==currentUser.id)return;
+ const s=activeStoryGroup[activeStoryIndex];if(!currentUser||!s||s.user_id!==currentUser.id)return;
  if(!confirm("Delete this story?"))return;
  const {error}=await supabase.from("stories").delete().eq("id",s.id).eq("user_id",currentUser.id);
- if(error){toast(error.message);return}
- toast("Story deleted.");activeStoryGroup.splice(activeStoryIndex,1);
- if(!activeStoryGroup.length){closeStoryViewer();await loadStories();return}
- if(activeStoryIndex>=activeStoryGroup.length)activeStoryIndex=activeStoryGroup.length-1;
- renderCurrentStory();await loadStories();
+ if(error){toast(error.message);return;}toast("Story deleted.");activeStoryGroup.splice(activeStoryIndex,1);
+ if(!activeStoryGroup.length){closeStoryViewer();await loadStories();return;}
+ if(activeStoryIndex>=activeStoryGroup.length)activeStoryIndex=activeStoryGroup.length-1;renderCurrentStory();await loadStories();
 });
 
 /* CHAT */
 async function findOrCreateConversation(otherId){
  const ids=[currentUser.id,otherId].sort();
- let {data,error}=await supabase.from("conversations").select("*").eq("user1_id",ids[0]).eq("user2_id",ids[1]).maybeSingle();
- if(error)throw error;if(data)return data;
+ let {data}=await supabase.from("conversations").select("*").eq("user1_id",ids[0]).eq("user2_id",ids[1]).maybeSingle();
+ if(data)return data;
  const ins=await supabase.from("conversations").insert({user1_id:ids[0],user2_id:ids[1]}).select("*").single();
- if(ins.error){
-  const again=await supabase.from("conversations").select("*").eq("user1_id",ids[0]).eq("user2_id",ids[1]).maybeSingle();
-  if(again.data)return again.data;throw ins.error;
- }
- return ins.data;
+ if(ins.error)throw ins.error;return ins.data;
 }
 async function openChat(person){
+ if(!requireAuth())return;
  try{
-  if(blockedIds.has(person.id)){toast("You blocked this account. Unblock them first to message.");return}
+  if(blockedIds.has(person.id)){toast("You blocked this account.");return;}
   activePerson=person;activeConversation=await findOrCreateConversation(person.id);
-  $("chatName").textContent=person.username||person.full_name||"AURA User";
-  $("chatAvatar").src=person.avatar_url||FALLBACK_AVATAR;
+  $("chatName").textContent=person.username||person.full_name||"AURA User";$("chatAvatar").src=person.avatar_url||FALLBACK_AVATAR;
   openChatPage();await loadMessages();subscribeChat();subscribePresence();
  }catch(e){toast("Could not open chat: "+e.message);}
 }
 async function loadMessages(){
- if(!activeConversation||chatLoading)return;
- chatLoading=true;
+ if(!activeConversation||chatLoading)return;chatLoading=true;
  try{
   const {data,error}=await supabase.from("messages").select("*").eq("conversation_id",activeConversation.id).order("created_at",{ascending:true});
-  if(error)throw error;
-  const rows=data||[];
+  if(error)throw error;const rows=data||[];
   const incoming=rows.filter(m=>m.sender_id!==currentUser.id).map(m=>m.id);
   if(incoming.length){
    const {data:seen}=await supabase.from("message_reads").select("message_id").eq("user_id",currentUser.id).in("message_id",incoming);
-   const already=new Set((seen||[]).map(x=>x.message_id));
-   const missing=incoming.filter(id=>!already.has(id));
-   if(missing.length){
-    const inserts=missing.map(message_id=>({message_id,user_id:currentUser.id}));
-    const {error:readError}=await supabase.from("message_reads").insert(inserts);
-    if(readError)console.warn("Read receipt:",readError.message);
-   }
+   const already=new Set((seen||[]).map(x=>x.message_id)),missing=incoming.filter(id=>!already.has(id));
+   if(missing.length)await supabase.from("message_reads").insert(missing.map(message_id=>({message_id,user_id:currentUser.id})));
   }
-  const ownIds=rows.filter(m=>m.sender_id===currentUser.id).map(m=>m.id);
-  let readSet=new Set();
+  const ownIds=rows.filter(m=>m.sender_id===currentUser.id).map(m=>m.id);let readSet=new Set();
   if(ownIds.length){
    const {data:reads}=await supabase.from("message_reads").select("message_id").eq("user_id",activePerson.id).in("message_id",ownIds);
    readSet=new Set((reads||[]).map(x=>x.message_id));
@@ -1182,100 +802,60 @@ async function loadMessages(){
   $("chatMessages").innerHTML="";
   rows.forEach(m=>{
    const mine=m.sender_id===currentUser.id,div=document.createElement("div");div.className="bubble"+(mine?" mine":"");
-   let media="";
-   if(m.image_url){
-    if(mediaIsVideo(m.image_url))media=`<video src="${esc(m.image_url)}" controls playsinline preload="metadata"></video>`;
-    else media=`<img src="${esc(m.image_url)}" alt="Shared image" loading="lazy">`;
-   }
-   div.innerHTML=`<div>${esc(m.content||"").replace(/\n/g,"<br>")}</div>${media}
-   <small>${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${mine?(readSet.has(m.id)?" · Seen":" · Sent"):""}</small>
-   ${mine?`<button data-delete-message="${esc(m.id)}" style="border:0;background:none;color:inherit;font-size:10px;margin-top:4px">Delete</button>`:""}`;
+   const media=m.image_url?(mediaIsVideo(m.image_url)?`<video src="${esc(m.image_url)}" controls playsinline preload="metadata"></video>`:`<img src="${esc(m.image_url)}" alt="Shared image" loading="lazy">`):"";
+   div.innerHTML=`<div>${esc(m.content||"").replace(/\n/g,"<br>")}</div>${media}<small>${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${mine?(readSet.has(m.id)?" · Seen":" · Sent"):""}</small>${mine?`<button type="button" data-delete-message="${esc(m.id)}" style="border:0;background:none;color:inherit;font-size:10px;margin-top:4px">Delete</button>`:""}`;
    $("chatMessages").appendChild(div);
   });
   $("chatMessages").scrollTop=$("chatMessages").scrollHeight;await refreshUnreadCount();
   $("chatMessages").querySelectorAll("[data-delete-message]").forEach(b=>b.addEventListener("click",()=>deleteMessage(b.dataset.deleteMessage)));
- }catch(e){toast("Messages could not load: "+e.message);}
- finally{chatLoading=false;}
+ }catch(e){toast("Messages error: "+e.message);}finally{chatLoading=false;}
 }
-function scheduleChatRefresh(){
- clearTimeout(chatRefreshTimer);chatRefreshTimer=setTimeout(()=>loadMessages(),250);
-}
+function scheduleChatRefresh(){clearTimeout(chatRefreshTimer);chatRefreshTimer=setTimeout(()=>loadMessages(),250);}
 function subscribeChat(){
  if(chatChannel)supabase.removeChannel(chatChannel);
- chatChannel=supabase.channel("aura-chat-"+activeConversation.id)
- .on("postgres_changes",{event:"*",schema:"public",table:"messages",filter:"conversation_id=eq."+activeConversation.id},scheduleChatRefresh)
- .subscribe();
+ chatChannel=supabase.channel("aura-chat-"+activeConversation.id).on("postgres_changes",{event:"*",schema:"public",table:"messages",filter:"conversation_id=eq."+activeConversation.id},scheduleChatRefresh).subscribe();
 }
 function subscribePresence(){
  if(presenceChannel)supabase.removeChannel(presenceChannel);
  presenceChannel=supabase.channel("aura-presence-"+activeConversation.id,{config:{presence:{key:currentUser.id}}});
- presenceChannel.on("presence",{event:"sync"},()=>{
-  const state=presenceChannel.presenceState();$("presenceLabel").textContent=state[activePerson.id]?"Online":"Offline";
- }).subscribe(async status=>{if(status==="SUBSCRIBED")await presenceChannel.track({user_id:currentUser.id,online_at:new Date().toISOString()});});
+ presenceChannel.on("presence",{event:"sync"},()=>{$("presenceLabel").textContent=presenceChannel.presenceState()[activePerson.id]?"Online":"Offline";}).subscribe(async s=>{if(s==="SUBSCRIBED")await presenceChannel.track({user_id:currentUser.id});});
 }
-async function deleteMessage(id){
- const {error}=await supabase.from("messages").delete().eq("id",id).eq("sender_id",currentUser.id);
- if(error)toast(error.message);else await loadMessages();
-}
+async function deleteMessage(id){const {error}=await supabase.from("messages").delete().eq("id",id).eq("sender_id",currentUser.id);if(!error)await loadMessages();}
 async function sendChatMessage(content,imageUrl=null){
- if(!activeConversation)return;
- let body=content.trim();if(replyTo)body="↪ "+replyTo+"\n"+body;if(!body&&!imageUrl)return;
- const sendButton=$("chatForm").querySelector('button[type="submit"]');sendButton.disabled=true;
+ if(!activeConversation)return;let body=content.trim();if(replyTo)body="↪ "+replyTo+"\n"+body;if(!body&&!imageUrl)return;
+ const btn=$("chatForm").querySelector('button[type="submit"]');btn.disabled=true;
  const {error}=await supabase.from("messages").insert({conversation_id:activeConversation.id,sender_id:currentUser.id,content:body||null,image_url:imageUrl});
- sendButton.disabled=false;
- if(error){toast(error.message);return}
+ btn.disabled=false;if(error){toast(error.message);return;}
  $("chatText").value="";replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");await loadMessages();
 }
 $("chatForm").addEventListener("submit",e=>{e.preventDefault();sendChatMessage($("chatText").value);});
-$("chatImage").addEventListener("change",async e=>{
- const file=e.target.files[0];if(!file)return;
- try{
-  const video=file.type.startsWith("video/");
-  const url=await uploadMedia(file,video?"message-video":"message-image");
-  await sendChatMessage("",url);
- }catch(err){toast(err.message);}e.target.value="";
-});
+$("chatImage").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;try{const url=await uploadMedia(f,f.type.startsWith("video/")?"message-video":"message-image");await sendChatMessage("",url);}catch(err){toast(err.message);}e.target.value="";});
 $("emojiButton").addEventListener("click",()=>{$("chatText").value+=" 😊";$("chatText").focus();});
 $("replyCancel").addEventListener("click",()=>{replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");});
-$("chatMessages").addEventListener("dblclick",e=>{
- const bubble=e.target.closest(".bubble");if(!bubble)return;
- replyTo=bubble.querySelector("div")?.textContent?.slice(0,100)||"";
- $("replyLabel").textContent="Replying to: "+replyTo;$("replyCancel").classList.remove("hidden");$("chatText").focus();
-});
-$("backChats").addEventListener("click",async()=>{
- if(chatChannel){await supabase.removeChannel(chatChannel);chatChannel=null;}
- if(presenceChannel){await supabase.removeChannel(presenceChannel);presenceChannel=null;}
- activeConversation=null;activePerson=null;replyTo=null;openInbox();
-});
-
-/* INBOX */
+$("chatMessages").addEventListener("dblclick",e=>{const b=e.target.closest(".bubble");if(!b)return;replyTo=b.querySelector("div")?.textContent?.slice(0,100)||"";$("replyLabel").textContent="Replying to: "+replyTo;$("replyCancel").classList.remove("hidden");$("chatText").focus();});
+$("backChats").addEventListener("click",async()=>{if(chatChannel){await supabase.removeChannel(chatChannel);chatChannel=null;}if(presenceChannel){await supabase.removeChannel(presenceChannel);presenceChannel=null;}activeConversation=null;activePerson=null;replyTo=null;openInbox();});
+/* INBOX + ACTIVITY */
 async function loadChatList(){
  if(!currentUser)return;
- const {data,error}=await supabase.from("conversations").select("*")
- .or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`).order("created_at",{ascending:false});
- if(error){$("chatList").innerHTML='<div class="empty">Could not load chats. Check database permissions.</div>';return}
+ const {data,error}=await supabase.from("conversations").select("*").or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`).order("created_at",{ascending:false});
+ if(error){$("chatList").innerHTML='<div class="empty">Could not load chats.</div>';return;}
  const rows=data||[];$("chatList").innerHTML="";
- if(!rows.length){$("chatList").innerHTML='<div class="empty">No conversations yet. Search for a person above to start chatting.</div>';return}
+ if(!rows.length){$("chatList").innerHTML='<div class="empty">No conversations yet. Search for a person above.</div>';return;}
  const otherIds=rows.map(c=>c.user1_id===currentUser.id?c.user2_id:c.user1_id).filter(id=>!blockedIds.has(id));
- if(!otherIds.length){$("chatList").innerHTML='<div class="empty">No conversations available.</div>';return}
- const {data:people}=await supabase.from("profiles").select("id,username,full_name,avatar_url").in("id",otherIds);
+ const {data:people}=otherIds.length?await supabase.from("profiles").select("id,username,full_name,avatar_url").in("id",otherIds):{data:[]};
  const map=new Map((people||[]).map(p=>[p.id,p]));
  rows.forEach(c=>{
   const id=c.user1_id===currentUser.id?c.user2_id:c.user1_id;if(blockedIds.has(id))return;
-  const p=map.get(id)||{id,username:"AURA User"};
-  const b=document.createElement("button");b.type="button";b.className="chat-row";
+  const p=map.get(id)||{id,username:"AURA User"},b=document.createElement("button");b.type="button";b.className="chat-row";
   b.innerHTML=`<img src="${esc(p.avatar_url||FALLBACK_AVATAR)}" alt=""><div><strong>${esc(p.username||p.full_name||"AURA User")}</strong><span>Open conversation · Message</span></div>`;
   b.addEventListener("click",()=>openChat(p));$("chatList").appendChild(b);
  });
 }
 let peopleSearchTimer=null;
 $("peopleSearch").addEventListener("input",()=>{
- clearTimeout(peopleSearchTimer);
- peopleSearchTimer=setTimeout(async()=>{
-  if(!currentUser)return;const q=$("peopleSearch").value.trim();
-  if(q.length<2){$("peopleResults").innerHTML="";return}
-  const {data,error}=await supabase.from("profiles").select("id,username,full_name,avatar_url").ilike("username","%"+q+"%").neq("id",currentUser.id).limit(8);
-  if(error){$("peopleResults").textContent=error.message;return}
+ clearTimeout(peopleSearchTimer);peopleSearchTimer=setTimeout(async()=>{
+  if(!currentUser)return;const q=$("peopleSearch").value.trim();if(q.length<2){$("peopleResults").innerHTML="";return;}
+  const {data}=await supabase.from("profiles").select("id,username,full_name,avatar_url").ilike("username","%"+q+"%").neq("id",currentUser.id).limit(8);
   $("peopleResults").innerHTML="";
   (data||[]).filter(p=>!blockedIds.has(p.id)).forEach(p=>{
    const b=document.createElement("button");b.type="button";b.className="chat-row";
@@ -1284,890 +864,77 @@ $("peopleSearch").addEventListener("input",()=>{
   });
  },300);
 });
-
-/* ACTIVITY - derived from existing likes/comments/follows tables */
 async function openActivity(){
  showPage("activity",null);const box=$("activityList");box.innerHTML='<div class="empty">Loading activity...</div>';
  try{
-  const {data:myPosts,error:pErr}=await supabase.from("posts").select("id,caption").eq("user_id",currentUser.id);
-  if(pErr)throw pErr;
+  const {data:myPosts}=await supabase.from("posts").select("id").eq("user_id",currentUser.id);
   const postIds=(myPosts||[]).map(p=>p.id),items=[];
   if(postIds.length){
-   const [likes,comments]=await Promise.all([
-    supabase.from("likes").select("user_id,post_id").in("post_id",postIds),
-    supabase.from("comments").select("user_id,post_id,content,created_at").in("post_id",postIds).order("created_at",{ascending:false}).limit(30)
-   ]);
-   if(likes.error)throw likes.error;if(comments.error)throw comments.error;
-   (likes.data||[]).forEach(x=>items.push({user_id:x.user_id,type:"like",post_id:x.post_id}));
-   (comments.data||[]).forEach(x=>items.push({user_id:x.user_id,type:"comment",post_id:x.post_id,content:x.content}));
+   const [likes,comments]=await Promise.all([supabase.from("likes").select("user_id,post_id").in("post_id",postIds),supabase.from("comments").select("user_id,post_id,content").in("post_id",postIds).limit(30)]);
+   (likes.data||[]).forEach(x=>items.push({user_id:x.user_id,type:"like"}));
+   (comments.data||[]).forEach(x=>items.push({user_id:x.user_id,type:"comment",content:x.content}));
   }
-  const {data:follows,error:fErr}=await supabase.from("follows").select("follower_id").eq("following_id",currentUser.id);
-  if(fErr)throw fErr;(follows||[]).forEach(x=>items.push({user_id:x.follower_id,type:"follow"}));
+  const {data:follows}=await supabase.from("follows").select("follower_id").eq("following_id",currentUser.id);
+  (follows.data||[]).forEach(x=>items.push({user_id:x.follower_id,type:"follow"}));
   const userIds=[...new Set(items.map(x=>x.user_id).filter(id=>id!==currentUser.id))];
-  const {data:profiles,error:prErr}=userIds.length?await supabase.from("profiles").select("id,username,avatar_url").in("id",userIds):{data:[],error:null};
-  if(prErr)throw prErr;
-  const people=new Map((profiles||[]).map(p=>[p.id,p]));
-  box.innerHTML="";
+  const {data:profiles}=userIds.length?await supabase.from("profiles").select("id,username").in("id",userIds):{data:[]};
+  const people=new Map((profiles||[]).map(p=>[p.id,p]));box.innerHTML="";
   items.reverse().slice(0,50).forEach(item=>{
-   const p=people.get(item.user_id);if(!p)return;
-   const row=document.createElement("div");row.className="activity-row";
-   const icon=item.type==="like"?"♥":item.type==="comment"?"♧":"＋";
-   const text=item.type==="like"?"liked your post":item.type==="comment"?"commented on your post":"started following you";
-   row.innerHTML=`<div class="activity-icon">${icon}</div><div><strong>${esc(p.username||"Someone")}</strong> ${text}<small>${item.type==="comment"?esc(item.content||""):"AURA activity"}</small></div>`;
+   const p=people.get(item.user_id);if(!p)return;const row=document.createElement("div");row.className="activity-row";
+   row.innerHTML=`<div class="activity-icon">${item.type==="like"?"♥":item.type==="comment"?"♧":"＋"}</div><div><strong>${esc(p.username)}</strong> ${item.type==="like"?"liked your post":item.type==="comment"?"commented on your post":"started following you"}<small>${item.type==="comment"?esc(item.content||""):"AURA activity"}</small></div>`;
    row.addEventListener("click",()=>openUserProfile(item.user_id));box.appendChild(row);
   });
-  if(!box.children.length)box.innerHTML='<div class="empty"><h3>No activity yet</h3><p>Likes, comments and new followers will appear here.</p></div>';
- }catch(e){box.innerHTML='<div class="empty">Activity could not load: '+esc(e.message)+'</div>';}
+  if(!box.children.length)box.innerHTML='<div class="empty"><h3>No activity yet</h3></div>';
+ }catch(e){box.innerHTML='<div class="empty">Activity error: '+esc(e.message)+'</div>';}
 }
 $("backActivity").addEventListener("click",()=>showPage("home",document.querySelector('[data-page="home"]')));
-
-/* UNREAD MESSAGES + PUSH */
-function updateUnreadBadges(){
- const value=unreadCount>99?"99+":String(unreadCount);
- [$("navUnreadBadge"),$("headerUnreadBadge")].forEach(el=>{if(!el)return;el.textContent=value;el.classList.toggle("show",unreadCount>0);});
-}
+/* NOTIFICATIONS + PWA + VIDEO CONTROL */
+function updateUnreadBadges(){const v=unreadCount>99?"99+":String(unreadCount);[$("navUnreadBadge"),$("headerUnreadBadge")].forEach(el=>{if(el){el.textContent=v;el.classList.toggle("show",unreadCount>0);}});}
 async function refreshUnreadCount(){
  if(!currentUser)return;
  try{
-  const {data:conversations,error:cErr}=await supabase.from("conversations").select("id").or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`);
-  if(cErr)throw cErr;const ids=(conversations||[]).map(x=>x.id);
-  if(!ids.length){unreadCount=0;updateUnreadBadges();return}
-  const {data:incoming,error:mErr}=await supabase.from("messages").select("id").in("conversation_id",ids).neq("sender_id",currentUser.id);
-  if(mErr)throw mErr;const messageIds=(incoming||[]).map(x=>x.id);
-  if(!messageIds.length){unreadCount=0;updateUnreadBadges();return}
-  const {data:readRows,error:rErr}=await supabase.from("message_reads").select("message_id").eq("user_id",currentUser.id).in("message_id",messageIds);
-  if(rErr)throw rErr;const readSet=new Set((readRows||[]).map(x=>x.message_id));
-  unreadCount=messageIds.filter(id=>!readSet.has(id)).length;updateUnreadBadges();
- }catch(error){console.warn("Unread count:",error.message);}
+  const {data:convs}=await supabase.from("conversations").select("id").or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`);
+  const ids=(convs||[]).map(x=>x.id);if(!ids.length){unreadCount=0;updateUnreadBadges();return;}
+  const {data:inc}=await supabase.from("messages").select("id").in("conversation_id",ids).neq("sender_id",currentUser.id);
+  const mIds=(inc||[]).map(x=>x.id);if(!mIds.length){unreadCount=0;updateUnreadBadges();return;}
+  const {data:reads}=await supabase.from("message_reads").select("message_id").eq("user_id",currentUser.id).in("message_id",mIds);
+  const readSet=new Set((reads||[]).map(x=>x.message_id));unreadCount=mIds.filter(id=>!readSet.has(id)).length;updateUnreadBadges();
+ }catch(e){}
 }
 function subscribeGlobalMessages(){
  if(!currentUser)return;if(globalMessageChannel)supabase.removeChannel(globalMessageChannel);
- globalMessageChannel=supabase.channel("aura-global-messages-"+currentUser.id)
- .on("postgres_changes",{event:"INSERT",schema:"public",table:"messages"},async payload=>{
-  const msg=payload.new;if(!msg||msg.sender_id===currentUser.id)return;
-  await refreshUnreadCount();
-  if(activeConversation&&msg.conversation_id===activeConversation.id){scheduleChatRefresh();return}
-  toast("নতুন মেসেজ এসেছে 💌");
-  if("Notification"in window&&Notification.permission==="granted"&&document.hidden){
-   try{const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.showNotification("AURA — New Message",{body:"You have received a new message.",icon:"./icon-192.png",badge:"./icon-192.png",tag:"aura-message",data:{url:location.href}});}
-   catch(e){console.warn("Notification:",e.message);}
-  }
+ globalMessageChannel=supabase.channel("aura-global-messages-"+currentUser.id).on("postgres_changes",{event:"INSERT",schema:"public",table:"messages"},async p=>{
+  const msg=p.new;if(!msg||msg.sender_id===currentUser.id)return;await refreshUnreadCount();
+  if(activeConversation&&msg.conversation_id===activeConversation.id){scheduleChatRefresh();return;}toast("নতুন মেসেজ এসেছে 💌");
  }).subscribe();
 }
-function urlBase64ToUint8Array(base64String){
- const padding="=".repeat((4-base64String.length%4)%4),base64=(base64String+padding).replace(/-/g,"+").replace(/_/g,"/");
- const raw=atob(base64);return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)));
-}
-async function registerAURASW(){
- if(!("serviceWorker"in navigator))return null;
- try{const registration=await navigator.serviceWorker.register("./sw.js");await navigator.serviceWorker.ready;return registration;}
- catch(error){console.warn("Service worker registration failed:",error.message);return null;}
-}
+function urlBase64ToUint8Array(b){const p="=".repeat((4-b.length%4)%4),r=atob((b+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from([...r].map(c=>c.charCodeAt(0)));}
+async function registerAURASW(){if(!("serviceWorker"in navigator))return null;try{const r=await navigator.serviceWorker.register("./sw.js");await navigator.serviceWorker.ready;return r;}catch(e){return null;}}
 async function enablePushNotifications(){
- if(!currentUser){toast("Please log in first.");return}
- if(!("Notification"in window)||!("serviceWorker"in navigator)||!("PushManager"in window)){toast("This browser does not support push notifications.");return}
+ if(!requireAuth())return;if(!("Notification"in window)||!("serviceWorker"in navigator)||!("PushManager"in window)){toast("Notifications not supported.");return;}
  try{
-  const permission=await Notification.requestPermission();
-  if(permission!=="granted"){toast("Notification permission was not granted.");updateNotificationStatus();return}
-  const registration=await registerAURASW();if(!registration)throw new Error("Service worker could not be registered.");
-  let subscription=await registration.pushManager.getSubscription();
-  if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)});
-  const subJSON=subscription.toJSON(),endpoint=subJSON.endpoint;
-  const {data:existing,error:findError}=await supabase.from("push_subscriptions").select("id,user_id").eq("endpoint",endpoint).maybeSingle();
-  if(findError)throw findError;
-  if(existing&&existing.user_id!==currentUser.id)throw new Error("This device subscription is linked to another account.");
-  const record={user_id:currentUser.id,endpoint,subscription:subJSON};
-  const saveResult=existing?await supabase.from("push_subscriptions").update(record).eq("id",existing.id):await supabase.from("push_subscriptions").insert(record);
-  if(saveResult.error)throw saveResult.error;toast("Notifications enabled successfully 🔔");updateNotificationStatus();
- }catch(error){console.error("Push setup:",error);toast("Could not enable notifications: "+error.message);}
+  const perm=await Notification.requestPermission();if(perm!=="granted"){updateNotificationStatus();return;}
+  const reg=await registerAURASW();if(!reg)throw new Error("Service worker failed.");
+  let sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)});
+  const subJSON=sub.toJSON(),{data:ex}=await supabase.from("push_subscriptions").select("id,user_id").eq("endpoint",subJSON.endpoint).maybeSingle();
+  const rec={user_id:currentUser.id,endpoint:subJSON.endpoint,subscription:subJSON};
+  if(ex)await supabase.from("push_subscriptions").update(rec).eq("id",ex.id);else await supabase.from("push_subscriptions").insert(rec);
+  toast("Notifications enabled 🔔");updateNotificationStatus();
+ }catch(e){toast("Notification error: "+e.message);}
 }
 function updateNotificationStatus(){
- const button=$("enableNotifications"),status=$("notificationStatus"),supported="Notification"in window;
- if(status)status.textContent=!supported?"Notifications are not supported":Notification.permission==="granted"?"Notifications are enabled":Notification.permission==="denied"?"Notifications are blocked in browser settings":"Notifications are not enabled";
- if(button){button.textContent=supported&&Notification.permission==="granted"?"Notifications Enabled":"🔔 Enable Notifications";button.disabled=!supported||Notification.permission==="granted";}
+ const btn=$("enableNotifications"),st=$("notificationStatus"),sup="Notification"in window;
+ if(st)st.textContent=!sup?"Not supported":Notification.permission==="granted"?"Notifications enabled":"Notifications not enabled";
+ if(btn){btn.textContent=sup&&Notification.permission==="granted"?"Notifications Enabled":"🔔 Enable Notifications";btn.disabled=!sup||Notification.permission==="granted";}
 }
 $("enableNotifications").addEventListener("click",enablePushNotifications);
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&currentUser){refreshUnreadCount();if(activeConversation)loadMessages();}});
-window.addEventListener("online",()=>toast("You are back online ✨"));
-window.addEventListener("offline",()=>toast("You are offline. Check your internet connection."));
-window.addEventListener("focus",()=>{if(currentUser){refreshUnreadCount();updateNotificationStatus();}});
-updateNotificationStatus();
-
-/* PWA INSTALL */
-window.addEventListener("beforeinstallprompt",e=>{
- e.preventDefault();installPrompt=e;$("installButton").classList.remove("hidden");
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;});
+$("settingsInstall").addEventListener("click",async()=>{
+ if(installPrompt){installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;}
+ else toast("Open browser menu ⋮ and choose Add to Home screen.");
 });
-window.addEventListener("appinstalled",()=>{
- installPrompt=null;toast("AURA installed successfully ✨");
-});
-async function installAURA(){
- if(installPrompt){
-  installPrompt.prompt();const result=await installPrompt.userChoice;
-  if(result.outcome==="accepted")toast("AURA is being installed.");
-  installPrompt=null;return;
- }
- if(window.matchMedia("(display-mode: standalone)").matches){toast("AURA is already installed.");return}
- toast("To install: open browser menu ⋮ and choose Add to Home screen or Install app.");
-}
-$("installButton").addEventListener("click",installAURA);
-$("settingsInstall").addEventListener("click",installAURA);
-
-/* VIDEO HANDLING */
-const auraVideoObserver=new IntersectionObserver(entries=>{
- entries.forEach(entry=>{
-  const video=entry.target;
-  if(entry.isIntersecting&&entry.intersectionRatio>=.65){
-   document.querySelectorAll("#feed video,#gallery video,#myPosts video").forEach(other=>{if(other!==video){other.pause();}});
-   video.play().catch(()=>{});
-  }else video.pause();
- });
-},{threshold:[0,.65,1]});
-function auraObserveVideos(){
- document.querySelectorAll("#feed video,#gallery video,#myPosts video").forEach(video=>{
-  if(video.dataset.auraObserved)return;video.dataset.auraObserved="true";video.playsInline=true;video.preload="metadata";auraVideoObserver.observe(video);
- });
-}
-new MutationObserver(auraObserveVideos).observe(document.body,{childList:true,subtree:true});
-auraObserveVideos();
-document.addEventListener("visibilitychange",()=>{if(document.hidden)document.querySelectorAll("video").forEach(v=>v.pause());});
-window.addEventListener("pagehide",()=>document.querySelectorAll("video").forEach(v=>v.pause()));
-
-/* BUTTONS + CLEANUP */
-$("settingsButton").addEventListener("click",()=>showPage("settings",null));
-$("backSettings").addEventListener("click",profilePage);
-$("settingsTheme").addEventListener("click",toggleTheme);
-window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRefreshTimer);});
-
-/* =====================================
-   AURA PREMIUM UI PATCH
-===================================== */
-
-(() => {
-  // PREMIUM LIQUID GLASS DESIGN
-  const style = document.createElement("style");
-
-  style.textContent = `
-    .glass-icon {
-      width:44px!important;
-      height:44px!important;
-      border-radius:16px!important;
-      border:1px solid rgba(255,255,255,.19)!important;
-      background:
-        linear-gradient(145deg,rgba(255,255,255,.19),rgba(255,255,255,.025)),
-        rgba(105,75,150,.13)!important;
-      backdrop-filter:blur(22px) saturate(180%);
-      -webkit-backdrop-filter:blur(22px) saturate(180%);
-      box-shadow:
-        inset 0 1px 1px rgba(255,255,255,.2),
-        0 5px 20px rgba(135,70,255,.17);
-      display:grid;
-      place-items:center;
-      color:#ead8ff!important;
-      transition:.25s;
-    }
-
-    .glass-icon:active {
-      transform:scale(.88)!important;
-      box-shadow:inset 0 0 15px rgba(255,255,255,.2);
-    }
-
-    .glass-icon svg {
-      width:23px;
-      height:23px;
-      filter:drop-shadow(0 0 5px #bd8cff);
-    }
-
-    .post {
-      border:1px solid rgba(190,145,255,.17);
-      background:
-        linear-gradient(145deg,rgba(255,255,255,.045),transparent 45%),
-        linear-gradient(145deg,#171224,#0b0913);
-      box-shadow:0 15px 38px rgba(0,0,0,.28),
-                 0 5px 22px rgba(130,60,255,.09);
-      transition:border-color .25s,box-shadow .25s;
-    }
-
-    .post-user {
-      padding:16px;
-    }
-
-    .post-image {
-      max-height:620px;
-      object-fit:cover;
-    }
-
-    .post-actions {
-      padding:15px 16px 10px;
-      gap:19px;
-    }
-
-    .action {
-      transition:transform .2s,color .2s;
-    }
-
-    .action:active {
-      transform:scale(.78);
-    }
-
-    .more-btn {
-      width:38px;
-      height:38px;
-      border:1px solid rgba(255,255,255,.1);
-      border-radius:13px;
-      background:rgba(255,255,255,.045);
-      font-size:23px;
-    }
-
-    .aura-sheet-overlay {
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.67);
-      backdrop-filter:blur(9px);
-      z-index:300;
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      padding:12px;
-    }
-
-    .aura-sheet-overlay.show {
-      display:flex;
-      animation:sheetFade .2s ease;
-    }
-
-    @keyframes sheetFade {
-      from{opacity:0}
-      to{opacity:1}
-    }
-
-    .aura-sheet {
-      width:100%;
-      max-width:560px;
-      background:linear-gradient(145deg,#211832,#100d1b);
-      border:1px solid rgba(210,170,255,.2);
-      border-radius:25px;
-      padding:12px;
-      padding-bottom:calc(15px + env(safe-area-inset-bottom));
-      box-shadow:0 15px 60px #0009;
-      animation:sheetUp .25s ease;
-    }
-
-    @keyframes sheetUp {
-      from{transform:translateY(35px);opacity:.5}
-      to{transform:translateY(0);opacity:1}
-    }
-
-    .sheet-handle {
-      width:38px;
-      height:4px;
-      border-radius:8px;
-      background:#75658b;
-      margin:2px auto 16px;
-    }
-
-    .sheet-title {
-      text-align:center;
-      font-size:14px;
-      font-weight:800;
-      color:#eadbff;
-      margin-bottom:13px;
-    }
-
-    .sheet-option {
-      display:flex;
-      align-items:center;
-      gap:14px;
-      width:100%;
-      padding:15px;
-      margin:5px 0;
-      border:1px solid rgba(255,255,255,.055);
-      border-radius:15px;
-      background:rgba(255,255,255,.045);
-      color:#f4eaff;
-      font-size:14px;
-      text-align:left;
-    }
-
-    .sheet-option span {
-      font-size:19px;
-      width:25px;
-      text-align:center;
-    }
-
-    .sheet-option:active {
-      background:rgba(170,110,255,.2);
-    }
-
-    .sheet-option.danger-option {
-      color:#ff9bb7;
-    }
-
-    .sheet-cancel {
-      width:100%;
-      margin-top:9px;
-      padding:14px;
-      border:1px solid rgba(255,255,255,.1);
-      border-radius:15px;
-      background:#30233f;
-      color:white;
-      font-weight:800;
-    }
-
-    .settings-row {
-      background:linear-gradient(145deg,#171326,#100d19);
-      border-color:rgba(190,145,255,.15);
-    }
-
-    @media(max-width:380px) {
-      .header-icons {gap:6px}
-      .glass-icon {width:40px!important;height:40px!important}
-    }
-  `;
-
-  document.head.appendChild(style);
-
-  // REMOVE TOP DOWNLOAD BUTTON
-  $("installButton")?.remove();
-
-  // CUSTOM LIQUID GLASS INBOX ICON
-  const inboxSVG = `
-    <svg viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="1.7"
-      stroke-linecap="round" stroke-linejoin="round">
-      <path d="M5 5.5A3.5 3.5 0 0 1 8.5 2h7A3.5 3.5 0 0 1 19 5.5v10a3.5 3.5 0 0 1-3.5 3.5H8.5A3.5 3.5 0 0 1 5 15.5z"/>
-      <path d="M8 9h8M8 13h5"/>
-      <path d="M8 19v3l4-3 4 3v-3"/>
-    </svg>`;
-
-  const activitySVG = `
-    <svg viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="1.7"
-      stroke-linecap="round" stroke-linejoin="round">
-      <path d="M20 8.5c0 5-8 11-8 11s-8-6-8-11a4.5 4.5 0 0 1 8-2.8 4.5 4.5 0 0 1 8 2.8z"/>
-      <path d="M12 5v4M10 7h4"/>
-    </svg>`;
-
-  const inboxButton = $("inboxButton");
-
-  if (inboxButton) {
-    inboxButton.classList.add("glass-icon");
-    inboxButton.innerHTML = inboxSVG;
-    const badge = document.createElement("span");
-    badge.id = "headerUnreadBadge";
-    badge.className = "badge";
-    inboxButton.appendChild(badge);
-  }
-
-  const activityButton = $("activityButton");
-
-  if (activityButton) {
-    activityButton.classList.add("glass-icon");
-    activityButton.innerHTML = activitySVG;
-  }
-
-  // BOTTOM NAV INBOX ICON
-  const navInbox = document.querySelector('.nav[data-page="inbox"]');
-
-  if (navInbox) {
-    navInbox.innerHTML = inboxSVG;
-    navInbox.querySelector("svg").style.width = "25px";
-    navInbox.querySelector("svg").style.height = "25px";
-
-    const badge = document.createElement("span");
-    badge.id = "navUnreadBadge";
-    badge.className = "badge";
-    navInbox.appendChild(badge);
-  }
-
-  // MOVE LOGOUT INTO SETTINGS
-  const logoutButton = $("logoutButton");
-
-  if (logoutButton) {
-    const row = document.createElement("div");
-    row.className = "settings-row";
-
-    row.innerHTML = `
-      <div>🚪</div>
-      <div>
-        <strong>Log Out</strong>
-        <small>Sign out of your AURA account.</small>
-      </div>
-    `;
-
-    const button = document.createElement("button");
-    button.className = "danger";
-    button.textContent = "Log Out";
-
-    button.addEventListener("click", () => {
-      if (confirm("Are you sure you want to log out?")) {
-        logout();
-      }
-    });
-
-    row.appendChild(button);
-    $("settings").appendChild(row);
-
-    logoutButton.remove();
-  }
-
-  // INSTALL OPTION REMAINS INSIDE SETTINGS
-  // TOP DOWNLOAD BUTTON IS REMOVED ONLY.
-
-  // CREATE PREMIUM ACTION SHEET
-  const overlay = document.createElement("div");
-  overlay.className = "aura-sheet-overlay";
-  overlay.id = "auraActionSheet";
-
-  overlay.innerHTML = `
-    <div class="aura-sheet">
-      <div class="sheet-handle"></div>
-      <div class="sheet-title">AURA OPTIONS</div>
-      <div id="auraSheetOptions"></div>
-      <button class="sheet-cancel" id="auraSheetCancel">Cancel</button>
-    </div>
-  `;
-
-  document.body.appendChild(overlay);
-
-  let selectedPost = null;
-
-  function closeActionSheet() {
-    overlay.classList.remove("show");
-    selectedPost = null;
-  }
-
-  $("auraSheetCancel").addEventListener("click", closeActionSheet);
-
-  overlay.addEventListener("click", e => {
-    if (e.target === overlay) closeActionSheet();
-  });
-
-  function addSheetOption(icon, label, callback, danger = false) {
-    const button = document.createElement("button");
-    button.className = "sheet-option" + (danger ? " danger-option" : "");
-    button.innerHTML = `<span>${icon}</span>${label}`;
-
-    button.addEventListener("click", async () => {
-      const post = selectedPost;
-      closeActionSheet();
-      if (post) await callback(post);
-    });
-
-    $("auraSheetOptions").appendChild(button);
-  }
-
-  // REPLACE NUMBER-BASED POST MENU
-  postOptions = async function(id) {
-    const post = postsCache.find(p => String(p.id) === String(id));
-    if (!post) return;
-
-    selectedPost = post;
-    const box = $("auraSheetOptions");
-    box.innerHTML = "";
-
-    if (post.user_id === currentUser.id) {
-      addSheetOption("👤", "View My Profile", () => profilePage());
-
-      addSheetOption("🔖", "Save / Remove Saved Post", p => {
-        toggleSavedPost(p.id);
-      });
-
-      addSheetOption("🗑️", "Delete Post", async p => {
-        if (!confirm("Delete this post permanently?")) return;
-
-        const {error} = await supabase
-          .from("posts")
-          .delete()
-          .eq("id", p.id)
-          .eq("user_id", currentUser.id);
-
-        if (error) {
-          toast("Delete failed: " + error.message);
-        } else {
-          toast("Post deleted.");
-          await loadFeed();
-          await loadMyStats();
-        }
-      }, true);
-    } else {
-      addSheetOption("👤", "View Profile", p => {
-        openUserProfile(p.user_id);
-      });
-
-      addSheetOption("🔖", "Save Post", p => {
-        toggleSavedPost(p.id);
-      });
-
-      addSheetOption("🚫", "Block Account", p => {
-        blockUser(p.user_id);
-      }, true);
-
-      addSheetOption("⚑", "Report Account", p => {
-        reportUser(p.user_id);
-      }, true);
-    }
-
-    overlay.classList.add("show");
-  };
-
-  // VIDEO MUST STOP WHEN LEAVING CHAT
-  const originalShowPage = showPage;
-
-  showPage = function(name, button) {
-    if (name !== "chat") {
-      $("chatMessages")?.querySelectorAll("video").forEach(video => {
-        video.pause();
-        video.currentTime = video.currentTime;
-      });
-    }
-
-    originalShowPage(name, button);
-  };
-
-  $("backChats")?.addEventListener("click", () => {
-    $("chatMessages")?.querySelectorAll("video").forEach(video => {
-      video.pause();
-      video.currentTime = video.currentTime;
-    });
-  });
-
-  // PAUSE CHAT VIDEO WHEN PAGE BECOMES HIDDEN
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      $("chatMessages")?.querySelectorAll("video").forEach(video => {
-        video.pause();
-      });
-    }
-  });
-
-  // PAUSE WHEN APP NAVIGATES AWAY
-  window.addEventListener("pagehide", () => {
-    $("chatMessages")?.querySelectorAll("video").forEach(video => {
-      video.pause();
-    });
-  });
-
-  console.log("AURA Premium UI Patch Loaded ✨");
-})();
-
-/* =========================================
-   AURA — GLOBAL VIDEO PLAYBACK CONTROLLER
-   ========================================= */
-(() => {
-  if (window.AURA_VIDEO_CONTROL) return;
-  window.AURA_VIDEO_CONTROL = true;
-
-  let activeVideo = null;
-
-  function pauseOtherVideos(current) {
-    document.querySelectorAll("video").forEach(video => {
-      if (video !== current && !video.paused) {
-        video.pause();
-      }
-    });
-  }
-
-  document.addEventListener("play", event => {
-    const video = event.target;
-
-    if (!(video instanceof HTMLVideoElement)) return;
-
-    pauseOtherVideos(video);
-    activeVideo = video;
-  }, true);
-
-  document.addEventListener("pause", event => {
-    if (event.target === activeVideo) {
-      activeVideo = null;
-    }
-  }, true);
-
-  document.addEventListener("ended", event => {
-    if (event.target === activeVideo) {
-      activeVideo = null;
-    }
-  }, true);
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      document.querySelectorAll("video").forEach(video => {
-        video.pause();
-      });
-      activeVideo = null;
-    }
-  });
-
-  window.addEventListener("pagehide", () => {
-    document.querySelectorAll("video").forEach(video => {
-      video.pause();
-    });
-    activeVideo = null;
-  });
-
-  // Story viewer opens: pause feed and chat videos.
-  window.AURA_PAUSE_ALL_VIDEOS = function() {
-    document.querySelectorAll("video").forEach(video => {
-      video.pause();
-    });
-    activeVideo = null;
-  };
-
-  console.log("AURA Global Video Control Ready");
-})();
-
-
-/* =================================
-   AURA SINGLE VIDEO PLAYBACK FIX
-================================= */
-(() => {
-  if (window.AURA_SINGLE_VIDEO_FIX) return;
-  window.AURA_SINGLE_VIDEO_FIX = true;
-
-  // এক ভিডিও চললে বাকি সব ভিডিও Pause হবে
-  document.addEventListener("play", function(event) {
-    const currentVideo = event.target;
-
-    if (!(currentVideo instanceof HTMLVideoElement)) return;
-
-    document.querySelectorAll("video").forEach(video => {
-      if (video !== currentVideo && !video.paused) {
-        video.pause();
-      }
-    });
-  }, true);
-
-  // Story খোলার আগেই Feed-এর ভিডিও Pause
-  if (typeof window.openStoryGroup === "function") {
-    const originalOpenStoryGroup = window.openStoryGroup;
-
-    window.openStoryGroup = function(userId) {
-      document.querySelectorAll("video").forEach(video => {
-        video.pause();
-      });
-
-      return originalOpenStoryGroup.apply(this, arguments);
-    };
-  }
-
-  // Story বন্ধ করার সময়ও Story ভিডিও Pause
-  if (typeof window.closeStoryViewer === "function") {
-    const originalCloseStoryViewer = window.closeStoryViewer;
-
-    window.closeStoryViewer = function() {
-      document.querySelectorAll("#storyModal video").forEach(video => {
-        video.pause();
-      });
-
-      return originalCloseStoryViewer.apply(this, arguments);
-    };
-  }
-
-  console.log("AURA Single Video Playback Activated");
-})();
-
-/* AURA PREMIUM ACTION ICON RESTORE */
-(() => {
-  if (window.AURA_PREMIUM_ACTIONS) return;
-  window.AURA_PREMIUM_ACTIONS = true;
-
-  const icons = {
-    like: `<svg viewBox="0 0 24 24"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"/></svg>`,
-    liked: `<svg viewBox="0 0 24 24" class="filled"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"/></svg>`,
-    comment: `<svg viewBox="0 0 24 24"><path d="M20 11.5a8.5 8.5 0 0 1-12.8 7.3L3 20l1.2-4.2A8.5 8.5 0 1 1 20 11.5Z"/></svg>`,
-    share: `<svg viewBox="0 0 24 24"><path d="M22 2 9.5 14.5M22 2l-8 20-4.5-7.5L2 10 22 2Z"/></svg>`,
-    save: `<svg viewBox="0 0 24 24"><path d="M6 3.5h12a1 1 0 0 1 1 1V22l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"/></svg>`,
-    saved: `<svg viewBox="0 0 24 24" class="filled"><path d="M6 3.5h12a1 1 0 0 1 1 1V22l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"/></svg>`
-  };
-
-  const style = document.createElement("style");
-  style.textContent = `
-    .post-actions .action {
-      width:42px;height:42px;
-      display:inline-flex;align-items:center;justify-content:center;
-      border:0;background:transparent;color:#f5f2ff;
-      padding:9px;border-radius:50%;
-      transition:transform .22s ease,color .22s ease,background .22s ease;
-      cursor:pointer;
-    }
-    .post-actions .action svg {
-      width:24px;height:24px;
-      fill:none;stroke:currentColor;stroke-width:1.8;
-      stroke-linecap:round;stroke-linejoin:round;
-      transition:transform .25s ease;
-    }
-    .post-actions .action svg.filled {fill:currentColor;}
-    .post-actions .action:active {transform:scale(.82);}
-    .post-actions .action.liked {color:#ff477e;}
-    .post-actions .action.saved {color:#b69aff;}
-    .post-actions .action:hover svg {transform:scale(1.12);}
-    .post-actions .action.aura-pop {animation:auraPop .35s ease;}
-    @keyframes auraPop {
-      0%{transform:scale(1)}
-      45%{transform:scale(1.25)}
-      100%{transform:scale(1)}
-    }
-  `;
-  document.head.appendChild(style);
-
-  const originalRenderFeed = window.renderFeed;
-  if (typeof originalRenderFeed !== "function") return;
-
-  window.renderFeed = function() {
-    originalRenderFeed.apply(this, arguments);
-
-    document.querySelectorAll("#feed .post").forEach(post => {
-      const buttons = post.querySelectorAll(".post-actions button");
-      if (buttons.length < 4) return;
-
-      const [like, comment, share, save] = buttons;
-
-      like.innerHTML = like.classList.contains("liked")
-        ? icons.liked : icons.like;
-      comment.innerHTML = icons.comment;
-      share.innerHTML = icons.share;
-      save.innerHTML = save.classList.contains("saved")
-        ? icons.saved : icons.save;
-
-      [like, comment, share, save].forEach(button => {
-        if (button.dataset.auraAnimated) return;
-        button.dataset.auraAnimated = "1";
-        button.addEventListener("click", () => {
-          button.classList.remove("aura-pop");
-          void button.offsetWidth;
-          button.classList.add("aura-pop");
-        });
-      });
-    });
-  };
-
-  window.renderFeed();
-})();
-
-/* AURA ONE-PASTE PREMIUM ICON FIX */
-(function(){
- if(window.AURA_ONE_PASTE_ICONS)return;
- window.AURA_ONE_PASTE_ICONS=true;
-
- const oldRender=renderFeed;
-
- renderFeed=function(){
-  oldRender.apply(this,arguments);
-
-  document.querySelectorAll("#feed .post-actions").forEach(row=>{
-   const buttons=row.querySelectorAll("button.action");
-   if(buttons.length<4)return;
-
-   const icons=[
-    `<svg viewBox="0 0 24 24"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"/></svg>`,
-    `<svg viewBox="0 0 24 24"><path d="M20 11.5a8.5 8.5 0 0 1-12.8 7.3L3 20l1.2-4.2A8.5 8.5 0 1 1 20 11.5Z"/></svg>`,
-    `<svg viewBox="0 0 24 24"><path d="M22 2 9.5 14.5M22 2l-8 20-4.5-7.5L2 10 22 2Z"/></svg>`,
-    `<svg viewBox="0 0 24 24"><path d="M6 3.5h12a1 1 0 0 1 1 1V22l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"/></svg>`
-   ];
-
-   buttons.forEach((button,i)=>{
-    if(i>3)return;
-    button.innerHTML=icons[i];
-    button.classList.add("aura-premium-icon");
-   });
-  });
- };
-
- const css=document.createElement("style");
- css.textContent=`
- #feed .aura-premium-icon{
-  width:42px;height:42px;padding:9px;
-  display:inline-flex;align-items:center;justify-content:center;
-  border:0;background:transparent;color:inherit;
-  border-radius:50%;cursor:pointer;
-  transition:transform .25s ease,color .25s ease;
- }
- #feed .aura-premium-icon svg{
-  width:24px;height:24px;fill:none;
-  stroke:currentColor;stroke-width:1.8;
-  stroke-linecap:round;stroke-linejoin:round;
- }
- #feed .aura-premium-icon:active{transform:scale(.8)}
- #feed .aura-premium-icon[data-like].liked{color:#ff477e}
- #feed .aura-premium-icon[data-save].saved{color:#b69aff}
- `;
- document.head.appendChild(css);
- renderFeed();
-})();
-
-/* AURA — PREVENT UNWANTED RELOAD + SMOOTH SCROLL */
-(function () {
-  if (window.AURA_SMOOTH_FIX) return;
-  window.AURA_SMOOTH_FIX = true;
-
-  // Prevent action buttons from submitting forms
-  document.addEventListener("click", function (e) {
-    const btn = e.target.closest(
-      '#feed button[data-like], #feed button[data-save], #feed button[data-share], #feed button[data-focus-comment]'
-    );
-
-    if (btn) {
-      e.preventDefault();
-    }
-  }, true);
-
-  // Smooth scrolling
-  document.documentElement.style.scrollBehavior = "smooth";
-  document.body.style.overscrollBehaviorY = "contain";
-
-  const style = document.createElement("style");
-  style.textContent = `
-    html {
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    #feed {
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior-y: contain;
-    }
-
-    #feed .post {
-      contain: layout style;
-    }
-
-    #feed button.action {
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-  `;
-  document.head.appendChild(style);
-})();
-
-/* AURA PREMIUM SAVE ICON */
-(function () {
-  if (window.AURA_SAVE_ICON_FIX) return;
-  window.AURA_SAVE_ICON_FIX = true;
-
-  const style = document.createElement("style");
-  style.textContent = `
-    #feed button[data-save] {
-      font-size: 0 !important;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #feed button[data-save]::after {
-      content: "";
-      width: 23px;
-      height: 23px;
-      display: block;
-      background: currentColor;
-      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 3.5h12a1 1 0 0 1 1 1V22l-7-4-7 4V4.5a1 1 0 0 1 1-1Z' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
-      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 3.5h12a1 1 0 0 1 1 1V22l-7-4-7 4V4.5a1 1 0 0 1 1-1Z' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
-    }
-
-    #feed button[data-save].saved {
-      color: #b69aff;
-    }
-  `;
-  document.head.appendChild(style);
-})();
+document.addEventListener("play",e=>{if(e.target instanceof HTMLVideoElement)document.querySelectorAll("video").forEach(v=>{if(v!==e.target&&!v.paused)v.pause();});},true);
+document.addEventListener("visibilitychange",()=>{if(document.hidden)document.querySelectorAll("video").forEach(v=>v.pause());else if(currentUser)refreshUnreadCount();});
 </script>
 </body>
 </html>
