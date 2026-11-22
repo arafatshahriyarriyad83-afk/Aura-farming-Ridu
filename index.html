@@ -522,9 +522,102 @@ async function logout(){
  if(chatChannel)await supabase.removeChannel(chatChannel);
  if(presenceChannel)await supabase.removeChannel(presenceChannel);
  if(globalMessageChannel)await supabase.removeChannel(globalMessageChannel);
- const {error}=await supabase.auth.signOut();if(error)toast(error.message);else location.reload();
+ const {error}=await 
+async function logout(){
+  const confirmed = confirm("Are you sure you want to log out?");
+  if(!confirmed) return;
+
+  const screen = document.createElement("div");
+  screen.id = "auraLogoutScreen";
+
+  screen.innerHTML = `
+    <div class="aura-logout-content">
+      <div class="aura-logout-logo">AURA</div>
+      <div class="aura-logout-spinner"></div>
+      <h2>See You Again ✨</h2>
+      <p>Signing you out securely...</p>
+    </div>
+  `;
+
+  const css = document.createElement("style");
+  css.textContent = `
+    #auraLogoutScreen{
+      position:fixed;
+      inset:0;
+      z-index:999999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(8,7,16,.97);
+      backdrop-filter:blur(20px);
+      animation:auraLogoutFade .4s ease;
+    }
+    .aura-logout-content{
+      text-align:center;
+      animation:auraLogoutUp .6s ease;
+    }
+    .aura-logout-logo{
+      font-size:38px;
+      font-weight:900;
+      letter-spacing:8px;
+      background:linear-gradient(135deg,#b58aff,#f27bc5);
+      background-clip:text;
+      -webkit-background-clip:text;
+      color:transparent;
+      margin-bottom:25px;
+    }
+    .aura-logout-spinner{
+      width:38px;
+      height:38px;
+      border:3px solid #ffffff20;
+      border-top-color:#b58aff;
+      border-radius:50%;
+      margin:0 auto 22px;
+      animation:auraLogoutSpin .8s linear infinite;
+    }
+    .aura-logout-content h2{
+      color:white;
+      font-size:22px;
+      margin-bottom:9px;
+    }
+    .aura-logout-content p{
+      color:#aaa2bd;
+      font-size:13px;
+    }
+    @keyframes auraLogoutSpin{
+      to{transform:rotate(360deg)}
+    }
+    @keyframes auraLogoutFade{
+      from{opacity:0}
+      to{opacity:1}
+    }
+    @keyframes auraLogoutUp{
+      from{opacity:0;transform:translateY(20px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+  `;
+
+  document.head.appendChild(css);
+  document.body.appendChild(screen);
+
+  try{
+    const {error} = await supabase.auth.signOut();
+
+    if(error) throw error;
+
+    setTimeout(()=>{
+      location.reload();
+    },1200);
+
+  }catch(e){
+    screen.remove();
+    css.remove();
+    toast(e.message || "Logout failed.");
+  }
 }
+
 $("logoutButton").addEventListener("click",logout);
+
 
 /* NAVIGATION */
 function openInbox(){showPage("inbox",document.querySelector('[data-page="inbox"]'));if(currentUser)loadChatList();}
