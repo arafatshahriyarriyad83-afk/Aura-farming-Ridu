@@ -603,11 +603,45 @@ const {data:{session}}=await supabase.auth.getSession();
 if(session?.user){try{await startApp(session.user)}catch(e){console.error(e);showMessage(e.message);$("authScreen").classList.remove("hidden");}}
 else $("authScreen").classList.remove("hidden");
 
-async function logout(){
- if(chatChannel)await supabase.removeChannel(chatChannel);
- if(presenceChannel)await supabase.removeChannel(presenceChannel);
- if(globalMessageChannel)await supabase.removeChannel(globalMessageChannel);
- const {error}=await 
+
+async function logout() {
+  const confirmed = confirm("Are you sure you want to log out?");
+  if (!confirmed) return;
+
+  const screen = document.createElement("div");
+  screen.id = "auraLogoutScreen";
+
+  screen.innerHTML = `
+    <div class="aura-logout-content">
+      <div class="aura-logout-logo">AURA</div>
+      <div class="aura-logout-spinner"></div>
+      <h2>See You Again ✨</h2>
+      <p>Signing you out securely...</p>
+    </div>
+  `;
+
+  document.body.appendChild(screen);
+
+  try {
+    if (chatChannel) await supabase.removeChannel(chatChannel);
+    if (presenceChannel) await supabase.removeChannel(presenceChannel);
+    if (globalMessageChannel) await supabase.removeChannel(globalMessageChannel);
+
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+
+    setTimeout(() => {
+      location.reload();
+    }, 1200);
+
+  } catch (e) {
+    screen.remove();
+    toast("Logout failed: " + e.message);
+  }
+}
+
+$("logoutButton")?.addEventListener("click", logout);
+
 async function logout(){
   const confirmed = confirm("Are you sure you want to log out?");
   if(!confirmed) return;
