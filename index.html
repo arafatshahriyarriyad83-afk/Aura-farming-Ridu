@@ -2109,5 +2109,147 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
   });
 })();
 </script>
+<style>
+#gunPopup{position:fixed;top:76px;left:50%;transform:translateX(-50%);width:92%;max-width:420px;height:66px;background:linear-gradient(145deg,#171326,#0d0b17);border:1px solid #a855f7;border-radius:20px;box-shadow:0 12px 35px rgba(168,85,247,.38);z-index:250;display:flex;align-items:center;padding:0 18px;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .25s ease}
+#gunPopup.show{opacity:1}
+.gun-icon{font-size:30px;z-index:2;filter:drop-shadow(0 0 8px #a855f7)}
+#gunPopup.show .gun-icon{animation:gunRecoil .35s ease .15s}
+.muzzle-flash{width:18px;height:18px;border-radius:50%;background:#f0abfc;box-shadow:0 0 18px 8px #a855f7;opacity:0;margin-left:-4px}
+#gunPopup.show .muzzle-flash{animation:flashAnim .25s ease .18s}
+.bullet-trail{position:absolute;left:56px;height:4px;width:28px;border-radius:4px;background:linear-gradient(90deg,transparent,#e0aaff,#fff);box-shadow:0 0 12px #d946ef;opacity:0}
+#gunPopup.show .bullet-trail{animation:bulletFly .48s cubic-bezier(.15,.85,.35,1) .18s forwards}
+.shoot-target{margin-left:auto;font-size:12px;font-weight:800;color:#f5eaff;letter-spacing:1.5px;opacity:0;transform:scale(.8)}
+#gunPopup.show .shoot-target{animation:targetHit .4s ease .45s forwards}
+@keyframes gunRecoil{0%{transform:rotate(0)}35%{transform:rotate(-26deg) translateX(-4px)}100%{transform:rotate(0)}}
+@keyframes flashAnim{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.5)}}
+@keyframes bulletFly{0%{left:56px;opacity:1;width:20px}70%{opacity:1;width:55px}100%{left:82%;opacity:0;width:10px}}
+@keyframes targetHit{0%{opacity:0;transform:scale(.6)}60%{opacity:1;transform:scale(1.15);text-shadow:0 0 14px #e879ff}100%{opacity:1;transform:scale(1)}}
+
+.edit-card{background:linear-gradient(145deg,#141021,#0e0c18);border:1px solid #2b2040;border-radius:23px;padding:24px 18px;box-shadow:var(--shadow)}
+.edit-avatar-box{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:20px}
+.edit-avatar-box img{width:110px;height:110px;border-radius:50%;object-fit:cover;padding:4px;border:3px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--gradient) border-box;box-shadow:0 0 25px rgba(155,92,255,.35)}
+.field-label{display:block;font-size:12px;color:#d8baff;font-weight:700;margin:12px 0 4px 4px}
+</style>
+
+<div id="gunPopup">
+  <span class="gun-icon">🔫</span>
+  <span class="muzzle-flash"></span>
+  <span class="bullet-trail"></span>
+  <span class="shoot-target">✨ AURA PROFILE</span>
+</div>
+
+<section class="page" id="editProfile">
+  <div class="chat-back"><button id="backEditProfile">← Profile</button></div>
+  <div class="heading">Edit Profile</div>
+  <div class="sub">Customize your AURA identity ✨</div>
+  <div class="edit-card">
+    <div class="edit-avatar-box">
+      <img id="editAvatarPreview" src="" alt="Preview">
+      <label class="secondary" style="cursor:pointer;margin:0">
+        📷 Change Profile Photo
+        <input type="file" id="editAvatarInput" accept="image/*" hidden>
+      </label>
+    </div>
+    <label class="field-label">Nickname (Display Name)</label>
+    <input class="field" id="editNickname" placeholder="Enter your nickname">
+    <label class="field-label">Username</label>
+    <input class="field" id="editUsername" placeholder="Choose a unique username">
+    <label class="field-label">Bio</label>
+    <textarea class="field" id="editBio" rows="3" placeholder="Tell your story..."></textarea>
+    <button class="primary" id="saveProfileBtn" style="width:100%;margin:14px 0 0">Save Changes ✨</button>
+  </div>
+</section>
+
+<script type="module">
+import { createClient } from "https://jsdelivr.net";
+const sb = createClient("https://supabase.co", "sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv");
+
+document.querySelector('.nav[data-page="profile"]')?.addEventListener("click", () => {
+  const pop = document.getElementById("gunPopup");
+  if (!pop) return;
+  pop.classList.remove("show");
+  void pop.offsetWidth;
+  pop.classList.add("show");
+  clearTimeout(window._gunTimer);
+  window._gunTimer = setTimeout(() => pop.classList.remove("show"), 1800);
+});
+
+const oldEditBtn = document.getElementById("editProfileButton");
+if (oldEditBtn) {
+  const newEditBtn = oldEditBtn.cloneNode(true);
+  oldEditBtn.parentNode.replaceChild(newEditBtn, oldEditBtn);
+
+  let selectedAvatarFile = null;
+
+  newEditBtn.addEventListener("click", async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.user) return;
+    const { data: prof } = await sb.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
+    selectedAvatarFile = null;
+    document.getElementById("editAvatarPreview").src = prof?.avatar_url || document.getElementById("myPic").src;
+    document.getElementById("editNickname").value = prof?.full_name || "";
+    document.getElementById("editUsername").value = prof?.username || "";
+    document.getElementById("editBio").value = prof?.bio || "";
+    document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "editProfile"));
+    document.querySelectorAll(".nav").forEach(n => n.classList.remove("active"));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  document.getElementById("backEditProfile").addEventListener("click", () => {
+    document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "profile"));
+    document.querySelector('.nav[data-page="profile"]')?.classList.add("active");
+  });
+
+  document.getElementById("editAvatarInput").addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    selectedAvatarFile = file;
+    document.getElementById("editAvatarPreview").src = URL.createObjectURL(file);
+  });
+
+  document.getElementById("saveProfileBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("saveProfileBtn");
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.user) return;
+
+    const full_name = document.getElementById("editNickname").value.trim();
+    const username = document.getElementById("editUsername").value.trim().toLowerCase().replace(/[^a-z0-9_.]/g, "");
+    const bio = document.getElementById("editBio").value.trim();
+
+    if (!username) {
+      alert("Username cannot be empty!");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Saving...";
+
+    try {
+      let avatar_url = document.getElementById("myPic").src;
+      if (selectedAvatarFile) {
+        const ext = (selectedAvatarFile.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+        const path = `${session.user.id}/avatar-${Date.now()}.${ext}`;
+        const { error: upErr } = await sb.storage.from("aura-media").upload(path, selectedAvatarFile);
+        if (upErr) throw upErr;
+        avatar_url = sb.storage.from("aura-media").getPublicUrl(path).data.publicUrl;
+      }
+
+      const { error } = await sb.from("profiles").update({ full_name, username, bio, avatar_url }).eq("id", session.user.id);
+      if (error) throw error;
+
+      document.getElementById("myName").textContent = full_name || username;
+      document.getElementById("myBio").textContent = bio || "Living in my own little world 🌷";
+      document.getElementById("myPic").src = avatar_url;
+
+      document.getElementById("backEditProfile").click();
+    } catch (err) {
+      alert("Error: " + (err.message || "Could not update profile"));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Save Changes ✨";
+    }
+  });
+}
+</script>
 </body>
 </html>
