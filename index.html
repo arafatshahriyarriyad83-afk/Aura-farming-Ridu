@@ -938,5 +938,15 @@ $("settingsInstall").addEventListener("click",async()=>{
 document.addEventListener("play",e=>{if(e.target instanceof HTMLVideoElement)document.querySelectorAll("video").forEach(v=>{if(v!==e.target&&!v.paused)v.pause();});},true);
 document.addEventListener("visibilitychange",()=>{if(document.hidden)document.querySelectorAll("video").forEach(v=>v.pause());else if(currentUser)refreshUnreadCount();});
 </script>
+<script>
+window.addEventListener("error", function(e) {
+  alert("ERROR: " + e.message + "\nLine: " + e.lineno);
+}, true);
+
+setTimeout(function() {
+  var btn = document.getElementById("guestButton");
+  alert("Button check: " + (btn ? "Found" : "Not Found"));
+}, 1500);
+</script>
 </body>
 </html>
