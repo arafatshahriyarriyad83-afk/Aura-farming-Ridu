@@ -1813,6 +1813,50 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
  document.head.appendChild(css);
  renderFeed();
 })();
+
+/* AURA — PREVENT UNWANTED RELOAD + SMOOTH SCROLL */
+(function () {
+  if (window.AURA_SMOOTH_FIX) return;
+  window.AURA_SMOOTH_FIX = true;
+
+  // Prevent action buttons from submitting forms
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest(
+      '#feed button[data-like], #feed button[data-save], #feed button[data-share], #feed button[data-focus-comment]'
+    );
+
+    if (btn) {
+      e.preventDefault();
+    }
+  }, true);
+
+  // Smooth scrolling
+  document.documentElement.style.scrollBehavior = "smooth";
+  document.body.style.overscrollBehaviorY = "contain";
+
+  const style = document.createElement("style");
+  style.textContent = `
+    html {
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #feed {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+    }
+
+    #feed .post {
+      contain: layout style;
+    }
+
+    #feed button.action {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+  `;
+  document.head.appendChild(style);
+})();
 </script>
 </body>
 </html>
