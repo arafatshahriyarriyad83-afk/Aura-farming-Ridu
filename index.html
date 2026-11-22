@@ -1892,5 +1892,121 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
   document.head.appendChild(style);
 })();
 </script>
+<!-- AURA SIGMA POPUP + NO-RELOAD SMOOTH ACTIONS -->
+<style>
+.aura-sigma-overlay{
+  position:fixed;inset:0;z-index:999;
+  background:rgba(5,4,12,.78);backdrop-filter:blur(14px);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.aura-sigma-overlay.show{
+  display:flex;animation:sigmaFade .25s ease;
+}
+@keyframes sigmaFade{from{opacity:0}to{opacity:1}}
+.aura-sigma-card{
+  width:100%;max-width:340px;text-align:center;
+  padding:30px 24px;border-radius:28px;
+  background:linear-gradient(155deg,#1d1433,#0c0917 70%,#190f2b);
+  border:1px solid rgba(216,186,255,.32);
+  box-shadow:0 24px 65px rgba(121,44,255,.42),inset 0 1px 1px rgba(255,255,255,.22);
+  animation:sigmaPop .42s cubic-bezier(.16,1.25,.3,1);
+}
+@keyframes sigmaPop{
+  0%{opacity:0;transform:scale(.7) translateY(35px)}
+  100%{opacity:1;transform:scale(1) translateY(0)}
+}
+.sigma-badge{
+  width:72px;height:72px;margin:0 auto 14px;border-radius:22px;
+  display:grid;place-items:center;font-size:36px;
+  background:linear-gradient(135deg,rgba(121,44,255,.28),rgba(224,170,255,.15));
+  border:1px solid rgba(224,170,255,.35);
+  box-shadow:0 0 28px rgba(168,85,247,.45);
+  animation:sigmaPulse 1.6s infinite alternate;
+}
+@keyframes sigmaPulse{from{transform:scale(1)}to{transform:scale(1.08)}}
+.sigma-title{
+  font-family:'Playfair Display',serif;font-size:23px;font-weight:800;
+  background:linear-gradient(135deg,#fff,#e0aaff);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:8px;
+}
+.sigma-sub{color:#b4a7d1;font-size:13px;line-height:1.6;margin-bottom:20px;}
+.sigma-btn{
+  width:100%;padding:13px;border:0;border-radius:15px;
+  background:linear-gradient(135deg,#792cff,#b44cff);
+  color:#fff;font-weight:800;letter-spacing:.5px;
+  box-shadow:0 8px 22px rgba(155,92,255,.4);
+}
+</style>
+
+<div class="aura-sigma-overlay" id="auraSigmaPopup">
+  <div class="aura-sigma-card">
+    <div class="sigma-badge">🗿🔥</div>
+    <div class="sigma-title">Pure Aura Move!</div>
+    <div class="sigma-sub">Post added to your AURA feed ⚡<br>Your universe just got stronger ✨</div>
+    <button type="button" class="sigma-btn" id="closeSigmaPopup">Let's Go 🚀</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  // 1. SIGMA POPUP LOGIC
+  const popup = document.getElementById("auraSigmaPopup");
+  const closeBtn = document.getElementById("closeSigmaPopup");
+  let autoCloseTimer = null;
+
+  window.showSigmaPostPopup = function() {
+    if (!popup) return;
+    popup.classList.add("show");
+    clearTimeout(autoCloseTimer);
+    autoCloseTimer = setTimeout(() => popup.classList.remove("show"), 3500);
+  };
+
+  closeBtn?.addEventListener("click", () => {
+    clearTimeout(autoCloseTimer);
+    popup.classList.remove("show");
+  });
+  popup?.addEventListener("click", e => {
+    if (e.target === popup) popup.classList.remove("show");
+  });
+
+  // Watch uploadStatus for "Posted successfully"
+  const statusEl = document.getElementById("uploadStatus");
+  if (statusEl) {
+    new MutationObserver(() => {
+      if (statusEl.textContent.includes("Posted successfully")) {
+        window.showSigmaPostPopup();
+      }
+    }).observe(statusEl, { childList: true, characterData: true, subtree: true });
+  }
+
+  // 2. PREVENT VIDEO AUTO-RELOAD ON LIKE / COMMENT / SAVE
+  document.addEventListener("click", e => {
+    const actionBtn = e.target.closest("#feed .action, #feed [data-like], #feed [data-save]");
+    if (!actionBtn) return;
+
+    // Save currently playing video state before re-render
+    const playing = [...document.querySelectorAll("#feed video")].find(v => !v.paused);
+    if (playing) {
+      window.__auraPlayingVideo = { src: playing.src, time: playing.currentTime };
+    }
+  }, true);
+
+  // Restore playing video smoothly if feed re-renders
+  const feedEl = document.getElementById("feed");
+  if (feedEl) {
+    new MutationObserver(() => {
+      const saved = window.__auraPlayingVideo;
+      if (!saved) return;
+      window.__auraPlayingVideo = null;
+      const vid = [...feedEl.querySelectorAll("video")].find(v => v.src === saved.src);
+      if (vid) {
+        vid.currentTime = saved.time;
+        vid.play().catch(() => {});
+      }
+    }).observe(feedEl, { childList: true });
+  }
+})();
+</script>
 </body>
 </html>
