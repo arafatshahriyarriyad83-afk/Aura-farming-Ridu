@@ -574,7 +574,7 @@ async function loadFeed(){
 }
 function renderFeed(){
  const feed=$("feed");feed.innerHTML="";
- if(!postsCache.length){feed.innerHTML='<div class="empty"><h3>No posts yet ✨</h3><p>Be the first to share something beautiful.</p></div>';return}
+ if(!postsCache.length){feed.innerHTML='<div class="empty"><h3>Your Mind Feed ✨</h3><p>Be the first to share something beautiful.</p></div>';return}
  postsCache.forEach(post=>{
   const profile=post.profiles||{},username=profile.username||"AURA User",avatar=profile.avatar_url||FALLBACK_AVATAR;
   const liked=(post.likes||[]).some(x=>x.user_id===currentUser.id),saved=isPostSaved(post.id),comments=post.comments||[],video=post.media_type==="video";
