@@ -936,5 +936,11 @@ $("settingsInstall").addEventListener("click",async()=>{
 document.addEventListener("play",e=>{if(e.target instanceof HTMLVideoElement)document.querySelectorAll("video").forEach(v=>{if(v!==e.target&&!v.paused)v.pause();});},true);
 document.addEventListener("visibilitychange",()=>{if(document.hidden)document.querySelectorAll("video").forEach(v=>v.pause());else if(currentUser)refreshUnreadCount();});
 </script>
+<script>
+window.onerror = function(msg, url, line) {
+  alert("Error: " + msg + " | Line: " + line);
+};
+alert("JS Working!");
+</script>
 </body>
 </html>
