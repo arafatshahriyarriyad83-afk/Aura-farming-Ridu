@@ -589,7 +589,9 @@ function renderFeed(){
    <div class="post-actions">
    <button class="action ${liked?"liked":""}" data-like="${esc(post.id)}">${liked?"♥":"♡"}</button>
    <button class="action" data-focus-comment>♧</button><button class="action" data-share="${esc(post.id)}">↗</button>
-   <button class="action ${saved?"saved":""}" data-save="${esc(post.id)}">${saved?"▣":"▢"}</button>
+   
+<button class="action ${saved?"saved":""}" data-save="${esc(post.id)}" aria-label="Save post">🔖</button>
+
    <span class="like-count">${(post.likes||[]).length} likes</span></div>
    <div class="caption"><b>${esc(username)}</b> ${esc(post.caption||"")}</div>
    <div class="comment-list">${comments.slice(0,3).map(c=>`<p><b>${esc(c.profiles?.username||"User")}</b> ${esc(c.content)}</p>`).join("")}</div>
