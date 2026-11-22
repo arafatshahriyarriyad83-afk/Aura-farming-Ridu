@@ -418,7 +418,8 @@ $("authButton").addEventListener("click",async()=>{
    const username=$("username").value.trim().toLowerCase().replace(/[^a-z0-9_.]/g,"");
    const fullName=$("fullName").value.trim();
    if(!username||!fullName)throw new Error("Enter your name and username.");
-   const options={data:{username,full_name:fullName}};
+   const options={emailRedirectTo:"https://github.io",data:{username,full_name:fullName}};
+
    if(method==="email"){
     const {data,error}=await supabase.auth.signUp({email:identity.email,password,options});
     if(error)throw error;
