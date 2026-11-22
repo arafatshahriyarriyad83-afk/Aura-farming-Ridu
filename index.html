@@ -187,6 +187,37 @@ background:var(--card);border:1px solid var(--line);border-radius:15px;margin:10
 body.dark{--bg:#080710}
 @media(min-width:601px){body{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
 @media(max-width:380px){.page{padding:15px}.heading{font-size:27px}.stats{gap:27px}.post-actions{gap:12px}}
+
+/* AURA PREMIUM SEARCH ANIMATION */
+#search{
+  transition:all .35s ease;
+  border:1px solid rgba(168,121,255,.2);
+}
+#search:focus{
+  border-color:#a879ff;
+  box-shadow:0 0 0 4px rgba(168,121,255,.13),
+             0 0 22px rgba(168,121,255,.18);
+  transform:scale(1.015);
+}
+#gallery{
+  animation:auraSearchOpen .45s ease;
+}
+#gallery > *{
+  animation:auraSearchItem .4s ease both;
+}
+#gallery > *:nth-child(2){animation-delay:.04s}
+#gallery > *:nth-child(3){animation-delay:.08s}
+#gallery > *:nth-child(4){animation-delay:.12s}
+#gallery > *:nth-child(5){animation-delay:.16s}
+#gallery > *:nth-child(6){animation-delay:.20s}
+@keyframes auraSearchOpen{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes auraSearchItem{
+  from{opacity:0;transform:translateY(14px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
 </style>
 </head>
 <body>
@@ -415,36 +446,86 @@ function setAuthMode(signup){
 $("switchText").addEventListener("click",()=>setAuthMode(!signupMode));
 function selectedIdentity(){return $("authMethod").value==="phone"?{phone:$("phone").value.trim()}:{email:$("email").value.trim()};}
 
-$("authButton").addEventListener("click",async()=>{
- const identity=selectedIdentity(),password=$("password").value,method=$("authMethod").value;
- if(!(identity.email||identity.phone)||!password){showMessage("Enter your login details.");return}
- if(signupMode&&!validPassword(password)){showMessage("Password needs 8+ characters, uppercase, lowercase, a number and a symbol.");return}
- const b=$("authButton");b.disabled=true;showMessage("Please wait...");
+
+$("authButton").addEventListener("click",async(event)=>{
+ event.preventDefault();
+
+ const button=$("authButton");
+ if(button.disabled)return;
+
+ const identity=selectedIdentity();
+ const password=$("password").value;
+ const method=$("authMethod").value;
+
+ if(!(identity.email||identity.phone)||!password){
+  showMessage("Enter your login details.");
+  return;
+ }
+
+ button.disabled=true;
+ button.textContent="Please wait...";
+ showMessage("Connecting to AURA...");
+
  try{
   if(signupMode){
    const username=$("username").value.trim().toLowerCase().replace(/[^a-z0-9_.]/g,"");
    const fullName=$("fullName").value.trim();
+
    if(!username||!fullName)throw new Error("Enter your name and username.");
+   if(!validPassword(password))throw new Error("Password needs 8+ characters, uppercase, lowercase, a number and a symbol.");
+
    const options={data:{username,full_name:fullName}};
+
    if(method==="email"){
-    const {data,error}=await supabase.auth.signUp({email:identity.email,password,options});
+    const {data,error}=await supabase.auth.signUp({
+     email:identity.email,
+     password,
+     options
+    });
     if(error)throw error;
-    if(data.session&&data.user){await saveProfile(data.user,username,fullName);await startApp(data.user);}
-    else showMessage("Check your email for the confirmation message, then log in.");
+
+    if(data.session&&data.user){
+     await saveProfile(data.user,username,fullName);
+     await startApp(data.user);
+    }else{
+     showMessage("Check your email for the confirmation message, then log in.");
+    }
    }else{
-    const {error}=await supabase.auth.signUp({phone:identity.phone,password,options});if(error)throw error;
+    const {error}=await supabase.auth.signUp({
+     phone:identity.phone,
+     password,
+     options
+    });
+    if(error)throw error;
+
     sessionStorage.setItem("aura_pending_phone",identity.phone);
     sessionStorage.setItem("aura_pending_name",fullName);
     sessionStorage.setItem("aura_pending_username",username);
-    $("otpBox").classList.remove("hidden");showMessage("A verification code was requested. Enter the SMS code below.");
+
+    $("otpBox").classList.remove("hidden");
+    showMessage("Enter the SMS verification code.");
    }
   }else{
-   const {data,error}=method==="email"?await supabase.auth.signInWithPassword({email:identity.email,password}):await supabase.auth.signInWithPassword({phone:identity.phone,password});
-   if(error)throw error;if(data.user)await startApp(data.user);
+   const {data,error}=await supabase.auth.signInWithPassword(
+    method==="email"
+     ?{email:identity.email,password}
+     :{phone:identity.phone,password}
+   );
+
+   if(error)throw error;
+   if(!data.user)throw new Error("Login failed. Please try again.");
+
+   await startApp(data.user);
   }
- }catch(e){showMessage(e.message||"Something went wrong.");}
- finally{b.disabled=false;}
+ }catch(error){
+  console.error("AURA LOGIN ERROR:",error);
+  showMessage(error.message||"Login failed. Please try again.");
+ }finally{
+  button.disabled=false;
+  button.textContent=signupMode?"Create Account":"Login";
+ }
 });
+
 
 $("verifyOtpButton").addEventListener("click",async()=>{
  const phone=sessionStorage.getItem("aura_pending_phone"),token=$("otp").value.trim();
@@ -773,11 +854,73 @@ function renderGallery(){
   if(p.user_id===currentUser.id){const b=makeMediaElement(p);b.addEventListener("click",()=>postOptions(p.id));mine.appendChild(b);}
  });
 }
-$("search").addEventListener("input",()=>{
- const q=$("search").value.toLowerCase();$("gallery").innerHTML="";
- postsCache.filter(p=>(p.profiles?.username||"").toLowerCase().includes(q)||(p.caption||"").toLowerCase().includes(q)).forEach(p=>{
-  const el=makeMediaElement(p);el.addEventListener("click",()=>openUserProfile(p.user_id));$("gallery").appendChild(el);
+
+$("search").addEventListener("input", async()=>{
+ const q=$("search").value.trim().toLowerCase();
+ const gallery=$("gallery");
+ gallery.innerHTML="";
+
+ if(!q){
+  postsCache.forEach(p=>{
+   const el=makeMediaElement(p);
+   el.addEventListener("click",()=>openUserProfile(p.user_id));
+   gallery.appendChild(el);
+  });
+  return;
+ }
+
+ const {data:users,error}=await supabase
+  .from("profiles")
+  .select("id,username,full_name,avatar_url")
+  .or(`username.ilike.%${q}%,full_name.ilike.%${q}%`)
+  .limit(20);
+
+ if(error){
+  toast(error.message);
+  return;
+ }
+
+ (users||[]).forEach(user=>{
+  const item=document.createElement("div");
+  item.style.cssText="display:flex;align-items:center;gap:12px;padding:12px;margin:8px 0;border-radius:14px;background:var(--card);cursor:pointer";
+
+  const img=document.createElement("img");
+  img.src=user.avatar_url||FALLBACK_AVATAR;
+  img.style.cssText="width:45px;height:45px;border-radius:50%;object-fit:cover";
+
+  const info=document.createElement("div");
+  info.style.flex="1";
+
+  const name=document.createElement("strong");
+  name.textContent=user.full_name||user.username||"AURA User";
+
+  const username=document.createElement("div");
+  username.textContent="@"+(user.username||"user");
+  username.style.cssText="font-size:12px;color:var(--muted)";
+
+  const userId=document.createElement("div");
+  userId.textContent="ID: "+user.id;
+  userId.style.cssText="font-size:10px;color:var(--muted);word-break:break-all";
+
+  info.append(name,username,userId);
+  item.append(img,info);
+
+  item.onclick=()=>openUserProfile(user.id);
+  gallery.appendChild(item);
  });
+
+ postsCache.filter(p=>
+  (p.profiles?.username||"").toLowerCase().includes(q)||
+  (p.caption||"").toLowerCase().includes(q)
+ ).forEach(p=>{
+  const el=makeMediaElement(p);
+  el.addEventListener("click",()=>openUserProfile(p.user_id));
+  gallery.appendChild(el);
+ });
+
+ if(!gallery.children.length){
+  gallery.textContent="No users or posts found.";
+ }
 });
 
 /* PROFILE VIEW + BLOCK + REPORT */
