@@ -1762,6 +1762,57 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
 
   window.renderFeed();
 })();
+
+/* AURA ONE-PASTE PREMIUM ICON FIX */
+(function(){
+ if(window.AURA_ONE_PASTE_ICONS)return;
+ window.AURA_ONE_PASTE_ICONS=true;
+
+ const oldRender=renderFeed;
+
+ renderFeed=function(){
+  oldRender.apply(this,arguments);
+
+  document.querySelectorAll("#feed .post-actions").forEach(row=>{
+   const buttons=row.querySelectorAll("button.action");
+   if(buttons.length<4)return;
+
+   const icons=[
+    `<svg viewBox="0 0 24 24"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"/></svg>`,
+    `<svg viewBox="0 0 24 24"><path d="M20 11.5a8.5 8.5 0 0 1-12.8 7.3L3 20l1.2-4.2A8.5 8.5 0 1 1 20 11.5Z"/></svg>`,
+    `<svg viewBox="0 0 24 24"><path d="M22 2 9.5 14.5M22 2l-8 20-4.5-7.5L2 10 22 2Z"/></svg>`,
+    `<svg viewBox="0 0 24 24"><path d="M6 3.5h12a1 1 0 0 1 1 1V22l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"/></svg>`
+   ];
+
+   buttons.forEach((button,i)=>{
+    if(i>3)return;
+    button.innerHTML=icons[i];
+    button.classList.add("aura-premium-icon");
+   });
+  });
+ };
+
+ const css=document.createElement("style");
+ css.textContent=`
+ #feed .aura-premium-icon{
+  width:42px;height:42px;padding:9px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:0;background:transparent;color:inherit;
+  border-radius:50%;cursor:pointer;
+  transition:transform .25s ease,color .25s ease;
+ }
+ #feed .aura-premium-icon svg{
+  width:24px;height:24px;fill:none;
+  stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+ }
+ #feed .aura-premium-icon:active{transform:scale(.8)}
+ #feed .aura-premium-icon[data-like].liked{color:#ff477e}
+ #feed .aura-premium-icon[data-save].saved{color:#b69aff}
+ `;
+ document.head.appendChild(css);
+ renderFeed();
+})();
 </script>
 </body>
 </html>
