@@ -2357,5 +2357,17 @@ if (oldLogout) {
   });
 }
 </script>
+<!-- AURA Speed Booster -->
+<link rel="preconnect" href="https://supabase.co" crossorigin>
+<link rel="dns-prefetch" href="https://supabase.co">
+<script>
+// Auto Lazy-Load all feed & avatar images for instant page speed
+setInterval(() => {
+  document.querySelectorAll("img:not([loading])").forEach(img => {
+    img.setAttribute("loading", "lazy");
+    img.setAttribute("decoding", "async");
+  });
+}, 500);
+</script>
 </body>
 </html>
