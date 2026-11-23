@@ -608,32 +608,11 @@ function renderFeed(){
  feed.querySelectorAll("[data-post-menu]").forEach(b=>b.addEventListener("click",()=>postOptions(b.dataset.postMenu)));
  feed.querySelectorAll("[data-profile]").forEach(b=>b.addEventListener("click",()=>openUserProfile(b.dataset.profile)));
 }
-async function toggleLike(id) {
-  const post = postsCache.find(p => String(p.id) === String(id));
-  const btn = document.querySelector(`[data-like="${id}"]`);
-  const countEl = btn?.closest(".post-actions")?.querySelector(".like-count");
-  if (!post || !btn) return;
-
-  const wasLiked = (post.likes || []).some(x => x.user_id === currentUser.id);
-  if (wasLiked) {
-    post.likes = (post.likes || []).filter(x => x.user_id !== currentUser.id);
-    btn.classList.remove("liked");
-    btn.textContent = "♡";
-  } else {
-    post.likes = [...(post.likes || []), { user_id: currentUser.id }];
-    btn.classList.add("liked");
-    btn.textContent = "♥";
-  }
-  if (countEl) countEl.textContent = `${post.likes.length} likes`;
-
-  const { data: existing, error } = await supabase.from("likes").select("id").eq("post_id", id).eq("user_id", currentUser.id).maybeSingle();
-  if (error) { toast(error.message); return; }
-  const r = existing
-    ? await supabase.from("likes").delete().eq("id", existing.id)
-    : await supabase.from("likes").insert({ post_id: id, user_id: currentUser.id });
-  if (r.error) toast(r.error.message);
-}
-
+async function toggleLike(id){
+ const {data:existing,error}=await supabase.from("likes").select("id").eq("post_id",id).eq("user_id",currentUser.id).maybeSingle();
+ if(error){toast(error.message);return}
+ const r=existing?await supabase.from("likes").delete().eq("id",existing.id):await supabase.from("likes").insert({post_id:id,user_id:currentUser.id});
+ if(r.error)toast(r.error.message);else await loadFeed();
 }
 async function submitComment(e){
  e.preventDefault();const form=e.currentTarget,content=new FormData(form).get("content").trim();if(!content)return;
