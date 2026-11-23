@@ -235,7 +235,25 @@ body.dark{--bg:#080710}
 
 <section class="page active" id="home">
  <div class="heading">Your little world ✨</div><div class="sub">A place for beautiful things.</div>
- <div class="stories" id="stories"></div><div id="feed"></div>
+ <div class="feed-wrap">
+ <style>
+  .feed-bar{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0 10px}
+  .feed-bar::-webkit-scrollbar{display:none}
+  .feed-chip{flex:none;border:1px solid var(--line);background:var(--card);color:#d8baff;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700}
+  .feed-chip.active{background:var(--gradient);color:#fff;border-color:transparent}
+  .new-posts{display:block;margin:0 auto 12px;background:var(--gradient);color:#fff;border:0;border-radius:20px;padding:8px 16px;font-size:12px;font-weight:800}
+ </style>
+ <div class="feed-bar" id="feedBar">
+  <button class="feed-chip active" data-filter="all">All</button>
+  <button class="feed-chip" data-filter="following">Following</button>
+  <button class="feed-chip" data-filter="photo">Photos</button>
+  <button class="feed-chip" data-filter="video">Videos</button>
+  <button class="feed-chip" id="feedSortBtn">Newest</button>
+  <button class="feed-chip" id="feedRefreshBtn">↻ Refresh</button>
+ </div>
+ <button class="new-posts hidden" id="newPostsBanner">New posts ↑</button>
+</div>
+<div class="stories" id="stories"></div><div id="feed"></div>
 </section>
 
 <section class="page" id="explore">
@@ -574,10 +592,38 @@ async function loadFeed(){
  if(error)throw error;
  postsCache=(data||[]).filter(p=>!blockedIds.has(p.user_id));renderFeed();renderGallery();
 }
+let feedFilter="all",feedSort="new";
+function hiddenKey(){return "aura_hidden_posts_"+(currentUser?.id||"guest")}
+function hiddenPosts(){try{return JSON.parse(localStorage.getItem(hiddenKey())||"[]")}catch(e){return []}}
+function hidePost(id){const list=hiddenPosts();if(!list.includes(String(id)))list.push(String(id));localStorage.setItem(hiddenKey(),JSON.stringify(list));renderFeed();toast("Post hidden");}
+function feedPosts(){
+ const hidden=new Set(hiddenPosts());
+ let list=postsCache.filter(p=>!hidden.has(String(p.id)));
+ if(feedFilter==="following")list=list.filter(p=>followingIds.has(p.user_id)||p.user_id===currentUser?.id);
+ else if(feedFilter==="photo")list=list.filter(p=>p.media_type!=="video");
+ else if(feedFilter==="video")list=list.filter(p=>p.media_type==="video");
+ if(feedSort==="popular")list=[...list].sort((a,b)=>(b.likes||[]).length-(a.likes||[]).length);
+ return list;
+}
+async function checkNewPosts(){
+ if(!currentUser||document.hidden)return;
+ const {data,error}=await supabase.from("posts").select("id,user_id").order("created_at",{ascending:false}).limit(10);
+ if(error||!data)return;
+ const top=data.find(p=>!blockedIds.has(p.user_id));
+ if(top&&!postsCache.some(p=>p.id===top.id))$("newPostsBanner").classList.remove("hidden");
+}
+document.getElementById("feedBar").addEventListener("click",e=>{
+ const chip=e.target.closest("[data-filter]");
+ if(chip){feedFilter=chip.dataset.filter;document.querySelectorAll("[data-filter]").forEach(c=>c.classList.toggle("active",c===chip));renderFeed();return}
+ if(e.target.closest("#feedSortBtn")){feedSort=feedSort==="new"?"popular":"new";$("feedSortBtn").textContent=feedSort==="new"?"Newest":"Popular";renderFeed();return}
+ if(e.target.closest("#feedRefreshBtn")){$("newPostsBanner").classList.add("hidden");loadFeed().then(()=>toast("Feed refreshed")).catch(err=>toast("Refresh failed: "+err.message));}
+});
+$("newPostsBanner").addEventListener("click",()=>{$("newPostsBanner").classList.add("hidden");loadFeed().catch(err=>toast(err.message));});
+setInterval(checkNewPosts,30000);
 function renderFeed(){
  const feed=$("feed");feed.innerHTML="";
- if(!postsCache.length){feed.innerHTML='<div class="empty"><h3>Your Mind Feed ✨</h3><p>Be the first to share something beautiful.</p></div>';return}
- postsCache.forEach(post=>{
+ const shown=feedPosts();if(!shown.length){feed.innerHTML='<div class="empty"><h3>Your Mind Feed ✨</h3><p>Be the first to share something beautiful.</p></div>';return}
+ shown.forEach(post=>{
   const profile=post.profiles||{},username=profile.username||"AURA User",avatar=profile.avatar_url||FALLBACK_AVATAR;
   const liked=(post.likes||[]).some(x=>x.user_id===currentUser.id),saved=isPostSaved(post.id),comments=post.comments||[],video=post.media_type==="video";
   const mine=post.user_id===currentUser.id,isFollowing=followingIds.has(post.user_id);
@@ -1518,6 +1564,10 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
 
       addSheetOption("🔖", "Save Post", p => {
         toggleSavedPost(p.id);
+      });
+
+      addSheetOption("🙈", "Hide Post", p => {
+        hidePost(p.id);
       });
 
       addSheetOption("🚫", "Block Account", p => {
