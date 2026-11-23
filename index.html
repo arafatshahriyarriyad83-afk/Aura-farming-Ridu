@@ -242,7 +242,14 @@ document.addEventListener("click",e=>{
   <div id="signupName" class="hidden"><input id="fullName" placeholder="Your full name"><input id="username" placeholder="Choose a username"></div>
   <input id="email" type="email" placeholder="Email address" autocomplete="email">
   <input id="phone" class="hidden" type="tel" placeholder="+8801XXXXXXXXX" autocomplete="tel">
-  <input id="password" type="password" placeholder="Password (8+ characters)" autocomplete="current-password">
+  <input id="password" type="password" placeholder="Create a password" autocomplete="current-password">
+  <div id="pwHints" class="pw-hints hidden">
+   <span data-rule="len">8+ characters</span>
+   <span data-rule="upper">Uppercase (A-Z)</span>
+   <span data-rule="lower">Lowercase (a-z)</span>
+   <span data-rule="num">A number (0-9)</span>
+   <span data-rule="sym">A symbol (@ # ! ...)</span>
+  </div>
   <div id="otpBox" class="hidden"><input id="otp" inputmode="numeric" maxlength="6" placeholder="6-digit verification code"><button class="primary" id="verifyOtpButton">Verify code</button></div>
   <button class="primary" id="authButton">Login</button>
 <button class="secondary" id="guestButton" type="button" style="width:100%;margin-top:10px">👀 Continue as guest</button>
@@ -435,7 +442,7 @@ const FALLBACK_AVATAR="https://images.unsplash.com/photo-1534528741775-53994a69d
 let currentUser=null,currentProfile=null,signupMode=false,postsCache=[],activeConversation=null,activePerson=null,chatChannel=null,presenceChannel=null,replyTo=null,globalMessageChannel=null,appStartPromise=null,startedUserId=null,unreadCount=0;
 let followingIds=new Set(),blockedIds=new Set(),storyGroups=[],activeStoryGroup=[],activeStoryIndex=0,storyTimer=null,storyVideo=null,storyStartedAt=0,installPrompt=null,chatRefreshTimer=null,chatLoading=false,chatPending=false;
 
-const showMessage=m=>$("message").textContent=m;
+const showMessage=m=>{const el=$("message");el.textContent=m;el.scrollIntoView({block:"nearest",behavior:"smooth"});if(typeof toast==="function")toast(m);};
 function toast(m){
  const old=document.querySelector(".toast");if(old)old.remove();
  const el=document.createElement("div");el.className="toast";el.textContent=m;
@@ -476,6 +483,9 @@ $("authButton").addEventListener("click",async()=>{
  try{
   if(signupMode){
    const username=$("username").value.trim().toLowerCase().replace(/[^a-z0-9_.]/g,"");
+   if(username.length<3){showMessage("Username needs at least 3 characters (a-z, 0-9, _ or .)");b.disabled=false;return}
+   const {data:takenUser}=await supabase.from("profiles").select("id").eq("username",username).maybeSingle();
+   if(takenUser){showMessage("This username is already taken. Please choose another.");b.disabled=false;return}
    const fullName=$("fullName").value.trim();
    if(!username||!fullName)throw new Error("Enter your name and username.");
   const options={emailRedirectTo:location.origin+location.pathname+"?welcome=1",data:{username,full_name:fullName}};
@@ -3661,6 +3671,67 @@ document.querySelectorAll('.nav[data-page="profile"]').forEach(n => n.addEventLi
     const b = bar(mark + '<div class="gp-text"><b>Log in to continue</b>Log in to ' + what + '.</div><button class="gp-go" data-gp-login>Log in</button><button class="gp-x" aria-label="Close">✕</button>', false);
     setTimeout(b.hide, 4200);
   };
+})();
+</script>
+<!-- AUTH COMPACT LAYOUT v21 -->
+<style>
+  #authScreen{overflow-y:auto;-webkit-overflow-scrolling:touch;align-items:flex-start!important;padding:14px 0 28px!important}
+  #authScreen .auth-card{margin:auto;padding:20px 20px 18px!important}
+  #authScreen .auth-brand{margin-bottom:4px}
+  #authScreen .auth-mark{width:50px!important;height:50px!important}
+  #authScreen .auth-logo{font-size:24px!important}
+  #authScreen h2{font-size:24px!important;line-height:1.2!important;margin:4px 0 0!important}
+  #authScreen #authSubtitle{margin:2px 0 8px!important;font-size:13px!important}
+  #authScreen input,#authScreen select{padding:12px 16px!important;margin:5px 0!important;font-size:16px!important}
+  #authScreen .auth-card > button{margin:6px 0!important;padding:13px!important}
+  #authScreen #guestButton{margin-top:4px!important}
+  #authScreen #forgotButton{margin:0!important;padding:8px!important}
+  #authScreen .auth-switch{margin-top:8px!important}
+</style>
+<!-- AUTH HINTS + SPEED v22 -->
+<style>
+  .aura-splash{display:none!important}
+  #authScreen *{animation-delay:0s!important;transition-duration:.15s!important}
+  #authScreen .aura-live-stage *{animation-duration:.8s!important}
+  .pw-hints{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:2px 4px 8px;font-size:12px}
+  .pw-hints.hidden{display:none!important}
+  .pw-hints span{color:#8f80b0;transition:color .2s}
+  .pw-hints span::before{content:"○ ";}
+  .pw-hints span.ok{color:#8fe3b0}
+  .pw-hints span.ok::before{content:"✓ ";}
+  .pw-hints span.bad{color:#c7b8e0}
+  .auth-hint{font-size:12px;color:#8f80b0;margin:-2px 4px 8px}
+  .auth-hint.bad{color:#ff9bb7}
+  .auth-hint.ok{color:#8fe3b0}
+</style>
+<script>
+(() => {
+  const isSignup = () => !document.getElementById("signupName").classList.contains("hidden");
+  const pw = document.getElementById("password");
+  const user = document.getElementById("username");
+  const hints = document.getElementById("pwHints");
+  const userHint = document.createElement("p");
+  userHint.className = "auth-hint hidden";
+  user.insertAdjacentElement("afterend", userHint);
+  function refresh() {
+    const v = pw.value;
+    const rules = { len: v.length >= 8, upper: /[A-Z]/.test(v), lower: /[a-z]/.test(v), num: /[0-9]/.test(v), sym: /[^A-Za-z0-9]/.test(v) };
+    hints.classList.toggle("hidden", !isSignup());
+    Object.keys(rules).forEach(k => {
+      const el = hints.querySelector('[data-rule="' + k + '"]');
+      el.classList.toggle("ok", rules[k]);
+    });
+    const u = user.value.trim().toLowerCase();
+    const ok = u.length >= 3 && /^[a-z0-9_.]+$/.test(u);
+    userHint.classList.toggle("hidden", !isSignup());
+    userHint.classList.toggle("ok", ok && !!u);
+    userHint.classList.toggle("bad", !!u && !ok);
+    userHint.textContent = !u ? "Username: 3+ letters, numbers, _ or ." : ok ? "✓ Looks good" : "Use only a-z, 0-9, _ or . (3+ characters)";
+  }
+  pw.addEventListener("input", refresh);
+  user.addEventListener("input", refresh);
+  document.getElementById("switchText")?.addEventListener("click", () => setTimeout(refresh, 0));
+  refresh();
 })();
 </script>
 </body>
