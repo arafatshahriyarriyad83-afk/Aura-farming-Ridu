@@ -692,7 +692,7 @@ function updateViewedFollowButton(id){
  if(activeViewedProfile?.id===id){const b=$("viewFollowButton");b.textContent=followingIds.has(id)?"Following":"Follow";b.classList.toggle("following",followingIds.has(id));}
 }
 async function postOptions(id){
- const post=postsCache.find(p=>String(p.id)===String(id));if(!post)return;
+ const post=postsCache.find(p=>String(p.id)===String(id))||myPostsCache.find(p=>String(p.id)===String(id));if(!post)return;
  if(post.user_id===currentUser.id){
   if(confirm("Delete this post permanently?")){
    const {error}=await supabase.from("posts").delete().eq("id",id).eq("user_id",currentUser.id);
@@ -710,6 +710,21 @@ async function sharePost(){
  else{await navigator.clipboard.writeText(location.href);toast("Website link copied.");}}
  catch(e){if(e.name!=="AbortError")toast("Could not share.");}
 }
+let myPostsCache=[];
+async function loadMyPosts(){
+ const {data,error}=await supabase.from("posts").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false});
+ if(error){console.warn("My posts:",error.message);return}
+ myPostsCache=data||[];
+ const box=$("myPosts");box.innerHTML="";
+ if(!myPostsCache.length){box.innerHTML='<div class="empty" style="grid-column:1/-1"><h3>No posts yet</h3><p>Your photos and videos will show here.</p></div>';return}
+ myPostsCache.forEach(p=>{
+  const tile=document.createElement("div");tile.className="tile";
+  const el=makeMediaElement(p);el.addEventListener("click",()=>postOptions(p.id));
+  tile.appendChild(el);
+  if(p.media_type==="video"){const b=document.createElement("span");b.className="vid-badge";b.textContent="▶ "+(p.views_count||0);tile.appendChild(b);}
+  box.appendChild(tile);
+ });
+}
 async function loadMyStats(){
  const [p,f,fo]=await Promise.all([
   supabase.from("posts").select("id",{count:"exact",head:true}).eq("user_id",currentUser.id),
@@ -718,6 +733,7 @@ async function loadMyStats(){
  ]);
  if(p.error)throw p.error;if(f.error)throw f.error;if(fo.error)throw fo.error;
  $("postCount").textContent=p.count??0;$("followerCount").textContent=f.count??0;$("followingCount").textContent=fo.count??0;
+ loadMyPosts();
 }
 function makeMediaElement(p){
  const el=p.media_type==="video"?document.createElement("video"):document.createElement("img");el.src=p.media_url;
@@ -725,10 +741,10 @@ function makeMediaElement(p){
  return el;
 }
 function renderGallery(){
- const g=$("gallery"),mine=$("myPosts");g.innerHTML="";mine.innerHTML="";
+ const g=$("gallery");g.innerHTML="";
  postsCache.forEach(p=>{
   const a=makeMediaElement(p);a.addEventListener("click",()=>openUserProfile(p.user_id));g.appendChild(a);
-  if(p.user_id===currentUser.id){const b=makeMediaElement(p);b.addEventListener("click",()=>postOptions(p.id));mine.appendChild(b);}
+  
  });
 }
 $("search").addEventListener("input",()=>{
@@ -1066,6 +1082,13 @@ $("backChats").addEventListener("click",async()=>{
 });
 
 /* INBOX */
+function chatTime(iso){
+ const d=new Date(iso),now=new Date();
+ if(d.toDateString()===now.toDateString())return d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+ const diff=(now-d)/86400000;
+ if(diff<7)return d.toLocaleDateString([],{weekday:"short"});
+ return d.toLocaleDateString([],{day:"2-digit",month:"short"});
+}
 async function loadChatList(){
  if(!currentUser)return;
  const {data,error}=await supabase.from("conversations").select("*")
@@ -1076,12 +1099,29 @@ async function loadChatList(){
  const otherIds=rows.map(c=>c.user1_id===currentUser.id?c.user2_id:c.user1_id).filter(id=>!blockedIds.has(id));
  if(!otherIds.length){$("chatList").innerHTML='<div class="empty">No conversations available.</div>';return}
  const {data:people}=await supabase.from("profiles").select("id,username,full_name,avatar_url").in("id",otherIds);
- const map=new Map((people||[]).map(p=>[p.id,p]));
+ const lastInfo=new Map(await Promise.all(rows.map(async c=>{
+  const {data:last}=await supabase.from("messages").select("id,content,image_url,created_at,sender_id").eq("conversation_id",c.id).order("created_at",{ascending:false}).limit(1).maybeSingle();
+  if(!last)return [c.id,null];
+  let unread=false;
+  if(last.sender_id!==currentUser.id){const {data:r}=await supabase.from("message_reads").select("message_id").eq("user_id",currentUser.id).eq("message_id",last.id).maybeSingle();unread=!r;}
+  return [c.id,{last,unread}];
+})));
+const map=new Map((people||[]).map(p=>[p.id,p]));
  rows.forEach(c=>{
   const id=c.user1_id===currentUser.id?c.user2_id:c.user1_id;if(blockedIds.has(id))return;
   const p=map.get(id)||{id,username:"AURA User"};
   const b=document.createElement("button");b.type="button";b.className="chat-row";
-  b.innerHTML=`<img src="${esc(p.avatar_url||FALLBACK_AVATAR)}" alt=""><div><strong>${esc(p.username||p.full_name||"AURA User")}</strong><span>Open conversation · Message</span></div>`;
+  const info=lastInfo.get(c.id);
+  let preview="Say hi 👋",when="",dot="";
+  if(info&&info.last){
+   const m=info.last;
+   const text=m.image_url?"📷 Photo":(m.content||"").replace(/^↪[^\n]*\n/,"").trim()||"Message";
+   preview=(m.sender_id===currentUser.id?"You: ":"")+text;
+   when=chatTime(m.created_at);
+   if(info.unread)dot='<i class="cv-dot"></i>';
+  }
+  b.classList.add("cv-row");
+  b.innerHTML=`<img src="${esc(p.avatar_url||FALLBACK_AVATAR)}" alt=""><div class="cv-main"><div class="cv-top"><strong>${esc(p.username||p.full_name||"AURA User")}</strong><small>${when}</small></div><div class="cv-last ${info&&info.unread?"unread":""}">${esc(preview)}</div></div>${dot}`;
   b.addEventListener("click",()=>openChat(p));$("chatList").appendChild(b);
  });
 }
@@ -1554,7 +1594,7 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
 
   // REPLACE NUMBER-BASED POST MENU
   postOptions = async function(id) {
-    const post = postsCache.find(p => String(p.id) === String(id));
+    const post = postsCache.find(p => String(p.id) === String(id)) || myPostsCache.find(p => String(p.id) === String(id));
     if (!post) return;
 
     selectedPost = post;
@@ -3063,5 +3103,29 @@ document.getElementById("confirmAuraLogout")?.addEventListener("click", () => {
 })();
 </script>
 
+<style>
+  .tile{position:relative;overflow:hidden;border-radius:15px}
+  .tile img,.tile video{transition:transform .35s ease}
+  .tile:hover img,.tile:hover video{transform:scale(1.04)}
+  .vid-badge{position:absolute;top:8px;right:8px;background:rgba(8,7,16,.7);border:1px solid rgba(224,170,255,.35);color:#f5eaff;border-radius:12px;padding:3px 8px;font-size:11px;font-weight:700;backdrop-filter:blur(6px)}
+  .chat-layout{gap:2px}
+  .cv-row{display:flex;align-items:center;gap:12px;padding:12px 12px;border:0;border-radius:18px;background:transparent;box-shadow:none;margin:0;transition:background .25s ease,transform .25s ease}
+  .cv-row:hover{background:rgba(155,92,255,.09);transform:translateX(3px)}
+  .cv-row img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid transparent;background:linear-gradient(#100e1c,#100e1c) padding-box,var(--gradient) border-box;flex-shrink:0}
+  .cv-main{flex:1;min-width:0}
+  .cv-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .cv-top strong{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cv-top small{font-size:11px;color:var(--muted);flex-shrink:0}
+  .cv-last{font-size:12px;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cv-last.unread{color:#f1e6ff;font-weight:700}
+  .cv-dot{width:10px;height:10px;border-radius:50%;background:var(--gradient);box-shadow:0 0 10px #a855f7;flex-shrink:0}
+  .page.active>.heading,.page.active>.sub{animation:slideIn .55s cubic-bezier(.16,1,.3,1) both}
+  .page.active>.sub{animation-delay:.06s}
+  @keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  button{transition:transform .2s ease,background .25s ease,color .25s ease,box-shadow .25s ease,border-color .25s ease}
+  input,textarea{transition:border-color .25s ease,box-shadow .25s ease}
+  input:focus,textarea:focus{border-color:#a855f7!important;box-shadow:0 0 0 3px rgba(168,85,247,.18)}
+  .search:focus{box-shadow:0 0 0 3px rgba(168,85,247,.18)}
+</style>
 </body>
 </html>
