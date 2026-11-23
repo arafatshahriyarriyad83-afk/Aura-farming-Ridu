@@ -295,6 +295,7 @@ document.addEventListener("click",e=>{
   <button class="feed-chip" data-filter="following">Following</button>
   <button class="feed-chip" data-filter="photo">Photos</button>
   <button class="feed-chip" data-filter="video">Videos</button>
+  <button class="feed-chip hidden" id="hiddenChip" data-filter="hidden">Hidden</button>
   <button class="feed-chip" id="feedSortBtn">Newest</button>
   <button class="feed-chip" id="feedRefreshBtn">↻ Refresh</button>
  </div>
@@ -310,15 +311,52 @@ document.addEventListener("click",e=>{
 
 <section class="page" id="create">
  <div class="heading">Create something</div><div class="sub">Share your little universe.</div>
- <div class="create-box">
-  <div style="font-size:42px;color:#c18aff">✧</div><h3>Share a post</h3>
-  <textarea id="captionInput" placeholder="Write a caption..."></textarea>
-  <label class="primary" style="display:inline-block;cursor:pointer"><input type="file" accept="image/*,video/*" id="upload">＋ Choose Photo / Video</label>
-  <p id="uploadStatus" style="font-size:12px;color:var(--muted);margin-top:12px"></p>
-  <hr style="border:0;border-top:1px solid var(--line);margin:25px 0">
-  <h3>Share a Story</h3><p style="color:var(--muted);font-size:13px;margin:7px">Stories are shown for 24 hours.</p>
-  <label class="primary" style="display:inline-block;cursor:pointer"><input type="file" accept="image/*,video/*" id="storyUpload">＋ Choose Story</label>
+ <style>
+  .cr-block{padding:22px 18px;margin-bottom:16px;border-radius:26px;background:linear-gradient(160deg,rgba(26,18,44,.92),rgba(12,9,22,.92));border:1px solid rgba(190,145,255,.14);box-shadow:0 12px 30px rgba(0,0,0,.3);text-align:center;animation:crIn .5s cubic-bezier(.2,1,.3,1) both}
+  .cr-block:nth-child(2){animation-delay:.08s}
+  @keyframes crIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .cr-block h3{margin:6px 0 4px;font-family:'Playfair Display',serif;font-size:22px}
+  .cr-hint{margin:0 0 14px;font-size:13px;color:#8f80b0}
+  .cr-pick{display:inline-block;cursor:pointer;padding:13px 24px;border-radius:16px}
+  .cr-pick input{display:none}
+  .cr-compose{margin-top:16px;text-align:left;animation:crIn .4s cubic-bezier(.2,1,.3,1) both}
+  .cr-compose.hidden{display:none!important}
+  .cr-preview{border-radius:20px;overflow:hidden;background:#000;margin-bottom:12px;max-height:340px;display:flex;justify-content:center}
+  .cr-preview img,.cr-preview video{max-width:100%;max-height:340px;display:block;object-fit:contain}
+  .cr-compose textarea{width:100%;min-height:90px;border-radius:18px;padding:14px 16px;font-size:16px;resize:vertical;box-sizing:border-box}
+  .cr-actions{display:flex;gap:10px;margin-top:12px}
+  .cr-actions button{flex:1;padding:14px;border-radius:16px;font-weight:800}
+  .cr-actions .cr-cancel{background:transparent;border:1px solid rgba(190,145,255,.3);color:#d8c4f5}
+  .cr-actions .cr-submit{border:0;background:linear-gradient(135deg,#792cff,#b44cff,#e0aaff);color:#fff;box-shadow:0 8px 22px rgba(155,92,255,.4)}
+  .cr-actions .cr-submit:disabled{opacity:.6}
+  #uploadStatus{font-size:12px;color:#8f80b0;margin-top:12px;min-height:16px}
+  html.aura-light .cr-block{background:#fff!important;border-color:rgba(124,58,237,.16)!important}
+  html.aura-light .cr-hint,html.aura-light #uploadStatus{color:#6b5a85}
+  html.aura-light .cr-actions .cr-cancel{color:#5b21b6}
+ </style>
+ <div class="cr-block">
+  <div style="font-size:38px;color:#c18aff">✧</div>
+  <h3>Share a post</h3>
+  <p class="cr-hint">Pick a photo or video, then add a caption.</p>
+  <label class="primary cr-pick">＋ Choose Photo / Video<input type="file" accept="image/*,video/*" id="upload"></label>
+  <div id="postCompose" class="cr-compose hidden">
+   <div class="cr-preview" id="postPreview"></div>
+   <textarea id="captionInput" placeholder="Write a caption..." maxlength="500"></textarea>
+   <div class="cr-actions"><button type="button" class="cr-cancel" id="postCancel">Cancel</button><button type="button" class="cr-submit" id="postSubmit">Post</button></div>
+  </div>
  </div>
+ <div class="cr-block">
+  <div style="font-size:38px;color:#c18aff">◐</div>
+  <h3>Share a story</h3>
+  <p class="cr-hint">Stories are shown for 24 hours.</p>
+  <label class="primary cr-pick">＋ Choose Story<input type="file" accept="image/*,video/*" id="storyUpload"></label>
+  <div id="storyCompose" class="cr-compose hidden">
+   <div class="cr-preview" id="storyPreview"></div>
+   <textarea id="storyComposeCaption" placeholder="Add a caption to your story..." maxlength="200"></textarea>
+   <div class="cr-actions"><button type="button" class="cr-cancel" id="storyCancel">Cancel</button><button type="button" class="cr-submit" id="storySubmit">Share story</button></div>
+  </div>
+ </div>
+ <p id="uploadStatus"></p>
 </section>
 
 <section class="page" id="inbox">
@@ -432,6 +470,7 @@ document.addEventListener("click",e=>{
     <button data-act="edit">✏️ Edit story</button>
     <button data-act="delete" class="sm-danger">🗑️ Delete story</button>
   </div>
+  <div id="storyCaptionView" class="story-cap hidden"></div>
   <button id="storyCommentBtn" class="sc-open">💬 Add a comment…</button>
  </div>
 </div>
@@ -687,9 +726,21 @@ async function loadFeed(){
 let feedFilter="all",feedSort="new";
 function hiddenKey(){return "aura_hidden_posts_"+(currentUser?.id||"guest")}
 function hiddenPosts(){try{return JSON.parse(localStorage.getItem(hiddenKey())||"[]")}catch(e){return []}}
-function hidePost(id){const list=hiddenPosts();if(!list.includes(String(id)))list.push(String(id));localStorage.setItem(hiddenKey(),JSON.stringify(list));renderFeed();toast("Post hidden");}
+function updateHiddenChip(){
+ const n=hiddenPosts().length;const c=document.getElementById("hiddenChip");if(!c)return;
+ c.textContent="Hidden ("+n+")";c.classList.toggle("hidden",n===0);
+ if(n===0&&feedFilter==="hidden"){feedFilter="all";document.querySelectorAll("[data-filter]").forEach(b=>b.classList.toggle("active",b.dataset.filter==="all"));renderFeed();}
+}
+function hidePost(id){
+ const k=String(id);const list=hiddenPosts();
+ const next=list.includes(k)?list.filter(x=>x!==k):[...list,k];
+ localStorage.setItem(hiddenKey(),JSON.stringify(next));
+ renderFeed();updateHiddenChip();
+ toast(next.includes(k)?"Post hidden":"Post unhidden");
+}
 function feedPosts(){
  const hidden=new Set(hiddenPosts());
+ if(feedFilter==="hidden")return postsCache.filter(p=>hidden.has(String(p.id)));
  let list=postsCache.filter(p=>!hidden.has(String(p.id)));
  if(feedFilter==="following")list=list.filter(p=>followingIds.has(p.user_id)||p.user_id===currentUser?.id);
  else if(feedFilter==="photo")list=list.filter(p=>p.media_type!=="video");
@@ -721,6 +772,7 @@ document.getElementById("feedBar").addEventListener("click",e=>{
 });
 $("newPostsBanner").addEventListener("click",()=>{$("newPostsBanner").classList.add("hidden");loadFeed().catch(err=>toast(err.message));});
 setInterval(checkNewPosts,30000);
+updateHiddenChip();
 function renderFeed(){
  const feed=$("feed");feed.innerHTML="";
  const shown=feedPosts();if(!shown.length){feed.innerHTML='<div class="empty"><h3>Your Mind Feed ✨</h3><p>Be the first to share something beautiful.</p></div>';return}
@@ -795,7 +847,7 @@ function updateViewedFollowButton(id){
 async function postOptions(id){
  const post=postsCache.find(p=>String(p.id)===String(id))||myPostsCache.find(p=>String(p.id)===String(id));if(!post)return;
  if(post.user_id===currentUser.id){
-  if(confirm("Delete this post permanently?")){
+  if(await window.auraConfirm("Delete this post permanently?")){
    const {error}=await supabase.from("posts").delete().eq("id",id).eq("user_id",currentUser.id);
    if(error)toast("Delete failed: "+error.message);else{toast("Post deleted.");await loadFeed();await loadMyStats();}
   }
@@ -895,12 +947,12 @@ async function userOptions(id){
 }
 async function blockUser(id){
  if(!id||id===currentUser.id)return;
- if(!confirm("Block this account? Their posts and stories will be hidden from your AURA feed."))return;
+ if(!(await window.auraConfirm("Block this account? Their posts and stories will be hidden from your AURA feed.")))return;
  const {error}=await supabase.from("user_blocks").insert({blocker_id:currentUser.id,blocked_id:id});
  if(error){toast(error.code==="23505"?"This account is already blocked.":error.message);return}
  blockedIds.add(id);toast("Account blocked.");
  await loadFeed();await loadStories();
- if(activeViewedProfile?.id===id)showPage("home",document.querySelector('[data-page="home"]'));
+ await loadBlockedAccounts();
 }
 async function unblockUser(id){
  const {error}=await supabase.from("user_blocks").delete().eq("blocker_id",currentUser.id).eq("blocked_id",id);
@@ -936,25 +988,62 @@ async function uploadMedia(file,folder){
  const {error}=await supabase.storage.from("aura-media").upload(path,file);if(error)throw error;
  return supabase.storage.from("aura-media").getPublicUrl(path).data.publicUrl;
 }
-$("upload").addEventListener("change",async e=>{
- const file=e.target.files[0];if(!file)return;
+let pendingPost=null,pendingStory=null;
+function showCompose(kind,file){
+ const isStory=kind==="story";
+ const prev=$(isStory?"storyPreview":"postPreview");
+ prev.innerHTML="";
+ const url=URL.createObjectURL(file);
+ const el=file.type.startsWith("video/")
+  ?Object.assign(document.createElement("video"),{src:url,controls:true,muted:true,playsInline:true,preload:"metadata"})
+  :Object.assign(document.createElement("img"),{src:url,alt:""});
+ prev.appendChild(el);
+ $(isStory?"storyCompose":"postCompose").classList.remove("hidden");
+ if(isStory)pendingStory=file;else pendingPost=file;
+}
+function hideCompose(kind){
+ const isStory=kind==="story";
+ $(isStory?"storyCompose":"postCompose").classList.add("hidden");
+ $(isStory?"storyPreview":"postPreview").innerHTML="";
+ $(isStory?"storyUpload":"upload").value="";
+ if(isStory){$("storyComposeCaption").value="";pendingStory=null;}
+ else{$("captionInput").value="";pendingPost=null;}
+}
+$("upload").addEventListener("change",e=>{const f=e.target.files[0];if(f)showCompose("post",f);});
+$("storyUpload").addEventListener("change",e=>{const f=e.target.files[0];if(f)showCompose("story",f);});
+$("postCancel").addEventListener("click",()=>hideCompose("post"));
+$("storyCancel").addEventListener("click",()=>hideCompose("story"));
+$("postSubmit").addEventListener("click",async()=>{
+ if(!pendingPost)return;
+ const btn=$("postSubmit");btn.disabled=true;
  try{
-  $("uploadStatus").textContent="Uploading...";const url=await uploadMedia(file,"post");
-  const type=file.type.startsWith("video/")?"video":"image";
+  $("uploadStatus").textContent="Uploading...";
+  const url=await uploadMedia(pendingPost,"post");
+  const type=pendingPost.type.startsWith("video/")?"video":"image";
   const {error}=await supabase.from("posts").insert({user_id:currentUser.id,caption:$("captionInput").value.trim(),media_url:url,media_type:type});
-  if(error)throw error;$("captionInput").value="";$("uploadStatus").textContent="Posted successfully ✨";e.target.value="";
-  await loadFeed();await loadMyStats();showPage("home",document.querySelector('[data-page="home"]'));
+  if(error)throw error;
+  hideCompose("post");
+  $("uploadStatus").textContent="Posted successfully ✨";
+  await loadFeed();await loadMyStats();
+  showPage("home",document.querySelector('[data-page="home"]'));
  }catch(err){$("uploadStatus").textContent="Upload failed: "+err.message;}
+ finally{btn.disabled=false;}
 });
-$("storyUpload").addEventListener("change",async e=>{
- const file=e.target.files[0];if(!file)return;
+$("storySubmit").addEventListener("click",async()=>{
+ if(!pendingStory)return;
+ const btn=$("storySubmit");btn.disabled=true;
  try{
   $("uploadStatus").textContent="Uploading story...";
-  const isVideo=file.type.startsWith("video/");
-  const url=await uploadMedia(file,isVideo?"story-video":"story-image");
-  const {error}=await supabase.from("stories").insert({user_id:currentUser.id,media_url:url});if(error)throw error;
-  $("uploadStatus").textContent="Story added ✨";e.target.value="";await loadStories();
+  const isVideo=pendingStory.type.startsWith("video/");
+  const url=await uploadMedia(pendingStory,isVideo?"story-video":"story-image");
+  const caption=$("storyComposeCaption").value.trim().slice(0,200)||null;
+  const {error}=await supabase.from("stories").insert({user_id:currentUser.id,media_url:url,caption});
+  if(error)throw error;
+  hideCompose("story");
+  $("uploadStatus").textContent="Story added ✨";
+  await loadStories();
  }catch(err){$("uploadStatus").textContent="Story failed: "+err.message;}
+ finally{btn.disabled=false;}
 });
 
 /* STORY GROUPS + VIEWER */
@@ -1012,6 +1101,7 @@ function renderCurrentStory(){
  $("deleteStoryButton").classList.toggle("hidden",s.user_id!==currentUser.id);
  const mine=s.user_id===currentUser.id;
  $("storyTime").textContent=timeAgo(s.created_at);
+ $("storyCaptionView").textContent=s.caption||"";$("storyCaptionView").classList.toggle("hidden",!s.caption);
  $("editStoryButton").classList.toggle("hidden",!mine);
  $("storyViews").classList.add("hidden");
  if(mine)loadStoryViews(s.id);else recordStoryView(s.id);
@@ -1046,7 +1136,7 @@ $("storyPrev").addEventListener("click",prevStory);
 $("storyModal").addEventListener("click",e=>{if(e.target===$("storyModal"))closeStoryViewer();});
 $("deleteStoryButton").addEventListener("click",async()=>{
  const s=activeStoryGroup[activeStoryIndex];if(!s||s.user_id!==currentUser.id)return;
- if(!confirm("Delete this story?"))return;
+ if(!(await window.auraConfirm("Delete this story?")))return;
  const {error}=await supabase.from("stories").delete().eq("id",s.id).eq("user_id",currentUser.id);
  if(error){toast(error.message);return}
  toast("Story deleted.");activeStoryGroup.splice(activeStoryIndex,1);
@@ -1303,13 +1393,24 @@ async function openActivity(){
   if(prErr)throw prErr;
   const people=new Map((profiles||[]).map(p=>[p.id,p]));
   box.innerHTML="";
-  items.reverse().slice(0,50).forEach(item=>{
-   const p=people.get(item.user_id);if(!p)return;
-   const row=document.createElement("div");row.className="activity-row";
-   const icon=item.type==="like"?"♥":item.type==="comment"?"♧":"＋";
+  const list=items.reverse().slice(0,50).filter(item=>people.get(item.user_id));
+  const counts={like:0,comment:0,follow:0};
+  list.forEach(x=>counts[x.type]++);
+  if(list.length){
+   const sum=document.createElement("div");sum.className="act-summary";
+   sum.innerHTML=`<span>🍁 ${counts.like}</span><span>🏟️ ${counts.comment}</span><span>✦ ${counts.follow}</span>`;
+   box.appendChild(sum);
+  }
+  list.forEach((item,i)=>{
+   const p=people.get(item.user_id);
+   const row=document.createElement("div");
+   row.className="act-card act-"+item.type;
+   row.style.setProperty("--d",Math.min(i,8)*55+"ms");
+   const badge=item.type==="like"?"🍁":item.type==="comment"?"🏟️":"✦";
    const text=item.type==="like"?"liked your post":item.type==="comment"?"commented on your post":"started following you";
-   row.innerHTML=`<div class="activity-icon">${icon}</div><div><strong>${esc(p.username||"Someone")}</strong> ${text}<small>${item.type==="comment"?esc(item.content||""):"AURA activity"}</small></div>`;
-   row.addEventListener("click",()=>openUserProfile(item.user_id));box.appendChild(row);
+   row.innerHTML=`<div class="act-avatar"><img src="${esc(p.avatar_url||FALLBACK_AVATAR)}" alt=""></div><div class="act-body"><div class="act-line"><strong>${esc(p.username||"Someone")}</strong> ${text}</div><div class="act-sub">${item.type==="comment"?esc(item.content||""):"AURA activity"}</div></div><div class="act-badge">${badge}</div>`;
+   row.addEventListener("click",()=>openUserProfile(item.user_id));
+   box.appendChild(row);
   });
   if(!box.children.length)box.innerHTML='<div class="empty"><h3>No activity yet</h3><p>Likes, comments and new followers will appear here.</p></div>';
  }catch(e){box.innerHTML='<div class="empty">Activity could not load: '+esc(e.message)+'</div>';}
@@ -1672,8 +1773,8 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
     button.className = "danger";
     button.textContent = "Log Out";
 
-    button.addEventListener("click", () => {
-      if (confirm("Are you sure you want to log out?")) {
+    button.addEventListener("click", async () => {
+      if (await window.auraConfirm("Are you sure you want to log out?")) {
         logout();
       }
     });
@@ -1747,7 +1848,7 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
       });
 
       addSheetOption("🗑️", "Delete Post", async p => {
-        if (!confirm("Delete this post permanently?")) return;
+        if (!(await window.auraConfirm("Delete this post permanently?"))) return;
 
         const {error} = await supabase
           .from("posts")
@@ -1772,7 +1873,7 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
         toggleSavedPost(p.id);
       });
 
-      addSheetOption("🙈", "Hide Post", p => {
+      addSheetOption("🙈", hiddenPosts().includes(String(post.id))?"Unhide Post":"Hide Post", p => {
         hidePost(p.id);
       });
 
@@ -3914,6 +4015,121 @@ document.querySelectorAll('.nav[data-page="profile"]').forEach(n => n.addEventLi
 <style>
   body.aw-busy .aura-live-stage{opacity:0!important;transition:opacity .3s ease!important}
   .aura-live-stage{transition:opacity .3s ease}
+</style>
+<!-- AURA CONFIRM (replaces browser confirm) v36 -->
+<style>
+  .aca-back{position:fixed;inset:0;z-index:900;display:grid;place-items:center;padding:24px;background:rgba(5,4,12,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;transition:opacity .25s ease}
+  .aca-back.show{opacity:1}
+  .aca-card{width:min(88vw,320px);padding:26px 22px 20px;border-radius:26px;text-align:center;background:linear-gradient(160deg,rgba(40,24,70,.97),rgba(14,10,24,.97));border:1px solid rgba(190,145,255,.3);box-shadow:0 24px 60px rgba(0,0,0,.6);transform:translateY(16px) scale(.96);transition:transform .35s cubic-bezier(.2,1.2,.3,1)}
+  .aca-back.show .aca-card{transform:none}
+  .aca-mark{font-size:22px;color:#e0aaff;margin-bottom:8px;text-shadow:0 0 14px rgba(224,170,255,.6)}
+  .aca-msg{margin:0 0 20px;font-size:15px;line-height:1.5;color:#f1e6ff}
+  .aca-row{display:flex;gap:10px}
+  .aca-btn{flex:1;padding:13px;border-radius:16px;border:1px solid rgba(190,145,255,.3);background:transparent;color:#d8c4f5;font-weight:700;font-size:14px}
+  .aca-yes{border:0;background:linear-gradient(135deg,#792cff,#b44cff,#e0aaff);color:#fff}
+  .aca-yes.danger{background:linear-gradient(135deg,#c2245a,#ff6b9a)}
+</style>
+<script>
+window.auraConfirm = function (message) {
+  return new Promise(resolve => {
+    document.querySelectorAll(".aca-back").forEach(n => n.remove());
+    const danger = /delete|block|log out/i.test(message);
+    const back = document.createElement("div");
+    back.className = "aca-back";
+    back.innerHTML = '<div class="aca-card"><div class="aca-mark">✦</div><p class="aca-msg"></p><div class="aca-row"><button class="aca-btn aca-no" type="button">Cancel</button><button class="aca-btn aca-yes' + (danger ? ' danger' : '') + '" type="button">' + (danger ? 'Yes, continue' : 'OK') + '</button></div></div>';
+    back.querySelector(".aca-msg").textContent = message;
+    document.body.appendChild(back);
+    requestAnimationFrame(() => requestAnimationFrame(() => back.classList.add("show")));
+    const done = v => { back.classList.remove("show"); setTimeout(() => back.remove(), 250); resolve(v); };
+    back.querySelector(".aca-no").addEventListener("click", () => done(false));
+    back.querySelector(".aca-yes").addEventListener("click", () => done(true));
+    back.addEventListener("click", e => { if (e.target === back) done(false); });
+  });
+};
+</script>
+<!-- LIGHT THEME v39 -->
+<style>
+  html.aura-light{color-scheme:light}
+  html.aura-light body{background:#f5f0ff!important;color:#2a1f3d!important}
+  html.aura-light .aura-field,html.aura-light .aura-splash{display:none!important}
+  html.aura-light body::before,html.aura-light body::after{display:none!important}
+  html.aura-light header,html.aura-light .top,html.aura-light .bottom,html.aura-light nav{background:rgba(255,255,255,.9)!important;border-color:rgba(124,58,237,.14)!important;backdrop-filter:blur(12px)!important}
+  html.aura-light .heading{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;-webkit-text-fill-color:#2a1f3d!important;color:#2a1f3d!important}
+  html.aura-light .sub,html.aura-light .caption,html.aura-light .views-line,html.aura-light .cv-last,html.aura-light .cv-top small,html.aura-light .pw-hints span,html.aura-light .auth-hint,html.aura-light .sc-empty,html.aura-light .sc-item p,html.aura-light .sx-label,html.aura-light .ep-preview p,html.aura-light .ep-hint,html.aura-light .gp-text,html.aura-light .aca-msg,html.aura-light .sc-item small{color:#6b5a85!important}
+  html.aura-light .post,html.aura-light .settings-row,html.aura-light .chat-row,html.aura-light .cv-row,html.aura-light .edit-card,html.aura-light .ep-preview,html.aura-light .auth-card,html.aura-light .sc-sheet,html.aura-light .aura-comment-sheet,html.aura-light .aca-card,html.aura-light .gp-bar,html.aura-light .sv-pop,html.aura-light .cm-pop,html.aura-light .sh-pop,html.aura-light .gw-card,html.aura-light .fw-pop,html.aura-light .sm-menu,html.aura-light .aura-sheet,html.aura-light .sheet-option{background:#ffffff!important;color:#2a1f3d!important;border-color:rgba(124,58,237,.16)!important;box-shadow:0 10px 30px rgba(124,58,237,.10)!important}
+  html.aura-light .sheet-option{background:#faf7ff!important}
+  html.aura-light input,html.aura-light select,html.aura-light textarea{background:#ffffff!important;color:#2a1f3d!important;border-color:rgba(124,58,237,.25)!important}
+  html.aura-light input::placeholder,html.aura-light textarea::placeholder{color:#9a8bb8!important}
+  html.aura-light select option{background:#fff;color:#2a1f3d}
+  html.aura-light .feed-chip,html.aura-light .secondary,html.aura-light .nav,html.aura-light .action,html.aura-light .ghost{background:#ffffff!important;color:#5b21b6!important;border-color:rgba(124,58,237,.22)!important}
+  html.aura-light .feed-chip.active,html.aura-light .primary,html.aura-light .aca-yes,html.aura-light .aw-btn,html.aura-light .gp-go,html.aura-light .gw-btn,html.aura-light .sc-compose button,html.aura-light #auraFarmBtn{color:#fff!important}
+  html.aura-light .nav{background:transparent!important;border-color:transparent!important;color:#6b5a85!important}
+  html.aura-light .nav.active{color:#7c3aed!important}
+  html.aura-light .post-actions .action{background:#faf7ff!important;border-color:rgba(124,58,237,.16)!important}
+  html.aura-light .like-count,html.aura-light .cv-top strong,html.aura-light .story span,html.aura-light .settings-row strong,html.aura-light .sheet-option{color:#2a1f3d!important}
+  html.aura-light .story::before{box-shadow:0 0 14px rgba(124,58,237,.35)!important}
+  html.aura-light .sc-item img,html.aura-light .cv-row img{border-color:transparent!important}
+  html.aura-light .empty{color:#6b5a85!important}
+  html.aura-light .toast{background:#2a1f3d!important;color:#fff!important}
+  html.aura-light .aca-back,html.aura-light #auraCommentOverlay{background:rgba(42,31,61,.35)!important}
+  html.aura-light .sm-menu button,html.aura-light .sm-menu{color:#2a1f3d!important}
+  html.aura-light .gp-x,html.aura-light .sc-head button{color:#6b5a85!important}
+</style>
+<script>
+(() => {
+  const root = document.documentElement;
+  const light = localStorage.getItem("aura_theme") === "light";
+  if (light) root.classList.add("aura-light");
+  const syncIcon = () => {
+    const b = document.getElementById("themeButton");
+    if (b) b.textContent = root.classList.contains("aura-light") ? "☀" : "☾";
+  };
+  const toggle = () => {
+    const on = !root.classList.contains("aura-light");
+    root.classList.toggle("aura-light", on);
+    localStorage.setItem("aura_theme", on ? "light" : "dark");
+    syncIcon();
+  };
+  document.addEventListener("click", e => {
+    if (e.target.closest("#themeButton, #settingsTheme")) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      toggle();
+    }
+  }, true);
+  syncIcon();
+  document.addEventListener("DOMContentLoaded", syncIcon);
+})();
+</script>
+<!-- PREMIUM ACTIVITY v40 -->
+<style>
+  #activityList{padding-bottom:24px}
+  .act-summary{display:flex;gap:8px;flex-wrap:wrap;margin:4px 2px 16px}
+  .act-summary span{padding:7px 14px;border-radius:999px;font-size:13px;font-weight:700;color:#f1e6ff;background:rgba(155,92,255,.12);border:1px solid rgba(190,145,255,.22)}
+  .act-card{display:flex;align-items:center;gap:14px;padding:14px 16px;margin-bottom:12px;border-radius:22px;background:linear-gradient(160deg,rgba(26,18,44,.92),rgba(12,9,22,.92));border:1px solid rgba(190,145,255,.14);box-shadow:0 10px 26px rgba(0,0,0,.28);cursor:pointer;animation:actIn .5s cubic-bezier(.2,1,.3,1) both;animation-delay:var(--d,0ms);transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+  .act-card:hover{transform:translateY(-2px);border-color:rgba(224,170,255,.35)}
+  .act-card:active{transform:scale(.98)}
+  @keyframes actIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .act-avatar{width:50px;height:50px;border-radius:50%;padding:2px;background:linear-gradient(135deg,#792cff,#e0aaff);flex-shrink:0}
+  .act-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid #120d1f;background:#fff}
+  .act-body{flex:1;min-width:0}
+  .act-line{font-size:14px;line-height:1.4;color:#f1e6ff}
+  .act-line strong{font-weight:800}
+  .act-sub{margin-top:4px;font-size:12px;color:#8f80b0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .act-badge{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:20px;background:rgba(255,255,255,.05);border:1px solid rgba(190,145,255,.18);flex-shrink:0}
+  .act-like .act-badge{box-shadow:0 0 16px rgba(255,138,61,.35)}
+  .act-comment .act-badge{box-shadow:0 0 16px rgba(168,85,247,.4)}
+  .act-follow .act-badge{box-shadow:0 0 16px rgba(224,170,255,.4)}
+  html.aura-light .act-card{background:#fff!important;border-color:rgba(124,58,237,.16)!important;box-shadow:0 10px 26px rgba(124,58,237,.10)!important}
+  html.aura-light .act-line{color:#2a1f3d}
+  html.aura-light .act-sub{color:#6b5a85}
+  html.aura-light .act-badge{background:#faf7ff}
+  html.aura-light .act-summary span{color:#5b21b6;background:#fff}
+</style>
+<!-- CREATE FLOW + STORY CAPTION v41 -->
+<style>
+  .story-cap{position:absolute;left:14px;right:14px;bottom:72px;z-index:9;padding:10px 14px;border-radius:16px;background:rgba(18,12,30,.55);color:#fff;font-size:14px;line-height:1.45;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow-wrap:anywhere}
+  .story-cap.hidden{display:none!important}
 </style>
 </body>
 </html>
