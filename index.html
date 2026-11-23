@@ -188,6 +188,17 @@ body.dark{--bg:#080710}
 @media(min-width:601px){body{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
 @media(max-width:380px){.page{padding:15px}.heading{font-size:27px}.stats{gap:27px}.post-actions{gap:12px}}
 </style>
+<style>
+  html.aura-booting #authScreen{display:none!important}
+  .aura-splash{display:none;position:fixed;inset:0;z-index:800;place-items:center;background:radial-gradient(ellipse at 50% 40%,rgba(130,50,255,.3),transparent 60%),#080710}
+  html.aura-booting .aura-splash{display:grid}
+  .sp-logo{font-family:'Playfair Display',serif;font-size:40px;font-weight:800;letter-spacing:10px;background:linear-gradient(135deg,#fff,#e0aaff 55%,#b44cff);-webkit-background-clip:text;background-clip:text;color:transparent;animation:spPulse 1.6s ease-in-out infinite}
+  @keyframes spPulse{0%,100%{opacity:.6;transform:scale(.97)}50%{opacity:1;transform:scale(1)}}
+</style>
+<script>
+  if (Object.keys(localStorage).some(k => k.startsWith("sb-") && k.endsWith("-auth-token")))
+    document.documentElement.classList.add("aura-booting");
+</script>
 </head>
 <body>
 
@@ -492,7 +503,7 @@ async function loadProfile(){
  currentProfile=data;$("myName").textContent=data.full_name||data.username||"AURA User";
  $("myBio").textContent=data.bio||"Living in my own little world 🌷";$("myPic").src=data.avatar_url||FALLBACK_AVATAR;
 }
-async function safeLoad(label,fn){try{await fn()}catch(error){console.error(label+":",error);if(label==="Feed"&&window.auraWelcomeFeed){window.auraWelcomeFeed();}else{toast(label+" could not load. Check Supabase permissions.");}}}
+async function safeLoad(label,fn){try{await fn()}catch(error){console.error(label+":",error);if(label==="Feed"&&window.auraWelcomeFeed){window.auraWelcomeFeed();}else{console.warn(label+" could not load.");}}}
 async function loadFollowing(){
  const {data,error}=await supabase.from("follows").select("following_id").eq("follower_id",currentUser.id);
  if(error)throw error;followingIds=new Set((data||[]).map(x=>x.following_id));
@@ -589,9 +600,12 @@ function toggleSavedPost(id){
 
 /* FEED + FOLLOW + POST OPTIONS */
 async function loadFeed(){
+ const cacheKey="aura_feed_cache_"+(currentUser?.id||"guest");
+ if(!postsCache.length){try{const c=JSON.parse(localStorage.getItem(cacheKey)||"null");if(c?.length){postsCache=c;renderFeed();renderGallery();}}catch(e){}}
  const {data,error}=await supabase.from("posts").select("*,profiles(username,full_name,avatar_url),likes(user_id),comments(id,user_id,content,created_at,profiles(username))").order("created_at",{ascending:false}).limit(30);
  if(error)throw error;
  postsCache=(data||[]).filter(p=>!blockedIds.has(p.user_id));renderFeed();renderGallery();
+ try{localStorage.setItem(cacheKey,JSON.stringify(postsCache.slice(0,30)))}catch(e){}
 }
 let feedFilter="all",feedSort="new";
 function hiddenKey(){return "aura_hidden_posts_"+(currentUser?.id||"guest")}
@@ -3127,17 +3141,15 @@ document.getElementById("confirmAuraLogout")?.addEventListener("click", () => {
   input:focus,textarea:focus{border-color:#a855f7!important;box-shadow:0 0 0 3px rgba(168,85,247,.18)}
   .search:focus{box-shadow:0 0 0 3px rgba(168,85,247,.18)}
 </style>
-<!-- AURA FEED WELCOME POPUP (shown instead of the feed error) -->
+<!-- AURA FEED POPUP v5 -->
 <style>
-  .fw-pop{position:fixed;left:50%;top:50%;z-index:700;width:min(86vw,340px);padding:30px 22px 24px;border-radius:28px;text-align:center;color:#f7f3ff;background:linear-gradient(160deg,rgba(38,22,66,.97),rgba(12,9,22,.97));border:1px solid rgba(190,145,255,.35);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(155,92,255,.35);opacity:0;transform:translate(-50%,-50%) scale(.85);transition:opacity .4s ease,transform .5s cubic-bezier(.2,1.4,.4,1);cursor:pointer}
-  .fw-pop.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  .fw-icon{font-size:38px;display:inline-block;animation:fwFloat 2.6s ease-in-out infinite}
-  .fw-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;line-height:1.3;margin:10px 0 6px}
-  .fw-letter{display:inline-block;white-space:pre;background:linear-gradient(135deg,#fff,#e0aaff 60%,#b44cff);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transform:translateY(14px) scale(.8);filter:blur(6px);animation:awLetter .6s cubic-bezier(.2,1.3,.4,1) forwards;animation-delay:calc(var(--i) * 40ms + .15s)}
-  .fw-pop p{margin:0;color:#b4a7d1;font-size:13px}
-  .fw-bar{height:3px;border-radius:3px;background:var(--gradient);margin-top:18px;transform-origin:left;animation:fwBar 3.4s linear forwards}
-  @keyframes fwBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
-  @keyframes fwFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(8deg)}}
+  .fw-pop{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);left:50%;z-index:700;display:flex;align-items:center;gap:10px;padding:8px 18px 8px 8px;max-width:calc(100vw - 28px);border-radius:999px;background:rgba(22,15,38,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(190,145,255,.35);box-shadow:0 14px 40px rgba(0,0,0,.5),0 0 26px rgba(155,92,255,.3);color:#f7f3ff;opacity:0;transform:translate(-50%,-160%);transition:transform .6s cubic-bezier(.2,1.4,.4,1),opacity .4s ease;cursor:pointer;white-space:nowrap}
+  .fw-pop.show{opacity:1;transform:translate(-50%,0)}
+  .fw-orb{position:relative;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#792cff,#e0aaff);box-shadow:0 0 14px #a855f7;flex-shrink:0;font-size:15px}
+  .fw-orb::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1.5px dashed rgba(224,170,255,.75);animation:fwSpin 3s linear infinite}
+  @keyframes fwSpin{to{transform:rotate(360deg)}}
+  .fw-title{font-size:14px;font-weight:700;letter-spacing:.3px;overflow:hidden;text-overflow:ellipsis}
+  .fw-letter{display:inline-block;white-space:pre;background:linear-gradient(135deg,#fff,#e0aaff 60%,#b44cff);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transform:translateY(8px);filter:blur(4px);animation:awLetter .45s cubic-bezier(.2,1.3,.4,1) forwards;animation-delay:calc(var(--i) * 28ms + .12s)}
 </style>
 <script>
 (() => {
@@ -3150,14 +3162,12 @@ document.getElementById("confirmAuraLogout")?.addEventListener("click", () => {
         const now = ctx.currentTime;
         [[659.25, 0], [987.77, 0.13]].forEach(([freq, delay]) => {
           const o = ctx.createOscillator(), g = ctx.createGain();
-          o.type = "sine";
-          o.frequency.value = freq;
+          o.type = "sine"; o.frequency.value = freq;
           g.gain.setValueAtTime(0.0001, now + delay);
-          g.gain.exponentialRampToValueAtTime(0.18, now + delay + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.16, now + delay + 0.02);
           g.gain.exponentialRampToValueAtTime(0.0001, now + delay + 0.9);
           o.connect(g).connect(ctx.destination);
-          o.start(now + delay);
-          o.stop(now + delay + 1);
+          o.start(now + delay); o.stop(now + delay + 1);
         });
       };
       if (ctx.state === "running") play();
@@ -3168,9 +3178,9 @@ document.getElementById("confirmAuraLogout")?.addEventListener("click", () => {
     document.querySelectorAll(".fw-pop").forEach(n => n.remove());
     const el = document.createElement("div");
     el.className = "fw-pop";
-    el.innerHTML = '<div class="fw-icon">✨</div><h3 class="fw-title"></h3><p>Scroll, like and explore your world</p><div class="fw-bar"></div>';
+    el.innerHTML = '<div class="fw-orb">✨</div><div class="fw-title"></div>';
     const title = el.querySelector(".fw-title");
-    "Welcome to your AURA feed ✨".split("").forEach((ch, i) => {
+    "Welcome to your AURA feed".split("").forEach((ch, i) => {
       const s = document.createElement("span");
       s.className = "fw-letter";
       s.textContent = ch;
@@ -3180,10 +3190,55 @@ document.getElementById("confirmAuraLogout")?.addEventListener("click", () => {
     document.body.appendChild(el);
     requestAnimationFrame(() => el.classList.add("show"));
     playChime();
-    const close = () => { el.classList.remove("show"); setTimeout(() => el.remove(), 450); };
+    const close = () => { el.classList.remove("show"); setTimeout(() => el.remove(), 500); };
     el.addEventListener("click", close);
-    setTimeout(close, 3600);
+    setTimeout(close, 2800);
   };
+})();
+</script>
+
+<!-- AURA BOOT + PERFORMANCE + MOBILE v5 -->
+<style>
+  html{-webkit-text-size-adjust:100%}
+  body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+  button{touch-action:manipulation}
+  input,textarea,select{font-size:16px}
+  .post{content-visibility:auto;contain-intrinsic-size:auto 620px}
+  .post img,.post video{max-width:100%}
+  .aura-splash-hide{display:none!important}
+</style>
+<script>
+(() => {
+  const boot = document.documentElement.classList.contains("aura-booting");
+  const splash = document.createElement("div");
+  splash.className = "aura-splash";
+  splash.innerHTML = '<div class="sp-logo">AURA</div>';
+  document.body.appendChild(splash);
+  if (boot) {
+    const auth = document.getElementById("authScreen");
+    const feed = document.getElementById("feed");
+    const end = () => { document.documentElement.classList.remove("aura-booting"); splash.remove(); };
+    const mo = new MutationObserver(() => {
+      if (auth?.classList.contains("hidden") || feed?.children.length) { end(); mo.disconnect(); }
+    });
+    mo.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["class"] });
+    setTimeout(() => { end(); mo.disconnect(); }, 7000);
+  } else {
+    splash.remove();
+  }
+
+  // Lazy-load media so the page does not download everything at once
+  let pending = false;
+  const lazyFix = () => {
+    document.querySelectorAll("img:not([data-lz])").forEach(i => { i.loading = "lazy"; i.decoding = "async"; i.dataset.lz = "1"; });
+    document.querySelectorAll("video:not([data-lz])").forEach(v => { v.preload = "metadata"; v.dataset.lz = "1"; });
+  };
+  new MutationObserver(() => {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => { pending = false; lazyFix(); });
+  }).observe(document.body, { childList: true, subtree: true });
+  lazyFix();
 })();
 </script>
 </body>
