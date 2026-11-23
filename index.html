@@ -240,6 +240,12 @@ document.addEventListener("click",e=>{
   <p id="authSubtitle">Your little world starts here ✨</p>
   <select id="authMethod" class="field"><option value="email">Email</option><option value="phone">Phone number</option></select>
   <div id="signupName" class="hidden"><input id="fullName" placeholder="Your full name"><input id="username" placeholder="Choose a username"></div>
+  <div id="signupExtra" class="hidden">
+   <select id="genderSelect"><option value="">Gender (optional)</option><option value="Male">Male</option><option value="Female">Female</option><option value="Custom">Custom</option></select>
+   <input id="customGender" class="hidden" maxlength="30" placeholder="Write your gender">
+   <label class="sx-label" for="birthDate">Birth date (you must be 15+)</label>
+   <input id="birthDate" type="date">
+  </div>
   <input id="email" type="email" placeholder="Email address" autocomplete="email">
   <input id="phone" class="hidden" type="tel" placeholder="+8801XXXXXXXXX" autocomplete="tel">
   <input id="password" type="password" placeholder="Create a password" autocomplete="current-password">
@@ -349,6 +355,7 @@ document.addEventListener("click",e=>{
  <div class="profile-top">
   <img class="profile-pic" id="myPic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" alt="Profile picture">
   <div class="profile-name" id="myName">AURA User</div><p class="profile-bio" id="myBio">Living in my own little world 🌷</p>
+  <span class="gender-pill hidden" id="myGender"></span>
   <div class="stats">
    <div><strong id="postCount">0</strong><small>Posts</small></div>
    <div><strong id="followerCount">0</strong><small>Followers</small></div>
@@ -486,9 +493,16 @@ $("authButton").addEventListener("click",async()=>{
    if(username.length<3){showMessage("Username needs at least 3 characters (a-z, 0-9, _ or .)");b.disabled=false;return}
    const {data:takenUser}=await supabase.from("profiles").select("id").eq("username",username).maybeSingle();
    if(takenUser){showMessage("This username is already taken. Please choose another.");b.disabled=false;return}
+   const genderPick=$("genderSelect").value;
+   const gender=genderPick==="Custom"?$("customGender").value.trim().slice(0,30):genderPick;
+   if(genderPick==="Custom"&&!gender){showMessage("Please write your gender.");b.disabled=false;return}
+   const birthDate=$("birthDate").value;
+   if(!birthDate){showMessage("Please enter your birth date.");b.disabled=false;return}
+   const ageYears=(Date.now()-new Date(birthDate).getTime())/(365.25*86400000);
+   if(ageYears<15){showMessage("You must be at least 15 years old to create an account.");b.disabled=false;return}
    const fullName=$("fullName").value.trim();
    if(!username||!fullName)throw new Error("Enter your name and username.");
-  const options={emailRedirectTo:location.origin+location.pathname+"?welcome=1",data:{username,full_name:fullName}};
+  const options={emailRedirectTo:location.origin+location.pathname+"?welcome=1",data:{username,full_name:fullName,gender:gender||null,birth_date:birthDate}};
  
    if(method==="email"){
     const {data,error}=await supabase.auth.signUp({email:identity.email,password,options});
@@ -530,8 +544,20 @@ $("forgotButton").addEventListener("click",async()=>{
  }catch(e){showMessage(e.message);}
 });
 
+async function savePrivateBirth(user){
+ const b=(user.user_metadata||{}).birth_date;
+ if(!b)return;
+ await supabase.from("user_private").upsert({user_id:user.id,birth_date:b},{onConflict:"user_id"});
+}
+function showMyGender(){
+ const el=$("myGender");if(!el)return;
+ const g=currentProfile?.gender;
+ el.textContent=g?g:"";
+ el.classList.toggle("hidden",!g);
+}
 async function saveProfile(user,username,fullName){
- const {error}=await supabase.from("profiles").upsert({id:user.id,username,full_name:fullName},{onConflict:"id"});
+ const meta=user.user_metadata||{};
+ const {error}=await supabase.from("profiles").upsert({id:user.id,username,full_name:fullName,...(meta.gender?{gender:meta.gender}:{})},{onConflict:"id"});
  if(error)throw error;
 }
 async function loadProfile(){
@@ -559,6 +585,8 @@ async function startApp(user){
  appStartPromise=(async()=>{
   $("authScreen").classList.add("hidden");
   await loadProfile();
+  savePrivateBirth(user).catch(()=>{});
+  showMyGender();
   await Promise.all([safeLoad("Following",loadFollowing),safeLoad("Blocked accounts",loadBlocked)]);
   if("serviceWorker"in navigator)registerAURASW();
   await Promise.all([safeLoad("Feed",loadFeed),safeLoad("Stories",loadStories),safeLoad("Profile stats",loadMyStats)]);
@@ -3732,6 +3760,31 @@ document.querySelectorAll('.nav[data-page="profile"]').forEach(n => n.addEventLi
   user.addEventListener("input", refresh);
   document.getElementById("switchText")?.addEventListener("click", () => setTimeout(refresh, 0));
   refresh();
+})();
+</script>
+<!-- SIGNUP GENDER + BIRTH v24 -->
+<style>
+  #signupExtra{display:grid;gap:6px}
+  #signupExtra.hidden,#customGender.hidden{display:none!important}
+  #signupExtra select,#signupExtra input{padding:12px 16px;margin:5px 0;font-size:16px}
+  .sx-label{font-size:12px;color:#8f80b0;margin:4px 4px 0}
+  .gender-pill{display:inline-block;margin-top:8px;padding:5px 14px;border-radius:999px;font-size:12px;font-weight:700;color:#f1e6ff;background:linear-gradient(135deg,rgba(121,44,255,.35),rgba(224,170,255,.25));border:1px solid rgba(224,170,255,.35)}
+  .gender-pill.hidden{display:none!important}
+</style>
+<script>
+(() => {
+  const signupName = document.getElementById("signupName");
+  const extra = document.getElementById("signupExtra");
+  const sync = () => extra.classList.toggle("hidden", signupName.classList.contains("hidden"));
+  new MutationObserver(sync).observe(signupName, { attributes: true, attributeFilter: ["class"] });
+  sync();
+  const pick = document.getElementById("genderSelect");
+  const custom = document.getElementById("customGender");
+  pick.addEventListener("change", () => custom.classList.toggle("hidden", pick.value !== "Custom"));
+  const birth = document.getElementById("birthDate");
+  const today = new Date();
+  birth.max = new Date(today.getFullYear() - 15, today.getMonth(), today.getDate()).toISOString().slice(0, 10);
+  birth.min = "1900-01-01";
 })();
 </script>
 </body>
