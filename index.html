@@ -199,6 +199,29 @@ body.dark{--bg:#080710}
   if (Object.keys(localStorage).some(k => k.startsWith("sb-") && k.endsWith("-auth-token")))
     document.documentElement.classList.add("aura-booting");
 </script>
+<script>
+document.addEventListener("click",e=>{
+  if(!document.body||!document.body.classList.contains("aura-guest"))return;
+  const t=e.target;
+  const nav=t.closest(".nav");
+  const navNames={inbox:"open your inbox",profile:"view your profile",create:"create posts"};
+  if(nav&&nav.dataset.page!=="home"&&nav.dataset.page!=="explore"){
+    e.stopImmediatePropagation();e.preventDefault();
+    window.auraGuestPrompt&&window.auraGuestPrompt(navNames[nav.dataset.page]||"use this");
+    return;
+  }
+  const map=[["[data-like]","like posts"],["[data-save]","save posts"],["[data-focus-comment]","comment on posts"],
+    ["[data-follow]","follow people"],["#viewFollowButton","follow people"],["#viewMessageButton","send messages"],
+    ["#storyCommentBtn","comment on stories"],["#activityButton","see your activity"],["#editProfileButton","edit your profile"]];
+  for(const [sel,label] of map){
+    if(t.closest(sel)){
+      e.stopImmediatePropagation();e.preventDefault();
+      window.auraGuestPrompt&&window.auraGuestPrompt(label);
+      return;
+    }
+  }
+},true);
+</script>
 </head>
 <body>
 
@@ -222,6 +245,7 @@ body.dark{--bg:#080710}
   <input id="password" type="password" placeholder="Password (8+ characters)" autocomplete="current-password">
   <div id="otpBox" class="hidden"><input id="otp" inputmode="numeric" maxlength="6" placeholder="6-digit verification code"><button class="primary" id="verifyOtpButton">Verify code</button></div>
   <button class="primary" id="authButton">Login</button>
+<button class="secondary" id="guestButton" type="button" style="width:100%;margin-top:10px">👀 Continue as guest</button>
   <button class="edit" id="forgotButton">Forgot password?</button>
   <div id="message" aria-live="polite"></div>
   <div class="auth-switch"><span id="switchText">Create an account</span></div>
@@ -546,8 +570,20 @@ supabase.auth.onAuthStateChange((event,session)=>{
 });
 const {data:{session}}=await supabase.auth.getSession();
 if(session?.user){try{await startApp(session.user)}catch(e){console.error(e);showMessage(e.message);$("authScreen").classList.remove("hidden");}}
+else if(localStorage.getItem("aura_guest")==="1"){startGuest();}
 else $("authScreen").classList.remove("hidden");
 
+function startGuest(){
+ currentUser={id:"00000000-0000-0000-0000-000000000000",guest:true};
+ currentProfile=null;
+ document.body.classList.add("aura-guest");
+ $("authScreen").classList.add("hidden");
+ safeLoad("Feed",loadFeed);
+ safeLoad("Stories",loadStories);
+ window.auraGuestWelcome&&window.auraGuestWelcome();
+}
+$("guestButton").addEventListener("click",()=>{localStorage.setItem("aura_guest","1");location.reload();});
+window.auraGuestExit=()=>{localStorage.removeItem("aura_guest");location.reload();};
 async function logout(){
  if(chatChannel)await supabase.removeChannel(chatChannel);
  if(presenceChannel)await supabase.removeChannel(presenceChannel);
@@ -685,7 +721,17 @@ async function toggleLike(id){
  const {data:existing,error}=await supabase.from("likes").select("id").eq("post_id",id).eq("user_id",currentUser.id).maybeSingle();
  if(error){toast(error.message);return}
  const r=existing?await supabase.from("likes").delete().eq("id",existing.id):await supabase.from("likes").insert({post_id:id,user_id:currentUser.id});
- if(r.error)toast(r.error.message);else await loadFeed();
+ if(r.error){toast(r.error.message);return}
+ const post=postsCache.find(p=>String(p.id)===String(id));
+ if(post){
+  post.likes=existing?(post.likes||[]).filter(l=>l.user_id!==currentUser.id):[...(post.likes||[]),{user_id:currentUser.id}];
+ }
+ const count=(post?.likes||[]).length;
+ document.querySelectorAll('[data-like="'+String(id)+'"]').forEach(b=>{
+  b.classList.toggle("liked",!existing);
+  const c=b.closest(".post-actions")?.querySelector(".like-count");
+  if(c)c.textContent=count+" likes";
+ });
 }
 async function submitComment(e){
  e.preventDefault();const form=e.currentTarget,content=new FormData(form).get("content").trim();if(!content)return;
@@ -2751,7 +2797,7 @@ document.getElementById("confirmAuraLogout")?.addEventListener("click", () => {
     <div id="auraSheetList"></div>
     <form class="aura-sheet-form" id="auraSheetForm">
       <input type="text" id="auraSheetInput" placeholder="Write a comment..." maxlength="500" required>
-      <button type="submit" id="auraFarmBtn">Farming</button>
+      <button type="submit" id="auraFarmBtn">Send ✨</button>
     </form>
   </div>
 </div>
@@ -3449,5 +3495,123 @@ window.auraCommentPop = function () {
   });
 })();
 </script>
+<!-- AURA GUEST UI v14 -->
+<style>
+  .gw-back{position:fixed;inset:0;z-index:750;display:grid;place-items:center;padding:20px;background:rgba(6,4,12,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;transition:opacity .5s ease}
+  .gw-back.show{opacity:1}
+  .gw-frame{position:relative;width:min(88vw,344px);padding:1.5px;border-radius:32px;background:conic-gradient(from 0deg,#792cff,#e0aaff,#b44cff,#4f1fd6,#792cff);animation:gwSpin 6s linear infinite;transform:translateY(40px) scale(.9);opacity:0;transition:transform .8s cubic-bezier(.2,1.3,.4,1),opacity .5s ease}
+  .gw-back.show .gw-frame{transform:none;opacity:1}
+  .gw-card{position:relative;overflow:hidden;border-radius:31px;padding:34px 24px 24px;text-align:center;background:rgba(14,10,24,.96);color:#f7f3ff}
+  @keyframes gwSpin{to{transform:rotate(360deg)}}
+  .gw-blob{position:absolute;width:180px;height:180px;border-radius:50%;filter:blur(38px);opacity:.42;pointer-events:none;animation:gwDrift 9s ease-in-out infinite}
+  .gw-blob.a{background:#792cff;left:-60px;top:-50px}
+  .gw-blob.b{background:#e0aaff;right:-70px;bottom:-40px;animation-delay:-4s}
+  @keyframes gwDrift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,16px) scale(1.12)}}
+  .gw-orbit{position:relative;width:74px;height:74px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;font-size:30px;background:radial-gradient(circle,rgba(168,85,247,.35),transparent 70%)}
+  .gw-orbit::before,.gw-orbit::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:1px solid rgba(224,170,255,.45);border-top-color:transparent;animation:gwSpin 3.2s linear infinite}
+  .gw-orbit::after{inset:-16px;border-color:rgba(168,85,247,.35);border-bottom-color:transparent;animation-duration:5s;animation-direction:reverse}
+  .gw-orbit span{display:inline-block;animation:gwTwinkle 2.2s ease-in-out infinite}
+  @keyframes gwTwinkle{0%,100%{transform:scale(1) rotate(0);filter:drop-shadow(0 0 4px #e0aaff)}50%{transform:scale(1.15) rotate(12deg);filter:drop-shadow(0 0 12px #e0aaff)}}
+  .gw-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;line-height:1.25;margin:0 0 8px}
+  .gw-letter{display:inline-block;white-space:pre;background:linear-gradient(135deg,#fff,#e0aaff 55%,#b44cff);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transform:translateY(16px) scale(.7);filter:blur(6px);animation:gwLetter .65s cubic-bezier(.2,1.3,.4,1) forwards;animation-delay:calc(var(--i) * 45ms + .25s)}
+  @keyframes gwLetter{to{opacity:1;transform:none;filter:none}}
+  .gw-sub{margin:0 0 22px;color:#b4a7d1;font-size:14px;line-height:1.55;opacity:0;animation:gwFade .8s ease 1.4s forwards}
+  @keyframes gwFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .gw-btn{width:100%;padding:14px;border-radius:18px;border:0;color:#fff;font-weight:800;letter-spacing:.4px;background:linear-gradient(135deg,#792cff,#b44cff,#e0aaff);box-shadow:0 12px 30px rgba(155,92,255,.45);opacity:0;animation:gwFade .7s ease 1.7s forwards;transition:transform .2s}
+  .gw-btn:active{transform:scale(.97)}
+  .gw-ghost{width:100%;margin-top:10px;padding:12px;border-radius:18px;border:1px solid rgba(190,145,255,.3);background:transparent;color:#d8c4f5;font-weight:600;opacity:0;animation:gwFade .7s ease 1.9s forwards}
+  .gw-star{position:absolute;width:4px;height:4px;border-radius:50%;background:#e0aaff;box-shadow:0 0 8px #b44cff;pointer-events:none;animation:gwTwinkle 2.6s ease-in-out infinite}
+  .gw-back.out{opacity:0;transition:opacity .4s ease}
+</style>
+<script>
+(() => {
+  function open(card, opts = {}) {
+    document.querySelectorAll(".gw-back").forEach(n => n.remove());
+    const back = document.createElement("div");
+    back.className = "gw-back";
+    back.innerHTML = '<div class="gw-frame"><div class="gw-card"><div class="gw-blob a"></div><div class="gw-blob b"></div>' + card + '</div></div>';
+    document.body.appendChild(back);
+    requestAnimationFrame(() => requestAnimationFrame(() => back.classList.add("show")));
+    const close = () => { back.classList.add("out"); setTimeout(() => back.remove(), 400); };
+    back.addEventListener("click", e => { if (e.target === back) close(); });
+    back.querySelectorAll("[data-gw-close]").forEach(b => b.addEventListener("click", close));
+    back.querySelectorAll("[data-gw-login]").forEach(b => b.addEventListener("click", () => window.auraGuestExit()));
+    if (opts.stars) for (let i = 0; i < 10; i++) {
+      const st = document.createElement("span");
+      st.className = "gw-star";
+      st.style.left = Math.random() * 100 + "%";
+      st.style.top = Math.random() * 100 + "%";
+      st.style.animationDelay = (Math.random() * 2) + "s";
+      back.querySelector(".gw-card").appendChild(st);
+    }
+    return back;
+  }
+  function letters(text, cls) {
+    return [...text].map((ch, i) => '<span class="' + cls + '" style="--i:' + i + '">' + (ch === " " ? "&nbsp;" : ch) + '</span>').join("");
+  }
+  window.auraGuestWelcome = function () {
+    open(
+      '<div class="gw-orbit"><span>✨</span></div>' +
+      '<h2 class="gw-title">' + letters("Welcome to our Aura", "gw-letter") + '</h2>' +
+      '<p class="gw-sub">Explore freely. Log in to like, comment, share and create your own world.</p>' +
+      '<button class="gw-btn" data-gw-close>Start exploring</button>' +
+      '<button class="gw-ghost" data-gw-login>Log in instead</button>',
+      { stars: true }
+    );
+  };
+  window.auraGuestPrompt = function (what) {
+    open(
+      '<div class="gw-orbit"><span>🔒</span></div>' +
+      '<h2 class="gw-title" style="font-size:22px">Log in to continue</h2>' +
+      '<p class="gw-sub" style="animation-delay:.2s">Log in to ' + what + ' and unlock everything in AURA.</p>' +
+      '<button class="gw-btn" data-gw-login>Log in</button>' +
+      '<button class="gw-ghost" data-gw-close>Keep browsing</button>',
+      { stars: true }
+    );
+  };
+})();
+</script>
+<!-- AURA EMOJI ACTION ICONS v15 -->
+<style>
+  .post-actions .action svg{display:none!important}
+  .post-actions .action{font-size:0;line-height:1;width:46px;height:46px;display:grid;place-items:center;transition:transform .25s cubic-bezier(.2,1.4,.4,1),filter .3s ease}
+  .post-actions .action::before{font-size:24px;line-height:1;display:block}
+  .post-actions .action[data-like]::before{content:"🍁"}
+  .post-actions .action[data-focus-comment]::before{content:"🏟️"}
+  .post-actions .action[data-share]::before{content:"🎐"}
+  .post-actions .action[data-save]::before{content:"🔖"}
+  .post-actions .action::after{display:none!important}
+  .post-actions .action:hover{transform:translateY(-2px) scale(1.06)}
+  .post-actions .action:active{transform:scale(.82)}
+  .post-actions .action.liked{transform:scale(1.08)}
+  .post-actions .action.liked::before{filter:drop-shadow(0 0 8px rgba(255,138,61,.85)) saturate(1.2)}
+  .post-actions .action.saved{transform:scale(1.08)}
+  .post-actions .action.saved::before{filter:drop-shadow(0 0 8px rgba(224,170,255,.9))}
+  .post-actions .action:not(.liked):not(.saved)::before{filter:none}
+</style>
+<!-- AURA LAYOUT + COMMENTS v16 -->
+<style>
+  .post{display:flex;flex-direction:column}
+  .post-user{order:0}
+  .post-image{order:1}
+  .caption{order:2}
+  .views-line{order:3}
+  .post-actions{order:4;margin-top:auto}
+  .post-actions{padding:12px 14px 14px;gap:8px;align-items:center;border-top:1px solid rgba(190,145,255,.12)}
+  .post-actions .action{width:48px;height:48px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(190,145,255,.14)}
+  .post-actions .action:hover{background:rgba(168,85,247,.14)}
+  .post-actions .action::before{font-size:23px}
+  .post-actions .like-count{font-size:13px;font-weight:700;color:#f1e6ff;margin:0 4px 0 2px}
+  .post-actions .action[data-save]{margin-left:auto}
+  .post .views-line{padding:2px 14px 6px;font-size:12px;color:#a895c8}
+
+  #auraCommentOverlay .aura-comment-sheet{max-width:none;width:100%;height:84vh;max-height:88vh;border-radius:30px 30px 0 0;display:flex;flex-direction:column;padding:0}
+  #auraCommentOverlay .aura-sheet-head{padding:20px 22px 14px;border-bottom:1px solid rgba(190,145,255,.15);display:flex;justify-content:space-between;align-items:center}
+  #auraCommentOverlay .aura-sheet-head strong{font-family:'Playfair Display',serif;font-size:24px;font-weight:800}
+  #auraCommentOverlay #auraSheetList{flex:1;overflow-y:auto;padding:16px 22px;-webkit-overflow-scrolling:touch}
+  #auraCommentOverlay .aura-sheet-form{display:flex;gap:10px;align-items:center;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(190,145,255,.15);background:rgba(10,8,18,.7)}
+  #auraCommentOverlay .aura-sheet-form input{flex:1;border-radius:999px;padding:14px 18px;font-size:16px}
+  #auraCommentOverlay #auraFarmBtn{border-radius:999px;padding:14px 22px;border:0;background:linear-gradient(135deg,#792cff,#b44cff,#e0aaff);color:#fff;font-weight:800;box-shadow:0 8px 22px rgba(155,92,255,.4)}
+</style>
 </body>
 </html>
