@@ -2506,5 +2506,79 @@ setInterval(() => {
   <span class="aura-sparkle"></span>
 </div>
 </script>
+<script>
+  (() => {
+    const bookmarkSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>`;
+    let activePostForm = null;
+
+    function upgradeSaveIcons() {
+      document.querySelectorAll("[data-save]").forEach(btn => {
+        if (!btn.querySelector("svg")) btn.innerHTML = bookmarkSVG;
+      });
+    }
+
+    const observer = new MutationObserver(upgradeSaveIcons);
+    const feedEl = document.getElementById("feed");
+    if (feedEl) observer.observe(feedEl, { childList: true, subtree: true });
+    upgradeSaveIcons();
+
+    const overlay = document.getElementById("auraCommentOverlay");
+    const sheetList = document.getElementById("auraSheetList");
+    const sheetForm = document.getElementById("auraSheetForm");
+    const sheetInput = document.getElementById("auraSheetInput");
+    const farmBtn = document.getElementById("auraFarmBtn");
+    const closeBtn = document.getElementById("closeAuraSheet");
+
+    document.addEventListener("click", (e) => {
+      const commentTrigger = e.target.closest("[data-focus-comment]");
+      if (!commentTrigger) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      const postCard = commentTrigger.closest(".post");
+      activePostForm = postCard.querySelector(".comment-form");
+      const existingComments = postCard.querySelector(".comment-list");
+
+      sheetList.innerHTML = existingComments && existingComments.innerHTML.trim()
+        ? existingComments.innerHTML
+        : '<p style="color:var(--muted);text-align:center;margin-top:24px;">No comments yet. Start farming ✨</p>';
+
+      overlay.classList.add("open");
+      setTimeout(() => sheetInput.focus(), 150);
+    }, true);
+
+    function closeDrawer() {
+      overlay.classList.remove("open");
+      activePostForm = null;
+    }
+
+    closeBtn.addEventListener("click", closeDrawer);
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeDrawer();
+    });
+
+    sheetForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = sheetInput.value.trim();
+      if (!text || !activePostForm) return;
+
+      const emptyMsg = sheetList.querySelector("p[style]");
+      if (emptyMsg) emptyMsg.remove();
+
+      const p = document.createElement("p");
+      p.innerHTML = `<b>You</b> ${text.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}`;
+      sheetList.appendChild(p);
+      sheetList.scrollTop = sheetList.scrollHeight;
+
+      const hiddenInput = activePostForm.querySelector('input[name="content"]');
+      hiddenInput.value = text;
+      activePostForm.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+
+      sheetInput.value = "";
+      farmBtn.textContent = "Farmed ✨";
+      setTimeout(() => { farmBtn.textContent = "Farming"; }, 1200);
+    });
+  })();
+</script>
 </body>
 </html>
