@@ -579,6 +579,7 @@ async function loadBlocked(){
  if(error)throw error;blockedIds=new Set((data||[]).map(x=>x.blocked_id));
 }
 async function startApp(user){
+ localStorage.removeItem("aura_guest");document.body.classList.remove("aura-guest");document.querySelectorAll(".gp-bar").forEach(n=>n.remove());
  if(appStartPromise&&currentUser?.id===user.id)return appStartPromise;
  if(startedUserId===user.id&&currentUser?.id===user.id){$("authScreen").classList.add("hidden");return}
  currentUser=user;
@@ -3852,11 +3853,16 @@ document.querySelectorAll('.nav[data-page="profile"]').forEach(n => n.addEventLi
   const auth = document.getElementById("authScreen");
   if (!auth) return;
   let shown = false;
+  const isLoginScreen = () =>
+    !auth.classList.contains("hidden") &&
+    localStorage.getItem("aura_guest") !== "1" &&
+    !document.body.classList.contains("aura-guest") &&
+    !document.querySelector("#feed .post");
   const check = () => {
     if (shown) return;
-    if (!auth.classList.contains("hidden") && !document.body.classList.contains("aura-guest")) {
+    if (!auth.classList.contains("hidden")) {
       shown = true;
-      setTimeout(showLoginWelcome, 300);
+      setTimeout(() => { if (isLoginScreen()) showLoginWelcome(); }, 1000);
     }
   };
   new MutationObserver(check).observe(auth, { attributes: true, attributeFilter: ["class"] });
@@ -3872,6 +3878,7 @@ document.querySelectorAll('.nav[data-page="profile"]').forEach(n => n.addEventLi
     if (auth.classList.contains("hidden")) {
       auth.style.setProperty("display", "none", "important");
       auth.style.setProperty("pointer-events", "none", "important");
+      document.querySelectorAll(".gp-bar").forEach(n => n.remove());
     } else {
       auth.style.removeProperty("display");
       auth.style.removeProperty("pointer-events");
@@ -3879,6 +3886,60 @@ document.querySelectorAll('.nav[data-page="profile"]').forEach(n => n.addEventLi
   };
   new MutationObserver(sync).observe(auth, { attributes: true, attributeFilter: ["class"] });
   sync();
+})();
+</script>
+<!-- SMOOTHNESS v31 -->
+<style>
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  *{-webkit-tap-highlight-color:transparent}
+  #feed,#gallery,.page,#chatMessages,#auraSheetList{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  img[loading="lazy"]{opacity:0;transition:opacity .35s ease}
+  img[loading="lazy"].loaded{opacity:1}
+  .post img,.tile img{transition:opacity .35s ease,transform .35s ease}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  }
+</style>
+<script>
+(() => {
+  document.addEventListener("load", e => {
+    if (e.target && e.target.tagName === "IMG") e.target.classList.add("loaded");
+  }, true);
+  document.querySelectorAll('img[loading="lazy"]').forEach(i => { if (i.complete && i.naturalWidth) i.classList.add("loaded"); });
+})();
+</script>
+<!-- NAV PENCIL SOUND v33 -->
+<script>
+(() => {
+  let ctx = null;
+  function pencilTick() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      ctx = ctx || new AC();
+      if (ctx.state === "suspended") ctx.resume();
+      const dur = 0.07;
+      const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * dur), ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 3);
+      }
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const band = ctx.createBiquadFilter();
+      band.type = "bandpass";
+      band.frequency.value = 2600;
+      band.Q.value = 1.2;
+      const gain = ctx.createGain();
+      gain.gain.value = 0.12;
+      src.connect(band).connect(gain).connect(ctx.destination);
+      src.start();
+    } catch (e) {}
+  }
+  document.addEventListener("pointerdown", e => {
+    if (e.target.closest(".nav")) pencilTick();
+  }, true);
 })();
 </script>
 </body>
