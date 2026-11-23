@@ -2131,12 +2131,7 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
 .field-label{display:block;font-size:12px;color:#d8baff;font-weight:700;margin:12px 0 4px 4px}
 </style>
 
-<div id="gunPopup">
-  <span class="gun-icon">🔫</span>
-  <span class="muzzle-flash"></span>
-  <span class="bullet-trail"></span>
-  <span class="shoot-target">✨ AURA PROFILE</span>
-</div>
+
 
 <section class="page" id="editProfile">
   <div class="chat-back"><button id="backEditProfile">← Profile</button></div>
@@ -2169,15 +2164,7 @@ document.querySelector('.nav[data-page="profile"]')?.addEventListener("click", (
   if (!pop) return;
   pop.classList.remove("show");
   void pop.offsetWidth;
-  pop.classList.add("show");
-  clearTimeout(window._gunTimer);
-  window._gunTimer = setTimeout(() => pop.classList.remove("show"), 1800);
-});
-
-const oldEditBtn = document.getElementById("editProfileButton");
-if (oldEditBtn) {
-  const newEditBtn = oldEditBtn.cloneNode(true);
-  oldEditBtn.parentNode.replaceChild(newEditBtn, oldEditBtn);
+  
 
   let selectedAvatarFile = null;
 
@@ -2325,7 +2312,8 @@ const auraObserver = new MutationObserver(() => {
     t.textContent = "Refresh your AURA feed ✨";
   }
 });
-auraObserver.observe(document.body, { childList: true });
+auraObserver.observe(document.body, { childList: true, subtree: true });
+
 </script>
 
 </body>
