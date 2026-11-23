@@ -774,6 +774,7 @@ async function sharePost(){
  catch(e){if(e.name!=="AbortError")toast("Could not share.");}
 }
 let myPostsCache=[];
+window.loadMyPosts=()=>loadMyPosts();
 async function loadMyPosts(){
  const {data,error}=await supabase.from("posts").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false});
  if(error){console.warn("My posts:",error.message);return}
@@ -3497,9 +3498,9 @@ window.auraCommentPop = function () {
 </script>
 <!-- AURA GUEST UI v14 -->
 <style>
-  .gw-back{position:fixed;inset:0;z-index:750;display:grid;place-items:center;padding:20px;background:rgba(6,4,12,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;transition:opacity .5s ease}
+  .gw-back{position:fixed;inset:0;z-index:750;display:grid;place-items:center;padding:20px;background:rgba(6,4,12,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;transition:opacity .3s ease}
   .gw-back.show{opacity:1}
-  .gw-frame{position:relative;width:min(88vw,344px);padding:1.5px;border-radius:32px;background:conic-gradient(from 0deg,#792cff,#e0aaff,#b44cff,#4f1fd6,#792cff);animation:gwSpin 6s linear infinite;transform:translateY(40px) scale(.9);opacity:0;transition:transform .8s cubic-bezier(.2,1.3,.4,1),opacity .5s ease}
+  .gw-frame{position:relative;width:min(88vw,344px);padding:1.5px;border-radius:32px;background:conic-gradient(from 0deg,#792cff,#e0aaff,#b44cff,#4f1fd6,#792cff);animation:gwSpin 6s linear infinite;transform:translateY(40px) scale(.9);opacity:0;transition:transform .45s cubic-bezier(.2,1,.3,1),opacity .3s ease}
   .gw-back.show .gw-frame{transform:none;opacity:1}
   .gw-card{position:relative;overflow:hidden;border-radius:31px;padding:34px 24px 24px;text-align:center;background:rgba(14,10,24,.96);color:#f7f3ff}
   @keyframes gwSpin{to{transform:rotate(360deg)}}
@@ -3513,15 +3514,15 @@ window.auraCommentPop = function () {
   .gw-orbit span{display:inline-block;animation:gwTwinkle 2.2s ease-in-out infinite}
   @keyframes gwTwinkle{0%,100%{transform:scale(1) rotate(0);filter:drop-shadow(0 0 4px #e0aaff)}50%{transform:scale(1.15) rotate(12deg);filter:drop-shadow(0 0 12px #e0aaff)}}
   .gw-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;line-height:1.25;margin:0 0 8px}
-  .gw-letter{display:inline-block;white-space:pre;background:linear-gradient(135deg,#fff,#e0aaff 55%,#b44cff);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transform:translateY(16px) scale(.7);filter:blur(6px);animation:gwLetter .65s cubic-bezier(.2,1.3,.4,1) forwards;animation-delay:calc(var(--i) * 45ms + .25s)}
+  .gw-letter{display:inline-block;white-space:pre;background:linear-gradient(135deg,#fff,#e0aaff 55%,#b44cff);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transform:translateY(16px) scale(.7);filter:blur(6px);animation:gwLetter .4s cubic-bezier(.2,1,.3,1) forwards;animation-delay:calc(var(--i) * 26ms + .08s)}
   @keyframes gwLetter{to{opacity:1;transform:none;filter:none}}
-  .gw-sub{margin:0 0 22px;color:#b4a7d1;font-size:14px;line-height:1.55;opacity:0;animation:gwFade .8s ease 1.4s forwards}
+  .gw-sub{margin:0 0 22px;color:#b4a7d1;font-size:14px;line-height:1.55;opacity:0;animation:gwFade .4s ease .3s forwards}
   @keyframes gwFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .gw-btn{width:100%;padding:14px;border-radius:18px;border:0;color:#fff;font-weight:800;letter-spacing:.4px;background:linear-gradient(135deg,#792cff,#b44cff,#e0aaff);box-shadow:0 12px 30px rgba(155,92,255,.45);opacity:0;animation:gwFade .7s ease 1.7s forwards;transition:transform .2s}
+  .gw-btn{width:100%;padding:14px;border-radius:18px;border:0;color:#fff;font-weight:800;letter-spacing:.4px;background:linear-gradient(135deg,#792cff,#b44cff,#e0aaff);box-shadow:0 12px 30px rgba(155,92,255,.45);opacity:0;animation:gwFade .35s ease .45s forwards;transition:transform .2s}
   .gw-btn:active{transform:scale(.97)}
-  .gw-ghost{width:100%;margin-top:10px;padding:12px;border-radius:18px;border:1px solid rgba(190,145,255,.3);background:transparent;color:#d8c4f5;font-weight:600;opacity:0;animation:gwFade .7s ease 1.9s forwards}
+  .gw-ghost{width:100%;margin-top:10px;padding:12px;border-radius:18px;border:1px solid rgba(190,145,255,.3);background:transparent;color:#d8c4f5;font-weight:600;opacity:0;animation:gwFade .35s ease .55s forwards}
   .gw-star{position:absolute;width:4px;height:4px;border-radius:50%;background:#e0aaff;box-shadow:0 0 8px #b44cff;pointer-events:none;animation:gwTwinkle 2.6s ease-in-out infinite}
-  .gw-back.out{opacity:0;transition:opacity .4s ease}
+  .gw-back.out{opacity:0;transition:opacity .25s ease}
 </style>
 <script>
 (() => {
@@ -3532,7 +3533,7 @@ window.auraCommentPop = function () {
     back.innerHTML = '<div class="gw-frame"><div class="gw-card"><div class="gw-blob a"></div><div class="gw-blob b"></div>' + card + '</div></div>';
     document.body.appendChild(back);
     requestAnimationFrame(() => requestAnimationFrame(() => back.classList.add("show")));
-    const close = () => { back.classList.add("out"); setTimeout(() => back.remove(), 400); };
+    const close = () => { back.classList.add("out"); setTimeout(() => back.remove(), 260); };
     back.addEventListener("click", e => { if (e.target === back) close(); });
     back.querySelectorAll("[data-gw-close]").forEach(b => b.addEventListener("click", close));
     back.querySelectorAll("[data-gw-login]").forEach(b => b.addEventListener("click", () => window.auraGuestExit()));
@@ -3550,6 +3551,8 @@ window.auraCommentPop = function () {
     return [...text].map((ch, i) => '<span class="' + cls + '" style="--i:' + i + '">' + (ch === " " ? "&nbsp;" : ch) + '</span>').join("");
   }
   window.auraGuestWelcome = function () {
+    if (localStorage.getItem("aura_gw_seen")) return;
+    localStorage.setItem("aura_gw_seen", "1");
     open(
       '<div class="gw-orbit"><span>✨</span></div>' +
       '<h2 class="gw-title">' + letters("Welcome to our Aura", "gw-letter") + '</h2>' +
@@ -3613,5 +3616,8 @@ window.auraCommentPop = function () {
   #auraCommentOverlay .aura-sheet-form input{flex:1;border-radius:999px;padding:14px 18px;font-size:16px}
   #auraCommentOverlay #auraFarmBtn{border-radius:999px;padding:14px 22px;border:0;background:linear-gradient(135deg,#792cff,#b44cff,#e0aaff);color:#fff;font-weight:800;box-shadow:0 8px 22px rgba(155,92,255,.4)}
 </style>
+<script>
+document.querySelectorAll('.nav[data-page="profile"]').forEach(n => n.addEventListener("click", () => window.loadMyPosts && window.loadMyPosts()));
+</script>
 </body>
 </html>
