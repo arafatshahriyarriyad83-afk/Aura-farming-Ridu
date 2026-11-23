@@ -2368,6 +2368,143 @@ setInterval(() => {
     img.setAttribute("decoding", "async");
   });
 }, 500);
+<!-- AURA LIVE LOGIN ANIMATION (Paste right before <script type="module">) -->
+<style>
+  /* Background canvas and glass card adjustments */
+  #authScreen {
+    background: #080710 !important;
+    overflow: hidden !important;
+  }
+
+  #authScreen .auth-card {
+    position: relative;
+    z-index: 10;
+    background: rgba(23, 19, 38, 0.55) !important;
+    backdrop-filter: blur(22px) !important;
+    -webkit-backdrop-filter: blur(22px) !important;
+    border: 1px solid rgba(224, 170, 255, 0.22) !important;
+    box-shadow: 0 25px 70px rgba(121, 44, 255, 0.25), inset 0 0 25px rgba(180, 76, 255, 0.08) !important;
+    animation: cardEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Live breathing glow on the logo */
+  #authScreen .auth-mark {
+    animation: auraLogoPulse 4s ease-in-out infinite;
+  }
+
+  /* Aura animation stage */
+  .aura-live-stage {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  /* Floating aura orbs */
+  .aura-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(85px);
+    opacity: 0.55;
+    will-change: transform;
+  }
+
+  .aura-blob-1 {
+    width: 340px;
+    height: 340px;
+    background: radial-gradient(circle, #792cff 0%, transparent 70%);
+    top: -8%;
+    left: -12%;
+    animation: driftOne 11s ease-in-out infinite alternate;
+  }
+
+  .aura-blob-2 {
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, #b44cff 0%, transparent 70%);
+    bottom: -10%;
+    right: -15%;
+    animation: driftTwo 14s ease-in-out infinite alternate;
+  }
+
+  .aura-blob-3 {
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(circle, #e0aaff 0%, transparent 75%);
+    top: 42%;
+    left: 25%;
+    opacity: 0.28;
+    animation: driftThree 9s ease-in-out infinite alternate;
+  }
+
+  /* Floating stardust sparkles */
+  .aura-sparkle {
+    position: absolute;
+    bottom: -10px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #e0aaff;
+    box-shadow: 0 0 10px #b44cff, 0 0 20px #792cff;
+    opacity: 0;
+    animation: riseSparkle linear infinite;
+  }
+
+  .aura-sparkle:nth-child(4) { left: 15%; animation-duration: 7s; animation-delay: 0s; }
+  .aura-sparkle:nth-child(5) { left: 32%; width: 3px; height: 3px; animation-duration: 9s; animation-delay: 2s; }
+  .aura-sparkle:nth-child(6) { left: 54%; animation-duration: 6.5s; animation-delay: 1s; }
+  .aura-sparkle:nth-child(7) { left: 73%; width: 5px; height: 5px; animation-duration: 8.5s; animation-delay: 3.5s; }
+  .aura-sparkle:nth-child(8) { left: 88%; width: 3px; height: 3px; animation-duration: 7.5s; animation-delay: 1.5s; }
+
+  @keyframes driftOne {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(75px, 60px) scale(1.2); }
+  }
+
+  @keyframes driftTwo {
+    0% { transform: translate(0, 0) scale(1.1); }
+    100% { transform: translate(-80px, -65px) scale(0.95); }
+  }
+
+  @keyframes driftThree {
+    0% { transform: translate(-30px, 20px) scale(0.9); }
+    100% { transform: translate(50px, -40px) scale(1.15); }
+  }
+
+  @keyframes riseSparkle {
+    0% { transform: translateY(0) scale(0.5); opacity: 0; }
+    25% { opacity: 0.85; }
+    75% { opacity: 0.6; }
+    100% { transform: translateY(-95vh) scale(1.2); opacity: 0; }
+  }
+
+  @keyframes auraLogoPulse {
+    0%, 100% { filter: drop-shadow(0 0 14px rgba(168, 85, 255, 0.7)); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 28px rgba(224, 170, 255, 0.95)); transform: scale(1.04); }
+  }
+
+  @keyframes cardEntrance {
+    from { opacity: 0; transform: translateY(18px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Auto-hide animation stage when user logs in */
+  #authScreen.hidden ~ .aura-live-stage {
+    display: none !important;
+  }
+</style>
+
+<div class="aura-live-stage" aria-hidden="true">
+  <div class="aura-blob aura-blob-1"></div>
+  <div class="aura-blob aura-blob-2"></div>
+  <div class="aura-blob aura-blob-3"></div>
+  <span class="aura-sparkle"></span>
+  <span class="aura-sparkle"></span>
+  <span class="aura-sparkle"></span>
+  <span class="aura-sparkle"></span>
+  <span class="aura-sparkle"></span>
+</div>
 </script>
 </body>
 </html>
