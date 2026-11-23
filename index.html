@@ -950,14 +950,6 @@ html.aura-light #inbox #peopleSearch{color:#302044}
  </div>
 </section>
 
-<div id="auraChatMediaPreview" class="aura-chat-preview-backdrop" hidden>
- <section class="aura-chat-preview-card" role="dialog" aria-modal="true" aria-labelledby="auraChatPreviewTitle">
-  <header><strong id="auraChatPreviewTitle">Preview attachment</strong><button type="button" id="auraChatPreviewClose" aria-label="Close">×</button></header>
-  <div id="auraChatPreviewMedia" class="aura-chat-preview-media"></div>
-  <div class="aura-chat-preview-actions"><button type="button" id="auraChatPreviewCancel">Cancel</button><button type="button" id="auraChatPreviewSend">Send ✦</button></div>
- </section>
-</div>
-
 <section class="page" id="chat" aria-label="Conversation">
  <div class="chat-panel">
   <div class="chat-head">
@@ -1826,13 +1818,6 @@ async function openChat(person){
  try{
   if(blockedIds.has(person.id)){toast("You blocked this account. Unblock them first to message.");return}
   activePerson=person;activeConversation=await findOrCreateConversation(person.id);
-  chatLoading=false;chatPending=false;
-  const viewport=$("chatMessages");
-  viewport.innerHTML="";
-  delete viewport.dataset.hasRendered;
-  viewport.scrollTop=0;
-  window.AURA_CHAT_SCROLL=window.AURA_CHAT_SCROLL||Object.create(null);
-  delete window.AURA_CHAT_SCROLL[String(activeConversation.id)];
   $("chatName").textContent=person.username||person.full_name||"AURA User";
   $("chatAvatar").src=person.avatar_url||FALLBACK_AVATAR;
   openChatPage();await loadMessages();subscribeChat();subscribePresence();
@@ -1866,9 +1851,11 @@ async function loadMessages(){
   const messageViewport=$("chatMessages");
   const conversationKey=String(activeConversation.id);
   window.AURA_CHAT_SCROLL=window.AURA_CHAT_SCROLL||Object.create(null);
-  const firstRender=!messageViewport.dataset.hasRendered;
-  const wasAtBottom=firstRender || (messageViewport.scrollHeight-messageViewport.scrollTop-messageViewport.clientHeight<100);
-  const previousScrollTop=messageViewport.scrollTop;
+  const savedScroll=window.AURA_CHAT_SCROLL[conversationKey];
+  const wasAtBottom=!messageViewport.dataset.hasRendered || (messageViewport.scrollHeight-messageViewport.scrollTop-messageViewport.clientHeight<100);
+  const previousScrollTop=messageViewport.dataset.hasRendered
+    ? (messageViewport.scrollTop || savedScroll || 0)
+    : (savedScroll || 0);
   messageViewport.innerHTML="";
   rows.forEach(m=>{
    const mine=m.sender_id===currentUser.id,div=document.createElement("div");div.className="bubble"+(mine?" mine":"");div.dataset.messageId=m.id;
@@ -1884,7 +1871,8 @@ async function loadMessages(){
    $("chatMessages").appendChild(div);
   });
   requestAnimationFrame(()=>{
-   if(wasAtBottom){messageViewport.scrollTop=messageViewport.scrollHeight;}
+   if(wasAtBottom && !savedScroll){messageViewport.scrollTop=messageViewport.scrollHeight;}
+   else if(wasAtBottom){messageViewport.scrollTop=messageViewport.scrollHeight;}
    else{messageViewport.scrollTop=previousScrollTop;}
    window.AURA_CHAT_SCROLL[conversationKey]=messageViewport.scrollTop;
   });
@@ -1979,54 +1967,17 @@ async function sendChatMessage(content,imageUrl=null){
  const sendButton=$("chatForm").querySelector('button[type="submit"]');sendButton.disabled=true;
  const {error}=await supabase.from("messages").insert({conversation_id:activeConversation.id,sender_id:currentUser.id,content:body||null,image_url:imageUrl});
  sendButton.disabled=false;
- if(error){toast("Message send failed: "+error.message);return false}
- $("chatText").value="";replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");
- const viewport=$("chatMessages");viewport.scrollTop=viewport.scrollHeight;
- await loadMessages();
- return true;
+ if(error){toast(error.message);return}
+ $("chatText").value="";replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");await loadMessages();
 }
 $("chatForm").addEventListener("submit",e=>{e.preventDefault();sendChatMessage($("chatText").value);});
-let pendingChatAttachment=null,pendingChatPreviewUrl=null;
-function closeChatMediaPreview(){
- const overlay=$("auraChatMediaPreview");
- if(pendingChatPreviewUrl){URL.revokeObjectURL(pendingChatPreviewUrl);pendingChatPreviewUrl=null;}
- pendingChatAttachment=null;
- $("auraChatPreviewMedia").innerHTML="";
- overlay.hidden=true;
- $("chatImage").value="";
- $("auraChatPreviewSend").disabled=false;
-}
-function openChatMediaPreview(file){
- pendingChatAttachment=file;
- pendingChatPreviewUrl=URL.createObjectURL(file);
- const box=$("auraChatPreviewMedia");box.innerHTML="";
- const media=file.type.startsWith("video/")?document.createElement("video"):document.createElement("img");
- media.src=pendingChatPreviewUrl;
- if(media.tagName==="VIDEO"){media.controls=true;media.playsInline=true;media.preload="metadata";}
- else media.alt="Attachment preview";
- box.appendChild(media);
- $("auraChatMediaPreview").hidden=false;
-}
-$("chatImage").addEventListener("change",e=>{
- const file=e.target.files?.[0];if(!file)return;
- if(!file.type.startsWith("image/")&&!file.type.startsWith("video/")){toast("Choose an image or video.");e.target.value="";return;}
- if(file.size>50*1024*1024){toast("Maximum file size is 50 MB.");e.target.value="";return;}
- openChatMediaPreview(file);
-});
-$("auraChatPreviewCancel").addEventListener("click",closeChatMediaPreview);
-$("auraChatPreviewClose").addEventListener("click",closeChatMediaPreview);
-$("auraChatMediaPreview").addEventListener("click",e=>{if(e.target.id==="auraChatMediaPreview")closeChatMediaPreview();});
-$("auraChatPreviewSend").addEventListener("click",async()=>{
- if(!pendingChatAttachment||!activeConversation)return;
- const file=pendingChatAttachment,button=$("auraChatPreviewSend");button.disabled=true;
+$("chatImage").addEventListener("change",async e=>{
+ const file=e.target.files[0];if(!file)return;
  try{
-  button.textContent="Sending…";
   const video=file.type.startsWith("video/");
   const url=await uploadMedia(file,video?"message-video":"message-image");
-  const sent=await sendChatMessage("",url);
-  if(!sent)throw new Error("The message was not saved. Check your messages INSERT permission.");
-  closeChatMediaPreview();
- }catch(err){toast("Could not send attachment: "+err.message);button.disabled=false;button.textContent="Send ✦";}
+  await sendChatMessage("",url);
+ }catch(err){toast(err.message);}e.target.value="";
 });
 $("emojiButton").addEventListener("click",()=>{$("chatText").value+=" 😊";$("chatText").focus();});
 $("replyCancel").addEventListener("click",()=>{replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");});
@@ -2233,8 +2184,9 @@ async function registerAURASW(){
 }
 async function enablePushNotifications(){
  if(!currentUser){toast("Please log in first.");return}
- if(!("Notification"in window)||!("serviceWorker"in navigator)||!("PushManager"in window)){toast("This browser does not support push notifications.");return}
+ if(!( "Notification"in window)||!("serviceWorker"in navigator)||!("PushManager"in window)){toast("This browser does not support push notifications.");return}
  try{
+  // Ask permission immediately while the original tap is still active.
   const permission=await Notification.requestPermission();
   if(permission!=="granted"){toast("Notification permission was not granted.");updateNotificationStatus();return}
   const registration=await registerAURASW();if(!registration)throw new Error("Service worker could not be registered.");
@@ -2246,8 +2198,10 @@ async function enablePushNotifications(){
   if(existing&&existing.user_id!==currentUser.id)throw new Error("This device subscription is linked to another account.");
   const record={user_id:currentUser.id,endpoint,subscription:subJSON};
   const saveResult=existing?await supabase.from("push_subscriptions").update(record).eq("id",existing.id):await supabase.from("push_subscriptions").insert(record);
-  if(saveResult.error)throw saveResult.error;toast("Notifications enabled successfully 🔔");updateNotificationStatus();
+  if(saveResult.error)throw saveResult.error;
+  window.AURA_PUSH_ACTIVE=true;toast("Notifications enabled successfully 🔔");
  }catch(error){console.error("Push setup:",error);toast("Could not enable notifications: "+error.message);}
+ finally{updateNotificationStatus();}
 }
 async function auraHasActivePushSubscription(){
  try{
@@ -2264,23 +2218,23 @@ async function disablePushNotifications(){
   const subscription=registration?await registration.pushManager.getSubscription():null;
   if(subscription){
    const endpoint=subscription.endpoint;
-   const {error}=await supabase.from("push_subscriptions").delete().eq("user_id",currentUser.id).eq("endpoint",endpoint);
-   if(error)throw error;
-   const unsubscribed=await subscription.unsubscribe();
+   // Stop this device's browser subscription immediately; remove its server record too.
+   const unsubscribePromise=subscription.unsubscribe();
+   const deletePromise=supabase.from("push_subscriptions").delete().eq("user_id",currentUser.id).eq("endpoint",endpoint);
+   const [unsubscribed,deleteResult]=await Promise.all([unsubscribePromise,deletePromise]);
+   if(deleteResult.error)throw deleteResult.error;
    if(!unsubscribed)throw new Error("The browser could not disable this subscription.");
   }
-  toast("Notifications disabled for this device.");
-  await updateNotificationStatus();
- }catch(error){
-  console.error("Disable push notifications:",error);
-  toast("Could not disable notifications: "+error.message);
- }
+  window.AURA_PUSH_ACTIVE=false;toast("Notifications disabled for this device.");
+ }catch(error){console.error("Disable push notifications:",error);toast("Could not disable notifications: "+error.message);}
+ finally{updateNotificationStatus();}
 }
 async function updateNotificationStatus(){
  const status=$("notificationStatus"),bell=$("auraNotificationBell"),indicator=$("auraBellIndicator"),action=$("auraNotificationAction");
  const supported=("Notification"in window)&&("serviceWorker"in navigator)&&("PushManager"in window);
  let active=false;
  if(supported&&Notification.permission==="granted")active=await auraHasActivePushSubscription();
+ window.AURA_PUSH_ACTIVE=active;
  if(status){
   status.textContent=!supported
    ?"Notifications are not supported by this browser."
@@ -2320,11 +2274,31 @@ document.addEventListener("keydown",event=>{
  if(event.key==="Escape"&&$("auraNotifyBackdrop")&&!$("auraNotifyBackdrop").hidden)closeAuraNotificationPopup();
 });
 $("auraNotificationAction").addEventListener("click",async()=>{
- const active=await auraHasActivePushSubscription();
- if(active)await disablePushNotifications();
- else await enablePushNotifications();
- await updateNotificationStatus();
- if(!("Notification"in window)||Notification.permission!=="denied")closeAuraNotificationPopup();
+ const action=$("auraNotificationAction"),status=$("notificationStatus");
+ if(action.dataset.busy==="1")return;
+ action.dataset.busy="1";action.disabled=true;action.classList.add("is-loading");
+ const wasActive=window.AURA_PUSH_ACTIVE===true;
+ const originalText=action.textContent;
+ action.textContent=wasActive?"Disabling…":"Enabling…";
+ if(status)status.textContent=wasActive?"Turning notifications off for this device…":"Preparing your AURA notifications…";
+ try{
+  // For a first-time enable, call permission request directly from this tap.
+  if(!wasActive && (Notification.permission!=="granted")){
+   await enablePushNotifications();
+  }else if(wasActive){
+   await disablePushNotifications();
+  }else{
+   const active=await auraHasActivePushSubscription();
+   if(active){window.AURA_PUSH_ACTIVE=true;await disablePushNotifications();}
+   else await enablePushNotifications();
+  }
+  await updateNotificationStatus();
+  if(!("Notification"in window)||Notification.permission!=="denied")closeAuraNotificationPopup();
+ }finally{
+  action.dataset.busy="0";action.classList.remove("is-loading");
+  await updateNotificationStatus();
+  if(!action.textContent||action.textContent===originalText)action.textContent=originalText;
+ }
 });
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&currentUser){refreshUnreadCount();if(activeConversation)loadMessages();}});
 window.addEventListener("online",()=>toast("You are back online ✨"));
@@ -6201,24 +6175,151 @@ html.aura-light .aura-liquid-lens{
 }
 </style>
 
-<style id="aura-chat-preview-and-scroll-fix">
-#auraChatMediaPreview[hidden]{display:none!important}
-.aura-chat-preview-backdrop{position:fixed;inset:0;z-index:20000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,5,15,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:auraPreviewFade .2s ease}
-.aura-chat-preview-card{width:min(100%,480px);max-height:min(88dvh,760px);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(190,145,245,.28);border-radius:26px;background:linear-gradient(145deg,#21172f,#100d19);color:#f6edff;box-shadow:0 22px 70px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.1);animation:auraPreviewRise .28s cubic-bezier(.2,.8,.2,1)}
-.aura-chat-preview-card>header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid rgba(190,145,245,.16)}
-.aura-chat-preview-card>header strong{font-size:16px;letter-spacing:.02em}
-.aura-chat-preview-card>header button{width:34px;height:34px;border:0;border-radius:12px;background:rgba(190,145,245,.12);color:inherit;font-size:24px}
-.aura-chat-preview-media{min-height:140px;max-height:62dvh;display:grid;place-items:center;padding:12px;overflow:auto}
-.aura-chat-preview-media img,.aura-chat-preview-media video{display:block;max-width:100%;max-height:58dvh;object-fit:contain;border-radius:16px}
-.aura-chat-preview-actions{display:flex;gap:10px;padding:14px 16px calc(14px + env(safe-area-inset-bottom));border-top:1px solid rgba(190,145,245,.16)}
-.aura-chat-preview-actions button{flex:1;min-height:46px;border-radius:15px;border:1px solid rgba(190,145,245,.24);background:rgba(190,145,245,.1);color:inherit;font-weight:650}
-.aura-chat-preview-actions #auraChatPreviewSend{background:linear-gradient(135deg,#873de0,#bb72ed);color:#fff;border:0;box-shadow:0 5px 18px rgba(141,70,214,.22)}
-.aura-chat-preview-actions button:disabled{opacity:.55}
-html.aura-light .aura-chat-preview-card{background:linear-gradient(145deg,#fff,#f5edff);color:#291d39;border-color:#e4d5f2}
-html.aura-light .aura-chat-preview-card>header,html.aura-light .aura-chat-preview-actions{border-color:#e9def4}
-html.aura-light .aura-chat-preview-card>header button,html.aura-light .aura-chat-preview-actions button{background:#f0e7fa;color:#56347b;border-color:#e3d5f0}
-html.aura-light .aura-chat-preview-actions #auraChatPreviewSend{background:linear-gradient(135deg,#873de0,#bb72ed);color:white}
-@keyframes auraPreviewFade{from{opacity:0}to{opacity:1}}
-@keyframes auraPreviewRise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-@media(prefers-reduced-motion:reduce){.aura-chat-preview-backdrop,.aura-chat-preview-card{animation:none!important}}
+
+<style id="aura-liquid-only-navigation-final">
+/* Remove the separate purple tap/ripple/bounce; keep only the travelling liquid-glass lens. */
+.bottom .nav,
+.bottom .nav.active{
+  background:transparent!important;
+  box-shadow:none!important;
+  border-color:transparent!important;
+  filter:none!important;
+  transform:none!important;
+  text-shadow:none!important;
+}
+.bottom .nav::after,
+.bottom .nav.active::after{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+  box-shadow:none!important;
+}
+.bottom .nav.aura-water-tap::after{animation:none!important;display:none!important}
+.bottom .nav.aura-water-tap .aura-ui-icon,
+.bottom .nav.active .aura-ui-icon{
+  animation:none!important;
+  filter:none!important;
+  transform:none!important;
+}
+.bottom .nav.aura-water-tap{animation:none!important}
+/* The moving lens remains, but uses restrained frosted-glass lighting instead of a purple halo. */
+.bottom .aura-liquid-lens{
+  background:linear-gradient(145deg,rgba(255,255,255,.30),rgba(190,169,218,.12) 55%,rgba(255,255,255,.20))!important;
+  border:1px solid rgba(210,195,229,.30)!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.42),inset 0 -5px 12px rgba(110,88,140,.045),0 2px 8px rgba(45,30,65,.055)!important;
+  backdrop-filter:blur(16px) saturate(1.18)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(1.18)!important;
+}
+.bottom .aura-liquid-lens::before{
+  background:linear-gradient(135deg,rgba(255,255,255,.42),transparent 68%)!important;
+  opacity:.48!important;
+}
+.bottom .aura-liquid-lens::after{display:none!important;animation:none!important}
+html.aura-light .bottom .aura-liquid-lens{
+  background:linear-gradient(145deg,rgba(255,255,255,.66),rgba(232,222,245,.28) 55%,rgba(255,255,255,.52))!important;
+  border-color:rgba(165,145,190,.24)!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.8),0 2px 8px rgba(85,62,110,.055)!important;
+}
+html:not(.aura-light) .bottom .aura-liquid-lens{
+  background:linear-gradient(145deg,rgba(191,163,220,.16),rgba(95,72,120,.10) 55%,rgba(255,255,255,.07))!important;
+  border-color:rgba(193,165,221,.20)!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.14),0 2px 9px rgba(0,0,0,.16)!important;
+}
+.bottom .nav.active{color:var(--purple,#a66be8)!important}
+@media(prefers-reduced-motion:reduce){.bottom .aura-liquid-lens{transition:none!important;animation:none!important}}
 </style>
+
+<style id="aura-notification-instant-feedback">
+#auraNotificationAction{transition:opacity .16s ease,transform .16s ease,filter .16s ease!important;touch-action:manipulation}
+#auraNotificationAction:disabled{opacity:.76;cursor:wait;transform:scale(.985)}
+#auraNotificationAction.is-loading{filter:saturate(.88);position:relative}
+#auraNotificationAction.is-loading::after{content:"";display:inline-block;width:13px;height:13px;margin-left:10px;vertical-align:-2px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:auraNotifySpin .65s linear infinite}
+@keyframes auraNotifySpin{to{transform:rotate(360deg)}}
+</style>
+
+
+<style id="aura-final-startup-and-icons">
+/* AURA startup screen */
+#auraStartup{
+ position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;overflow:hidden;
+ background:radial-gradient(ellipse at 50% 42%,rgba(117,54,181,.24),transparent 48%),#090611;
+ opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease;
+}
+#auraStartup.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
+#auraStartup .startup-core{position:relative;display:flex;flex-direction:column;align-items:center;gap:18px}
+#auraStartup .startup-mark{width:100px;height:100px;filter:drop-shadow(0 0 18px rgba(180,112,255,.55));animation:auraStartupMark 1.8s cubic-bezier(.2,.8,.2,1) infinite}
+#auraStartup .startup-word{font:700 34px/1 Georgia,serif;letter-spacing:.22em;padding-left:.22em;color:#e4c8ff;text-shadow:0 0 22px rgba(174,105,255,.55);animation:auraStartupWord 1.8s ease-in-out infinite}
+#auraStartup .startup-tag{font:500 10px/1.4 system-ui,sans-serif;letter-spacing:.34em;color:rgba(225,204,248,.66);padding-left:.34em}
+#auraStartup .startup-orbit{position:absolute;width:176px;height:176px;border:1px solid rgba(199,153,255,.22);border-radius:50%;animation:auraOrbit 3.2s linear infinite}
+#auraStartup .startup-orbit:before,#auraStartup .startup-orbit:after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:#d9adff;box-shadow:0 0 14px #bd80ff}
+#auraStartup .startup-orbit:before{top:17px;left:27px}
+#auraStartup .startup-orbit:after{bottom:13px;right:23px;width:4px;height:4px}
+#auraStartup .startup-halo{position:absolute;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(155,80,224,.16),transparent 68%);animation:auraHalo 2.6s ease-in-out infinite}
+@keyframes auraStartupMark{0%,100%{transform:scale(.92) rotate(-7deg)}50%{transform:scale(1.04) rotate(7deg)}}
+@keyframes auraStartupWord{0%,100%{opacity:.72;letter-spacing:.2em}50%{opacity:1;letter-spacing:.27em}}
+@keyframes auraOrbit{to{transform:rotate(360deg)}}
+@keyframes auraHalo{0%,100%{transform:scale(.82);opacity:.55}50%{transform:scale(1.12);opacity:1}}
+/* Lock final AURA glyph style after all legacy icon scripts have initialized. */
+.header-icons button,.bottom .nav{display:grid;place-items:center}
+.header-icons button .aura-ui-icon{width:25px;height:25px;flex:0 0 25px}
+.bottom .nav .aura-ui-icon{width:25px;height:25px;flex:0 0 25px}
+.bottom .nav{width:48px!important;height:48px!important;flex-basis:48px!important}
+.bottom .nav.active{background:transparent!important;box-shadow:none!important;filter:none!important}
+.bottom .nav.active .aura-ui-icon{filter:drop-shadow(0 0 2px rgba(190,145,245,.2))!important;transform:translateY(-1px)!important}
+.bottom .nav::after{box-shadow:none!important}
+@media(prefers-reduced-motion:reduce){
+ #auraStartup .startup-mark,#auraStartup .startup-word,#auraStartup .startup-orbit,#auraStartup .startup-halo{animation:none!important}
+ #auraStartup{transition:none}
+}
+</style>
+<script id="aura-final-startup-and-icon-runtime">
+(() => {
+ const glyphs={
+  themeDark:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M24.8 20.8A12 12 0 0 1 11.2 7.2 12.2 12.2 0 1 0 24.8 20.8Z"/><path d="m22.8 5 .8 2.1 2.1.8-2.1.8-.8 2.1-.8-2.1-2.1-.8 2.1-.8z"/></svg>',
+  themeLight:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="5.2"/><path d="M16 2.8v4M16 25.2v4M2.8 16h4M25.2 16h4M6.7 6.7l2.9 2.9M22.4 22.4l2.9 2.9M25.3 6.7l-2.9 2.9M9.6 22.4l-2.9 2.9"/></svg>',
+  home:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="m4 14 12-10 12 10v13H4z"/><path d="M12 27V17h8v10"/></svg>',
+  explore:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><circle cx="14" cy="14" r="9"/><path d="m20.5 20.5 7 7M14 9l3 5-5 3z"/></svg>',
+  create:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.5 19 12l8.5 4-8.5 3-3 9-3-9-8.5-3 8.5-4z"/><circle cx="16" cy="16" r="3.2"/></svg>',
+  inbox:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 7.5 16 4l11 3.5v17L16 28 5 24.5z"/><path d="M5 13h22M10 18h12M12 23h8"/></svg>',
+  profile:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="10" r="5.5"/><path d="M5 28c.8-6 4.8-9 11-9s10.2 3 11 9"/></svg>',
+  activity:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 27S4 19 4 11.5A6.5 6.5 0 0 1 16 8a6.5 6.5 0 0 1 12 3.5C28 19 16 27 16 27Z"/><path d="M16 10v10M11 15h10"/></svg>'
+ };
+ const put=(el,markup)=>{
+  if(!el)return;
+  const current=el.querySelector(':scope > svg.aura-ui-icon');
+  const template=document.createElement('div');
+  template.innerHTML=markup;
+  const desired=template.firstElementChild;
+  if(current && desired && current.outerHTML===desired.outerHTML)return;
+  const badge=el.querySelector(':scope > .badge');
+  el.innerHTML=markup;
+  if(badge)el.appendChild(badge);
+ };
+ const sync=()=>{
+  const light=document.documentElement.classList.contains('aura-light');
+  put(document.getElementById('themeButton'),light?glyphs.themeLight:glyphs.themeDark);
+  const activity=document.getElementById('activityButton');
+  if(activity)put(activity,glyphs.activity);
+  document.querySelectorAll('.nav[data-page]').forEach(el=>{
+   const key=el.dataset.page;
+   if(glyphs[key])put(el,glyphs[key]);
+  });
+ };
+ sync();
+ // Legacy startup handlers can rewrite these icons; re-apply only when markup actually differs.
+ const mo=new MutationObserver(()=>sync());
+ mo.observe(document.body,{childList:true,subtree:true});
+ const themeObserver=new MutationObserver(sync);
+ themeObserver.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+ // Startup animation: 2.7 seconds, once per full page load.
+ if(!document.getElementById('auraStartup')){
+  const splash=document.createElement('div');
+  splash.id='auraStartup';
+  splash.setAttribute('aria-label','AURA is opening');
+  splash.innerHTML='<div class="startup-core"><div class="startup-halo"></div><div class="startup-orbit"></div><svg class="startup-mark" viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 5 95 50 50 95 5 50 50 5Z" stroke="#b878ff" stroke-width="4"/><path d="M50 22 78 50 50 78 22 50 50 22Z" stroke="#d8baff" stroke-width="4"/><path d="M50 38 62 50 50 62 38 50 50 38Z" fill="#f0ddff"/><path d="M50 12v76M12 50h76" stroke="#b878ff" stroke-opacity=".25" stroke-width="1"/></svg><div class="startup-word">AURA</div><div class="startup-tag">YOUR LITTLE WORLD</div></div>';
+  document.body.appendChild(splash);
+  const finish=()=>{splash.classList.add('is-leaving');setTimeout(()=>splash.remove(),600)};
+  setTimeout(finish,2700);
+ }
+})();
+</script>
