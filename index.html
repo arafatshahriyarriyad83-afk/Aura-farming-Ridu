@@ -3787,5 +3787,49 @@ document.querySelectorAll('.nav[data-page="profile"]').forEach(n => n.addEventLi
   birth.min = "1900-01-01";
 })();
 </script>
+<!-- AUTH FIELD THEME v25 -->
+<style>
+  html{color-scheme:dark}
+  #authScreen select,#authScreen input[type="date"],#authScreen input,#signupExtra select{
+    -webkit-appearance:none;appearance:none;background-color:#0b0914!important;color:#f7f3ff!important;
+    border:1px solid rgba(190,145,255,.22)!important;border-radius:22px!important;color-scheme:dark}
+  #authScreen select,#signupExtra select{padding-right:46px!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9b6e6' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 18px center!important}
+  #authScreen select option{background:#140f22;color:#f7f3ff}
+  #authScreen input::placeholder{color:#7d6f9c}
+  #authScreen select:focus,#authScreen input:focus{outline:none!important;border-color:#a855f7!important;box-shadow:0 0 0 3px rgba(168,85,247,.2)!important}
+  #authScreen input[type="date"]{min-height:48px}
+  #authScreen input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.8) sepia(.4) hue-rotate(230deg);opacity:.9;cursor:pointer}
+  #signupExtra{margin-top:4px}
+  #signupExtra .sx-label{display:block;margin:10px 6px 2px;font-size:12px;color:#a895c8;letter-spacing:.3px}
+</style>
+<!-- AUTH SCROLL FIX v26 -->
+<style>
+  body:has(#authScreen:not(.hidden)){overflow:auto!important;height:auto!important;min-height:100%}
+  #authScreen{position:fixed!important;inset:0!important;height:auto!important;max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;padding:16px 12px 40px!important;box-sizing:border-box}
+  #authScreen .auth-card{width:100%;max-width:440px;flex-shrink:0;height:auto!important;max-height:none!important;overflow:visible!important;margin:auto 0!important}
+</style>
+<!-- VIEWS IN ACTION ROW + VIDEO SIZE v27 -->
+<style>
+  .post:has(video.post-image) .post-image{display:block;width:100%;height:auto!important;max-height:82vh;min-height:0!important;object-fit:contain;background:#000}
+  .post:has(video.post-image){background:#0c0a14}
+  .post-actions .views-line{order:2;margin:0 auto 0 6px;padding:0!important;font-size:12px!important;color:#b9a6d6;white-space:nowrap;letter-spacing:.2px}
+  .post-actions .views-line:empty{display:none}
+  .post:has(video.post-image) .caption{padding:8px 14px 6px}
+</style>
+<script>
+(() => {
+  const feed = document.getElementById("feed");
+  if (!feed) return;
+  function place() {
+    feed.querySelectorAll(".post").forEach(post => {
+      const views = post.querySelector(":scope > .views-line");
+      const row = post.querySelector(":scope > .post-actions");
+      if (views && row) row.appendChild(views);
+    });
+  }
+  new MutationObserver(place).observe(feed, { childList: true, subtree: true });
+  place();
+})();
+</script>
 </body>
 </html>
