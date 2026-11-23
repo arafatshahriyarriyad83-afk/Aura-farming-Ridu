@@ -2590,5 +2590,208 @@ setInterval(() => {
     });
   })();
 </script>
+<!-- AURA MOTION PACK -->
+<style>
+@media (prefers-reduced-motion: no-preference){
+  .aura-field{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
+  .aura-field span{position:absolute;bottom:-12px;width:var(--s,3px);height:var(--s,3px);border-radius:50%;background:#e0aaff;box-shadow:0 0 10px #b44cff;opacity:0;animation:fieldRise linear infinite}
+  @keyframes fieldRise{0%{transform:translateY(0);opacity:0}15%{opacity:.6}85%{opacity:.35}100%{transform:translateY(-105vh);opacity:0}}
+
+  .post{position:relative}
+  .aura-rise{animation:auraRise .7s cubic-bezier(.16,1,.3,1) var(--d,0ms) both}
+  @keyframes auraRise{from{opacity:0;transform:translateY(28px) scale(.97);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+  .post-user .avatar{animation:avatarGlow 3.2s ease-in-out infinite}
+  @keyframes avatarGlow{0%,100%{box-shadow:0 0 8px rgba(168,85,247,.25)}50%{box-shadow:0 0 18px rgba(224,170,255,.6)}}
+
+  .aura-heart{position:fixed;font-size:34px;color:#ff5fa2;text-shadow:0 0 18px rgba(224,170,255,.9);pointer-events:none;z-index:400;transform:translate(-50%,-50%) scale(0);animation:heartPop .9s cubic-bezier(.2,1.4,.4,1) forwards}
+  .aura-heart.big{font-size:96px}
+  @keyframes heartPop{0%{transform:translate(-50%,-50%) scale(0);opacity:0}25%{transform:translate(-50%,-50%) scale(1.15);opacity:1}60%{transform:translate(-50%,-70%) scale(1);opacity:.95}100%{transform:translate(-50%,-110%) scale(.9);opacity:0}}
+
+  .aura-spark{position:fixed;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:hsl(var(--h,280) 90% 72%);box-shadow:0 0 10px hsl(var(--h,280) 90% 72%);pointer-events:none;z-index:400;animation:sparkOut .65s cubic-bezier(.15,.8,.3,1) forwards}
+  @keyframes sparkOut{from{transform:translate(0,0) scale(1);opacity:1}to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+
+  button.primary,button.follow,button.edit,button.secondary,.sigma-btn,.sheet-option,.sheet-cancel,.aura-sheet-form button,.chat-compose button{position:relative;overflow:hidden}
+  .aura-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.35);transform:scale(0);pointer-events:none;animation:rippleOut .6s ease-out forwards}
+  @keyframes rippleOut{to{transform:scale(1);opacity:0}}
+
+  .story{position:relative}
+  .story::before{content:"";position:absolute;left:50%;top:0;width:64px;height:64px;margin-left:-32px;border-radius:50%;background:conic-gradient(#792cff,#e0aaff,#b44cff,#792cff);filter:blur(7px);opacity:.55;animation:storySpin 4s linear infinite;z-index:0;pointer-events:none}
+  .story img{position:relative;z-index:1}
+  @keyframes storySpin{to{transform:rotate(360deg)}}
+
+  .heading{background:linear-gradient(100deg,#f5eaff 35%,#c18aff 50%,#f5eaff 65%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:headingShine 7s ease-in-out infinite}
+  @keyframes headingShine{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+  .toast{animation:toastUp .5s cubic-bezier(.2,1.4,.4,1)}
+  @keyframes toastUp{from{opacity:0;transform:translate(-50%,24px) scale(.92)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+
+  .nav.aura-bounce{animation:navBounce .5s cubic-bezier(.3,1.6,.5,1)}
+  @keyframes navBounce{0%{transform:scale(1)}35%{transform:scale(1.25) translateY(-4px)}70%{transform:scale(.92)}100%{transform:scale(1)}}
+
+  .follow.aura-pop{animation:followPop .4s ease}
+  @keyframes followPop{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+  .grid>*{animation:gridIn .55s cubic-bezier(.16,1,.3,1) both}
+  .grid>*:nth-child(3n+2){animation-delay:.06s}
+  .grid>*:nth-child(3n){animation-delay:.12s}
+  @keyframes gridIn{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:none}}
+
+  .chat-row,.activity-row,.settings-row{animation:optIn .4s ease both}
+  .sheet-option{animation:optIn .4s ease both}
+  @keyframes optIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+
+  .bubble:last-child{animation:bubbleIn .4s cubic-bezier(.2,1.3,.4,1) both}
+  @keyframes bubbleIn{from{opacity:0;transform:translateY(10px) scale(.9)}to{opacity:1;transform:none}}
+
+  #auraCommentOverlay.open{animation:fadeAura .3s ease}
+  #auraCommentOverlay.open .aura-comment-sheet{animation:sheetRise .45s cubic-bezier(.2,1.1,.3,1)}
+  @keyframes sheetRise{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  @keyframes fadeAura{from{opacity:0}to{opacity:1}}
+
+  .modal.show .story-viewer{animation:viewerIn .45s cubic-bezier(.16,1,.3,1)}
+  @keyframes viewerIn{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:none}}
+
+  .post-user .avatar,.chat-row img,.story img{transition:transform .3s}
+  .post-actions .action:hover{transform:translateY(-2px)}
+}
+</style>
+<script>
+(() => {
+  if (window.AURA_MOTION) return;
+  window.AURA_MOTION = true;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const feed = document.getElementById("feed");
+
+  if (!reduce) {
+    const field = document.createElement("div");
+    field.className = "aura-field";
+    for (let i = 0; i < 16; i++) {
+      const s = document.createElement("span");
+      s.style.left = Math.random() * 100 + "%";
+      s.style.animationDuration = (9 + Math.random() * 12) + "s";
+      s.style.animationDelay = (-Math.random() * 20) + "s";
+      s.style.setProperty("--s", (2 + Math.random() * 3) + "px");
+      field.appendChild(s);
+    }
+    document.body.prepend(field);
+  }
+
+  // Posts rise in only the first time they appear
+  const seenPosts = new Set();
+  function riseNew() {
+    [...feed.children].forEach((art, i) => {
+      if (!art.classList.contains("post")) return;
+      const id = art.querySelector("[data-like]")?.dataset.like;
+      if (!id || seenPosts.has(id)) return;
+      seenPosts.add(id);
+      art.style.setProperty("--d", Math.min(i, 6) * 70 + "ms");
+      art.classList.add("aura-rise");
+    });
+  }
+  new MutationObserver(riseNew).observe(feed, { childList: true });
+  riseNew();
+
+  function heartAt(x, y, big) {
+    if (reduce) return;
+    const h = document.createElement("div");
+    h.className = "aura-heart" + (big ? " big" : "");
+    h.textContent = "♥";
+    h.style.left = x + "px";
+    h.style.top = y + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 950);
+  }
+
+  function burst(el) {
+    if (reduce) return;
+    const r = el.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    for (let i = 0; i < 8; i++) {
+      const p = document.createElement("span");
+      p.className = "aura-spark";
+      const a = (i / 8) * Math.PI * 2;
+      p.style.left = cx + "px";
+      p.style.top = cy + "px";
+      p.style.setProperty("--dx", Math.cos(a) * 34 + "px");
+      p.style.setProperty("--dy", Math.sin(a) * 34 + "px");
+      p.style.setProperty("--h", Math.round(260 + Math.random() * 60));
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 700);
+    }
+  }
+
+  // Double-tap a photo to like it
+  let lastTap = { el: null, t: 0 };
+  feed.addEventListener("pointerup", e => {
+    const img = e.target.closest(".post-image");
+    if (!img || img.tagName !== "IMG") return;
+    const now = Date.now();
+    if (lastTap.el === img && now - lastTap.t < 320) {
+      lastTap = { el: null, t: 0 };
+      const likeBtn = img.closest(".post")?.querySelector("[data-like]");
+      if (likeBtn && !likeBtn.classList.contains("liked")) likeBtn.click();
+      heartAt(e.clientX, e.clientY, true);
+    } else {
+      lastTap = { el: img, t: now };
+    }
+  });
+
+  // Like button sparkle (class still shows the state before the click)
+  document.addEventListener("click", e => {
+    const btn = e.target.closest("#feed [data-like]");
+    if (btn && !btn.classList.contains("liked")) burst(btn);
+  });
+
+  // Ripple on press
+  const RIPPLE = "button.primary,button.follow,button.edit,button.secondary,.sigma-btn,.sheet-option,.sheet-cancel,.aura-sheet-form button,.chat-compose button";
+  document.addEventListener("pointerdown", e => {
+    if (reduce) return;
+    const b = e.target.closest(RIPPLE);
+    if (!b || b.disabled) return;
+    const r = b.getBoundingClientRect();
+    const s = document.createElement("span");
+    s.className = "aura-ripple";
+    const d = Math.max(r.width, r.height) * 2;
+    s.style.width = s.style.height = d + "px";
+    s.style.left = (e.clientX - r.left - d / 2) + "px";
+    s.style.top = (e.clientY - r.top - d / 2) + "px";
+    b.appendChild(s);
+    setTimeout(() => s.remove(), 650);
+  });
+
+  // Nav bounce and follow pop
+  document.querySelectorAll(".nav").forEach(n => n.addEventListener("click", () => {
+    if (reduce) return;
+    n.classList.remove("aura-bounce"); void n.offsetWidth; n.classList.add("aura-bounce");
+  }));
+  document.addEventListener("click", e => {
+    const f = e.target.closest(".follow");
+    if (!f || reduce) return;
+    f.classList.remove("aura-pop"); void f.offsetWidth; f.classList.add("aura-pop");
+  });
+
+  // Count-up numbers on profile stats
+  ["postCount","followerCount","followingCount","viewPostCount","viewFollowerCount","viewFollowingCount"]
+    .map(id => document.getElementById(id)).filter(Boolean).forEach(el => {
+      let last = null, busy = false;
+      new MutationObserver(() => {
+        if (busy) return;
+        const target = parseInt(el.textContent, 10);
+        if (isNaN(target) || target === last) return;
+        last = target;
+        if (reduce || target === 0) return;
+        busy = true;
+        const t0 = performance.now(), dur = 600;
+        const step = now => {
+          const k = Math.min(1, (now - t0) / dur);
+          el.textContent = Math.round(target * (1 - Math.pow(1 - k, 3)));
+          if (k < 1) requestAnimationFrame(step); else busy = false;
+        };
+        requestAnimationFrame(step);
+      }).observe(el, { childList: true, characterData: true, subtree: true });
+    });
+})();
+</script>
+
 </body>
 </html>
