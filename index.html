@@ -2291,6 +2291,13 @@ document.addEventListener("click", function(e) {
     }, 2000);
   }
 });
+const auraObserver = new MutationObserver(() => {
+  const t = document.querySelector(".toast");
+  if (t && t.textContent.includes("Blocked accounts")) {
+    t.textContent = "Refresh your AURA feed ✨";
+  }
+});
+auraObserver.observe(document.body, { childList: true });
 </script>
 </body>
 </html>
