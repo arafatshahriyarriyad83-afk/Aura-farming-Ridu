@@ -901,7 +901,7 @@ html.aura-light #inbox #peopleSearch{color:#302044}
   <div id="postCompose" class="cr-compose hidden">
    <div class="cr-preview" id="postPreview"></div>
    <textarea id="captionInput" placeholder="Write a caption..." maxlength="500"></textarea>
-   <div class="cr-actions"><button type="button" class="cr-cancel" id="postCancel">Cancel</button><button type="button" class="cr-submit" id="postSubmit">Post</button></div>
+   <div class="cr-actions"><button type="button" class="cr-cancel" id="postCancel">Cancel</button><button type="button" class="cr-submit" id="postSubmit">Send ✦</button></div>
   </div>
  </div>
  <div class="cr-block">
@@ -949,6 +949,14 @@ html.aura-light #inbox #peopleSearch{color:#302044}
   </section>
  </div>
 </section>
+
+<div id="auraChatMediaPreview" class="aura-chat-preview-backdrop" hidden>
+ <section class="aura-chat-preview-card" role="dialog" aria-modal="true" aria-labelledby="auraChatPreviewTitle">
+  <header><strong id="auraChatPreviewTitle">Preview attachment</strong><button type="button" id="auraChatPreviewClose" aria-label="Close">×</button></header>
+  <div id="auraChatPreviewMedia" class="aura-chat-preview-media"></div>
+  <div class="aura-chat-preview-actions"><button type="button" id="auraChatPreviewCancel">Cancel</button><button type="button" id="auraChatPreviewSend">Send ✦</button></div>
+ </section>
+</div>
 
 <section class="page" id="chat" aria-label="Conversation">
  <div class="chat-panel">
@@ -1393,6 +1401,7 @@ function renderFeed(){
    <div class="user-info"><strong data-profile="${esc(post.user_id)}">${esc(username)}</strong><small>${new Date(post.created_at).toLocaleString()}</small></div>
    ${!mine?`<button class="follow ${isFollowing?"following":""}" data-follow="${esc(post.user_id)}">${isFollowing?"Following":"Follow"}</button>`:""}
    <button class="more-btn" data-post-menu="${esc(post.id)}" aria-label="Post options">⋯</button></div>
+   <div class="caption post-caption-top">${post.caption?esc(post.caption):""}</div>
    ${video?`<video class="post-image" src="${esc(post.media_url)}" controls playsinline preload="metadata"></video>`:`<img class="post-image" src="${esc(post.media_url)}" alt="Post" loading="lazy">`}
    <div class="post-actions">
    <button class="action ${liked?"liked":""}" data-like="${esc(post.id)}">${liked?"♥":"♡"}</button>
@@ -1401,7 +1410,7 @@ function renderFeed(){
 <button class="action ${saved?"saved":""}" data-save="${esc(post.id)}" aria-label="Save post">🔖</button>
 
    <span class="like-count">${(post.likes||[]).length} likes</span></div>
-   <div class="caption">${video?"":"<b>"+esc(username)+"</b> "}${esc(post.caption||"")}</div>${video?`<div class="views-line" data-v="${post.views_count||0}">${post.views_count||0} views</div>`:""}
+   ${video?`<div class="views-line" data-v="${post.views_count||0}">${post.views_count||0} views</div>`:""}
    <div class="comment-list">${comments.slice(0,3).map(c=>`<p><b>${esc(c.profiles?.username||"User")}</b> ${esc(c.content)}</p>`).join("")}</div>
    <form class="comment-form" data-comment="${esc(post.id)}"><input name="content" placeholder="Add a comment..." maxlength="500" required><button>Post</button></form>`;
   feed.appendChild(article);
@@ -1817,6 +1826,13 @@ async function openChat(person){
  try{
   if(blockedIds.has(person.id)){toast("You blocked this account. Unblock them first to message.");return}
   activePerson=person;activeConversation=await findOrCreateConversation(person.id);
+  chatLoading=false;chatPending=false;
+  const viewport=$("chatMessages");
+  viewport.innerHTML="";
+  delete viewport.dataset.hasRendered;
+  viewport.scrollTop=0;
+  window.AURA_CHAT_SCROLL=window.AURA_CHAT_SCROLL||Object.create(null);
+  delete window.AURA_CHAT_SCROLL[String(activeConversation.id)];
   $("chatName").textContent=person.username||person.full_name||"AURA User";
   $("chatAvatar").src=person.avatar_url||FALLBACK_AVATAR;
   openChatPage();await loadMessages();subscribeChat();subscribePresence();
@@ -1850,11 +1866,9 @@ async function loadMessages(){
   const messageViewport=$("chatMessages");
   const conversationKey=String(activeConversation.id);
   window.AURA_CHAT_SCROLL=window.AURA_CHAT_SCROLL||Object.create(null);
-  const savedScroll=window.AURA_CHAT_SCROLL[conversationKey];
-  const wasAtBottom=!messageViewport.dataset.hasRendered || (messageViewport.scrollHeight-messageViewport.scrollTop-messageViewport.clientHeight<100);
-  const previousScrollTop=messageViewport.dataset.hasRendered
-    ? (messageViewport.scrollTop || savedScroll || 0)
-    : (savedScroll || 0);
+  const firstRender=!messageViewport.dataset.hasRendered;
+  const wasAtBottom=firstRender || (messageViewport.scrollHeight-messageViewport.scrollTop-messageViewport.clientHeight<100);
+  const previousScrollTop=messageViewport.scrollTop;
   messageViewport.innerHTML="";
   rows.forEach(m=>{
    const mine=m.sender_id===currentUser.id,div=document.createElement("div");div.className="bubble"+(mine?" mine":"");div.dataset.messageId=m.id;
@@ -1870,8 +1884,7 @@ async function loadMessages(){
    $("chatMessages").appendChild(div);
   });
   requestAnimationFrame(()=>{
-   if(wasAtBottom && !savedScroll){messageViewport.scrollTop=messageViewport.scrollHeight;}
-   else if(wasAtBottom){messageViewport.scrollTop=messageViewport.scrollHeight;}
+   if(wasAtBottom){messageViewport.scrollTop=messageViewport.scrollHeight;}
    else{messageViewport.scrollTop=previousScrollTop;}
    window.AURA_CHAT_SCROLL[conversationKey]=messageViewport.scrollTop;
   });
@@ -1900,9 +1913,24 @@ function subscribePresence(){
  }).subscribe(async status=>{if(status==="SUBSCRIBED")await presenceChannel.track({user_id:currentUser.id,online_at:new Date().toISOString()});});
 }
 async function deleteMessage(id){
+ const bubble=$("chatMessages").querySelector(`[data-message-id="${CSS.escape(id)}"]`);
+ if(!bubble||!currentUser)return;
  if(!window.auraConfirm||!(await window.auraConfirm("Delete this message?")))return;
- const {error}=await supabase.from("messages").delete().eq("id",id).eq("sender_id",currentUser.id);
- if(error)toast("Delete failed: "+error.message);else{toast("Message deleted.");await loadMessages();}
+ const original=bubble.innerHTML;
+ bubble.style.opacity=".45";
+ const {data,error}=await supabase.from("messages").delete()
+  .eq("id",id).eq("sender_id",currentUser.id).select("id").maybeSingle();
+ if(error||!data){
+  bubble.style.opacity="";
+  toast(error?"Delete failed: "+error.message:"Delete was blocked. Check messages DELETE RLS policy.");
+  return;
+ }
+ bubble.remove();
+ if(activeConversation){
+  const key=String(activeConversation.id);
+  if(window.AURA_CHAT_SCROLL)window.AURA_CHAT_SCROLL[key]=$("chatMessages").scrollTop;
+ }
+ toast("Message deleted.");
 }
 function auraEditMessageDialog(currentText){
  return new Promise(resolve=>{
@@ -1921,8 +1949,17 @@ async function editMessage(id){
  const bubble=$(`chatMessages`).querySelector(`[data-message-id="${CSS.escape(id)}"]`);
  const current=bubble?.querySelector(".message-content")?.innerText||"";
  const updated=await auraEditMessageDialog(current);if(updated===null||updated.trim()===current.trim()||!updated.trim())return;
- const {error}=await supabase.from("messages").update({content:updated.trim().slice(0,2000)}).eq("id",id).eq("sender_id",currentUser.id);
- if(error)toast("Edit failed: "+error.message);else{toast("Message updated.");await loadMessages();}
+ const {data,error}=await supabase.from("messages").update({content:updated.trim().slice(0,2000)})
+  .eq("id",id).eq("sender_id",currentUser.id).select("id,content").maybeSingle();
+ if(error){toast("Edit failed: "+error.message);return;}
+ if(!data){toast("Edit was blocked. Check messages UPDATE RLS policy.");return;}
+ if(bubble){
+  const content=bubble.querySelector(".message-content");
+  if(content)content.innerHTML=esc(data.content||"").replace(/\\n/g,"<br>");
+  const stamp=bubble.querySelector("small");
+  if(stamp&&!stamp.textContent.includes("Edited"))stamp.textContent+=" · Edited";
+ }
+ toast("Message updated.");
 }
 async function reportChatMessage(id){
  const bubble=$(`chatMessages`).querySelector(`[data-message-id="${CSS.escape(id)}"]`);
@@ -1942,17 +1979,54 @@ async function sendChatMessage(content,imageUrl=null){
  const sendButton=$("chatForm").querySelector('button[type="submit"]');sendButton.disabled=true;
  const {error}=await supabase.from("messages").insert({conversation_id:activeConversation.id,sender_id:currentUser.id,content:body||null,image_url:imageUrl});
  sendButton.disabled=false;
- if(error){toast(error.message);return}
- $("chatText").value="";replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");await loadMessages();
+ if(error){toast("Message send failed: "+error.message);return false}
+ $("chatText").value="";replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");
+ const viewport=$("chatMessages");viewport.scrollTop=viewport.scrollHeight;
+ await loadMessages();
+ return true;
 }
 $("chatForm").addEventListener("submit",e=>{e.preventDefault();sendChatMessage($("chatText").value);});
-$("chatImage").addEventListener("change",async e=>{
- const file=e.target.files[0];if(!file)return;
+let pendingChatAttachment=null,pendingChatPreviewUrl=null;
+function closeChatMediaPreview(){
+ const overlay=$("auraChatMediaPreview");
+ if(pendingChatPreviewUrl){URL.revokeObjectURL(pendingChatPreviewUrl);pendingChatPreviewUrl=null;}
+ pendingChatAttachment=null;
+ $("auraChatPreviewMedia").innerHTML="";
+ overlay.hidden=true;
+ $("chatImage").value="";
+ $("auraChatPreviewSend").disabled=false;
+}
+function openChatMediaPreview(file){
+ pendingChatAttachment=file;
+ pendingChatPreviewUrl=URL.createObjectURL(file);
+ const box=$("auraChatPreviewMedia");box.innerHTML="";
+ const media=file.type.startsWith("video/")?document.createElement("video"):document.createElement("img");
+ media.src=pendingChatPreviewUrl;
+ if(media.tagName==="VIDEO"){media.controls=true;media.playsInline=true;media.preload="metadata";}
+ else media.alt="Attachment preview";
+ box.appendChild(media);
+ $("auraChatMediaPreview").hidden=false;
+}
+$("chatImage").addEventListener("change",e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ if(!file.type.startsWith("image/")&&!file.type.startsWith("video/")){toast("Choose an image or video.");e.target.value="";return;}
+ if(file.size>50*1024*1024){toast("Maximum file size is 50 MB.");e.target.value="";return;}
+ openChatMediaPreview(file);
+});
+$("auraChatPreviewCancel").addEventListener("click",closeChatMediaPreview);
+$("auraChatPreviewClose").addEventListener("click",closeChatMediaPreview);
+$("auraChatMediaPreview").addEventListener("click",e=>{if(e.target.id==="auraChatMediaPreview")closeChatMediaPreview();});
+$("auraChatPreviewSend").addEventListener("click",async()=>{
+ if(!pendingChatAttachment||!activeConversation)return;
+ const file=pendingChatAttachment,button=$("auraChatPreviewSend");button.disabled=true;
  try{
+  button.textContent="Sending…";
   const video=file.type.startsWith("video/");
   const url=await uploadMedia(file,video?"message-video":"message-image");
-  await sendChatMessage("",url);
- }catch(err){toast(err.message);}e.target.value="";
+  const sent=await sendChatMessage("",url);
+  if(!sent)throw new Error("The message was not saved. Check your messages INSERT permission.");
+  closeChatMediaPreview();
+ }catch(err){toast("Could not send attachment: "+err.message);button.disabled=false;button.textContent="Send ✦";}
 });
 $("emojiButton").addEventListener("click",()=>{$("chatText").value+=" 😊";$("chatText").focus();});
 $("replyCancel").addEventListener("click",()=>{replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");});
@@ -5986,3 +6060,165 @@ html.aura-light .nav .badge,html.aura-light .header-icons .badge{color:#fff!impo
  observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
 })();
 </script>
+
+<style id="aura-ripple-feed-compose">
+/* Smaller navigation glyphs + soft water-drop ripple on every tap */
+.nav{width:49px!important;height:49px!important;flex-basis:49px!important;border-radius:17px!important}
+.nav .aura-ui-icon{width:24px!important;height:24px!important;flex-basis:24px!important}
+.header-icons button .aura-ui-icon{width:24px!important;height:24px!important;flex-basis:24px!important}
+.nav::after{
+ content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;
+ transform:translate(-50%,-50%) scale(0);opacity:0;pointer-events:none;
+ border:1px solid rgba(190,126,255,.7);
+}
+.nav.aura-water-tap::after{animation:auraWaterRipple .68s cubic-bezier(.16,.72,.25,1)}
+@keyframes auraWaterRipple{
+ 0%{transform:translate(-50%,-50%) scale(.3);opacity:.8;box-shadow:0 0 0 0 rgba(170,112,255,.3)}
+ 70%{opacity:.45}
+ 100%{transform:translate(-50%,-50%) scale(13);opacity:0;box-shadow:0 0 0 12px rgba(170,112,255,0)}
+}
+.nav.aura-water-tap .aura-ui-icon{animation:auraWaterGlyph .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes auraWaterGlyph{0%{transform:scale(1)}35%{transform:scale(.84)}68%{transform:scale(1.12)}100%{transform:scale(1)}}
+.post-caption-top{padding:13px 16px 14px!important;min-height:0;white-space:pre-wrap}
+.post-caption-top:empty{display:none}
+.post-image{width:100%;height:auto;max-height:560px;min-height:0;object-fit:contain;display:block;background:#100b19}
+html.aura-light .post-image{background:#eee8f7}
+.cr-compose{border:1px solid rgba(174,125,230,.25);border-radius:24px;padding:14px;background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(160,105,220,.05));box-shadow:0 14px 36px rgba(70,35,105,.1)}
+.cr-preview{max-height:none!important;min-height:120px;align-items:center}
+.cr-preview img,.cr-preview video{width:100%;max-height:58vh!important;object-fit:contain!important}
+#postSubmit{letter-spacing:.2px}
+#postCompose{
+ position:fixed!important;inset:0!important;z-index:99990!important;
+ width:100%!important;height:100dvh!important;max-height:100dvh!important;
+ overflow-y:auto!important;box-sizing:border-box!important;
+ padding:calc(env(safe-area-inset-top,0px) + 22px) 18px calc(env(safe-area-inset-bottom,0px) + 24px)!important;
+ border:0!important;border-radius:0!important;
+ display:flex;flex-direction:column;justify-content:center;gap:14px;
+ background:radial-gradient(ellipse at 50% 0%,rgba(164,102,230,.2),transparent 48%),rgba(12,8,20,.97)!important;
+ backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+}
+#postCompose.hidden{display:none!important}
+#postCompose::before{content:"Prepare your post";display:block;color:#e5c7ff;font-size:24px;font-weight:800;letter-spacing:.2px}
+#postCompose .cr-preview{flex:0 1 auto;max-height:60dvh!important;margin:0}
+#postCompose .cr-preview img,#postCompose .cr-preview video{max-height:58dvh!important;width:100%;object-fit:contain!important}
+#postCompose #captionInput{flex:0 0 auto;min-height:100px;max-height:22dvh;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(195,150,245,.32)}
+#postCompose .cr-actions{flex:0 0 auto}
+html.aura-light #postCompose{background:radial-gradient(ellipse at 50% 0%,rgba(190,143,242,.22),transparent 48%),rgba(248,244,255,.98)!important}
+html.aura-light #postCompose::before{color:#60348f}
+html.aura-light #postCompose #captionInput{background:#fff;color:#281d39;border-color:#dfd2ed}
+</style>
+<script id="aura-water-tap">
+document.addEventListener("click",e=>{
+ const nav=e.target.closest(".nav");
+ if(!nav)return;
+ nav.classList.remove("aura-water-tap");
+ void nav.offsetWidth;
+ nav.classList.add("aura-water-tap");
+ setTimeout(()=>nav.classList.remove("aura-water-tap"),720);
+},true);
+</script>
+
+
+<style id="aura-liquid-nav-v2">
+/* AURA liquid-glass travelling highlight: the active glass lens morphs between tabs */
+.bottom{position:fixed;isolation:isolate;overflow:hidden}
+.bottom .nav{z-index:2;position:relative;background:transparent!important;transition:color .42s ease,transform .42s cubic-bezier(.2,.85,.25,1),filter .42s ease!important}
+.bottom .nav.active{background:transparent!important;box-shadow:none!important;transform:translateY(-1px)!important}
+.bottom .nav.active:after{z-index:3;bottom:-2px!important}
+.aura-liquid-lens{position:absolute;z-index:1;left:0;top:50%;width:49px;height:49px;border-radius:19px;pointer-events:none;opacity:0;
+ transform:translate3d(0,-50%,0) scale(.86);transition:transform .72s cubic-bezier(.18,.82,.2,1),width .72s cubic-bezier(.18,.82,.2,1),border-radius .72s cubic-bezier(.18,.82,.2,1),opacity .25s ease;
+ background:linear-gradient(145deg,rgba(196,139,255,.28),rgba(132,76,202,.10) 55%,rgba(255,255,255,.16));
+ border:1px solid rgba(199,153,255,.4);box-shadow:inset 0 1px 1px rgba(255,255,255,.48),inset 0 -8px 18px rgba(133,73,194,.10),0 7px 22px rgba(123,62,183,.16),0 0 24px rgba(177,115,255,.18);
+ backdrop-filter:blur(18px) saturate(1.65);-webkit-backdrop-filter:blur(18px) saturate(1.65)}
+.aura-liquid-lens::before{content:"";position:absolute;inset:3px;border-radius:inherit;background:radial-gradient(ellipse at 28% 18%,rgba(255,255,255,.48),transparent 48%);opacity:.8}
+.aura-liquid-lens::after{content:"";position:absolute;inset:-5px;border-radius:42%;border:1px solid rgba(196,139,255,.24);transform:scale(.82);opacity:0}
+.aura-liquid-lens.is-moving{animation:auraLiquidMorph .72s cubic-bezier(.18,.82,.2,1)}
+.aura-liquid-lens.is-moving::after{animation:auraLiquidEdge .72s ease-out}
+@keyframes auraLiquidMorph{0%{filter:blur(0);border-radius:19px}24%{border-radius:48% 38% 44% 36%;filter:blur(.35px)}52%{border-radius:34% 48% 35% 49%;filter:blur(.15px)}100%{border-radius:19px;filter:blur(0)}}
+@keyframes auraLiquidEdge{0%{transform:scale(.78);opacity:.7}100%{transform:scale(1.5);opacity:0}}
+html.aura-light .aura-liquid-lens{background:linear-gradient(145deg,rgba(255,255,255,.86),rgba(224,198,255,.42) 55%,rgba(255,255,255,.6));border-color:rgba(161,111,210,.35);box-shadow:inset 0 1px 1px #fff,inset 0 -7px 18px rgba(144,91,198,.08),0 7px 23px rgba(116,72,161,.13),0 0 22px rgba(176,119,231,.13)}
+.video-caption-top{display:block!important;padding:12px 16px 13px!important;margin:0!important;color:var(--text);font-size:14px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.video-caption-top:empty{display:none!important}
+/* A video card never renders a second caption/username block after its media. */
+.post:has(video.post-image)>.caption:not(.video-caption-top){display:none!important}
+@media(prefers-reduced-motion:reduce){.aura-liquid-lens,.bottom .nav{transition:none!important;animation:none!important}}
+</style>
+<script id="aura-liquid-nav-runtime-v2">
+(()=>{
+ const bar=document.querySelector('.bottom');if(!bar)return;
+ let lens=bar.querySelector('.aura-liquid-lens');
+ if(!lens){lens=document.createElement('span');lens.className='aura-liquid-lens';lens.setAttribute('aria-hidden','true');bar.prepend(lens)}
+ const tabs=[...bar.querySelectorAll('.nav')];
+ function moveLens(animate=true){
+  const active=bar.querySelector('.nav.active');if(!active)return;
+  const br=bar.getBoundingClientRect(),r=active.getBoundingClientRect();
+  const w=Math.min(49,r.width),x=r.left-br.left+(r.width-w)/2;
+  if(!lens.dataset.ready){lens.style.opacity='1';lens.style.width=w+'px';lens.style.transform=`translate3d(${x}px,-50%,0) scale(.92)`;lens.dataset.ready='1';return}
+  lens.style.opacity='1';lens.style.width=w+'px';
+  if(animate){lens.classList.remove('is-moving');void lens.offsetWidth;lens.classList.add('is-moving')}
+  lens.style.transform=`translate3d(${x}px,-50%,0) scale(1)`;
+ }
+ bar.addEventListener('click',e=>{const tab=e.target.closest('.nav');if(!tab)return;requestAnimationFrame(()=>moveLens(true))},true);
+ const mo=new MutationObserver(()=>moveLens(true));tabs.forEach(t=>mo.observe(t,{attributes:true,attributeFilter:['class']}));
+ window.addEventListener('resize',()=>moveLens(false),{passive:true});
+ if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>moveLens(false),{passive:true});
+ requestAnimationFrame(()=>moveLens(false));
+})();
+</script>
+
+
+<style id="aura-caption-under-profile-final">
+/* Caption belongs in the header area, directly under the profile row, never under media. */
+.post>.post-user{order:0!important}
+.post>.post-caption-top{order:1!important;display:block;box-sizing:border-box;width:100%;padding:0 16px 13px!important;margin:0!important;
+ font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text)}
+.post>.post-caption-top:empty{display:none!important}
+.post>.post-image{order:2!important}
+.post>.views-line{order:3!important}
+.post>.post-actions{order:4!important}
+.post>.caption:not(.post-caption-top){display:none!important}
+html.aura-light .post>.post-caption-top{color:#281d39!important}
+</style>
+<style id="aura-liquid-softness">
+/* Keep the liquid transition, but make the glass subtle rather than flashy. */
+.aura-liquid-lens{
+ background:linear-gradient(145deg,rgba(190,139,245,.17),rgba(132,76,202,.055) 58%,rgba(255,255,255,.08))!important;
+ border-color:rgba(190,145,235,.22)!important;
+ box-shadow:inset 0 1px 1px rgba(255,255,255,.25),0 3px 10px rgba(123,62,183,.08)!important;
+ backdrop-filter:blur(12px) saturate(1.2)!important;-webkit-backdrop-filter:blur(12px) saturate(1.2)!important;
+}
+.aura-liquid-lens::before{inset:4px!important;opacity:.35!important}
+.aura-liquid-lens::after{border-color:rgba(196,153,245,.13)!important}
+.aura-liquid-lens.is-moving{animation:auraLiquidMorph .72s cubic-bezier(.18,.82,.2,1)!important}
+.nav.aura-water-tap::after{animation-duration:.5s!important;border-color:rgba(190,145,235,.35)!important}
+.nav.aura-water-tap .aura-ui-icon{animation:auraWaterGlyph .42s cubic-bezier(.2,.8,.2,1)!important}
+.bottom .nav.active{filter:none!important}
+.bottom .nav.active .aura-ui-icon{filter:drop-shadow(0 0 2px rgba(190,145,245,.22))!important}
+html.aura-light .aura-liquid-lens{
+ background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(224,198,255,.22) 58%,rgba(255,255,255,.35))!important;
+ border-color:rgba(161,111,210,.22)!important;
+ box-shadow:inset 0 1px 1px rgba(255,255,255,.7),0 3px 10px rgba(116,72,161,.07)!important;
+}
+</style>
+
+<style id="aura-chat-preview-and-scroll-fix">
+#auraChatMediaPreview[hidden]{display:none!important}
+.aura-chat-preview-backdrop{position:fixed;inset:0;z-index:20000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,5,15,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:auraPreviewFade .2s ease}
+.aura-chat-preview-card{width:min(100%,480px);max-height:min(88dvh,760px);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(190,145,245,.28);border-radius:26px;background:linear-gradient(145deg,#21172f,#100d19);color:#f6edff;box-shadow:0 22px 70px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.1);animation:auraPreviewRise .28s cubic-bezier(.2,.8,.2,1)}
+.aura-chat-preview-card>header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid rgba(190,145,245,.16)}
+.aura-chat-preview-card>header strong{font-size:16px;letter-spacing:.02em}
+.aura-chat-preview-card>header button{width:34px;height:34px;border:0;border-radius:12px;background:rgba(190,145,245,.12);color:inherit;font-size:24px}
+.aura-chat-preview-media{min-height:140px;max-height:62dvh;display:grid;place-items:center;padding:12px;overflow:auto}
+.aura-chat-preview-media img,.aura-chat-preview-media video{display:block;max-width:100%;max-height:58dvh;object-fit:contain;border-radius:16px}
+.aura-chat-preview-actions{display:flex;gap:10px;padding:14px 16px calc(14px + env(safe-area-inset-bottom));border-top:1px solid rgba(190,145,245,.16)}
+.aura-chat-preview-actions button{flex:1;min-height:46px;border-radius:15px;border:1px solid rgba(190,145,245,.24);background:rgba(190,145,245,.1);color:inherit;font-weight:650}
+.aura-chat-preview-actions #auraChatPreviewSend{background:linear-gradient(135deg,#873de0,#bb72ed);color:#fff;border:0;box-shadow:0 5px 18px rgba(141,70,214,.22)}
+.aura-chat-preview-actions button:disabled{opacity:.55}
+html.aura-light .aura-chat-preview-card{background:linear-gradient(145deg,#fff,#f5edff);color:#291d39;border-color:#e4d5f2}
+html.aura-light .aura-chat-preview-card>header,html.aura-light .aura-chat-preview-actions{border-color:#e9def4}
+html.aura-light .aura-chat-preview-card>header button,html.aura-light .aura-chat-preview-actions button{background:#f0e7fa;color:#56347b;border-color:#e3d5f0}
+html.aura-light .aura-chat-preview-actions #auraChatPreviewSend{background:linear-gradient(135deg,#873de0,#bb72ed);color:white}
+@keyframes auraPreviewFade{from{opacity:0}to{opacity:1}}
+@keyframes auraPreviewRise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.aura-chat-preview-backdrop,.aura-chat-preview-card{animation:none!important}}
+</style>
