@@ -136,28 +136,35 @@ margin:6px 0;background:#0b0913;color:var(--text);outline:none}
 border:1px solid #7442a9;color:white;padding:12px 18px;border-radius:24px;font-size:12px;
 z-index:200;max-width:90%;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.4)}
 .chat-layout{display:grid;gap:12px}
+#inbox{min-height:calc(100dvh - 150px);padding-bottom:30px}
+#chat{padding:14px 14px calc(100px + env(safe-area-inset-bottom));min-height:calc(100dvh - 144px)}
 .chat-row{display:flex;align-items:center;gap:11px;padding:13px;background:var(--card);
 border:1px solid var(--line);border-radius:17px;margin:8px 0;text-align:left;width:100%;
 color:var(--text);transition:.2s}
 .chat-row:hover{border-color:#7043a5;box-shadow:0 0 15px rgba(155,92,255,.12)}
 .chat-row img{width:45px;height:45px;border-radius:50%;object-fit:cover;border:2px solid #a855ff}
 .chat-row span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
-.chat-panel{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
-.chat-head{padding:13px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.chat-panel{background:linear-gradient(155deg,#151022,#0d0b16);border:1px solid var(--line);border-radius:23px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:calc(100dvh - 190px)}
+.chat-head{padding:13px 15px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line);background:rgba(20,15,33,.96);position:sticky;top:0;z-index:3}
 .chat-head button{border:0;background:none;color:var(--text);font-size:23px}
-.chat-messages{height:55vh;min-height:280px;max-height:560px;overflow:auto;padding:14px;
-display:flex;flex-direction:column;gap:10px}
-.bubble{max-width:82%;padding:11px 13px;border-radius:17px 17px 17px 5px;
-background:#282039;align-self:flex-start;overflow-wrap:anywhere;font-size:13px;color:#f7f3ff}
-.bubble.mine{background:linear-gradient(135deg,#633a91,#874bc0);align-self:flex-end;color:white;border-radius:17px 17px 5px 17px}
-.bubble small{display:block;font-size:10px;opacity:.7;margin-top:5px}
-.bubble img,.bubble video{max-width:100%;border-radius:10px;display:block;margin-top:7px}
-.chat-compose{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line)}
+.chat-head .chat-person-link{display:flex;align-items:center;gap:11px;min-width:0;flex:1;border:0;background:none;color:var(--text);text-align:left;padding:0}
+.chat-head .chat-person-link strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-head .chat-person-link img{width:43px;height:43px;flex-shrink:0;cursor:pointer}
+.chat-messages{flex:1;height:auto;min-height:42vh;max-height:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:17px 12px 22px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.bubble{max-width:86%;padding:11px 13px;border-radius:18px 18px 18px 6px;background:#282039;align-self:flex-start;overflow-wrap:anywhere;font-size:13px;color:#f7f3ff;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.bubble.mine{background:linear-gradient(135deg,#633a91,#874bc0);align-self:flex-end;color:white;border-radius:18px 18px 6px 18px}
+.bubble small{display:block;font-size:10px;opacity:.72;margin-top:7px}
+.bubble img,.bubble video{max-width:100%;border-radius:12px;display:block;margin-top:8px}
+.message-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:7px;padding-top:6px;border-top:1px solid rgba(255,255,255,.1)}
+.message-actions button{border:0;background:transparent;color:#e3c9ff;font-size:10px;padding:3px 0}
+.bubble:not(.mine) .message-actions button{color:#c9a7ed}
+.chat-compose{display:flex;gap:7px;padding:11px;border-top:1px solid var(--line);background:rgba(12,9,20,.97);position:sticky;bottom:0}
 .chat-compose input[type=text]{min-width:0;flex:1;border:1px solid var(--line);border-radius:22px;
 padding:11px;background:#0b0913;color:var(--text);outline:none}
 .chat-compose button{border:0;border-radius:22px;padding:0 15px;background:var(--gradient);color:white;font-weight:800}
-.chat-tools{display:flex;gap:8px;padding:0 10px 10px}
-.chat-tools button{border:0;background:none;color:#c18aff}
+.chat-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;background:#100d1a;border-top:1px solid rgba(168,85,247,.12)}
+.chat-tools button{border:0;background:none;color:#c18aff;font-size:12px}
+@media(max-width:420px){#chat{padding:10px 10px calc(96px + env(safe-area-inset-bottom))}.chat-panel{min-height:calc(100dvh - 170px);border-radius:19px}.chat-messages{min-height:45vh;padding:14px 9px}.bubble{max-width:90%}.chat-compose{padding:9px;gap:5px}.chat-compose button{padding:0 12px}}
 .chat-back{display:flex;align-items:center;gap:10px;margin-bottom:15px}
 .chat-back button{border:1px solid var(--line);background:var(--card);color:#d8baff;border-radius:12px;padding:9px 15px}
 .settings-row,.activity-row{display:flex;align-items:center;gap:13px;padding:15px;
@@ -187,6 +194,82 @@ background:var(--card);border:1px solid var(--line);border-radius:15px;margin:10
 body.dark{--bg:#080710}
 @media(min-width:601px){body{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
 @media(max-width:380px){.page{padding:15px}.heading{font-size:27px}.stats{gap:27px}.post-actions{gap:12px}}
+
+/* AURA signature icon system — fixed geometry prevents reload/layout drift */
+.aura-ui-icon{
+  display:block;
+  width:25px;height:25px;flex:0 0 25px;
+  fill:none;stroke:currentColor;stroke-width:1.65;
+  stroke-linecap:round;stroke-linejoin:round;
+  overflow:visible;pointer-events:none;
+  vector-effect:non-scaling-stroke;
+}
+.header-icons{align-items:center;gap:10px}
+.header-icons button{
+  display:grid;place-items:center;
+  width:44px;height:44px;flex:0 0 44px;
+  padding:0;line-height:0;font-size:0;
+  border-radius:15px;
+  color:#d9b8ff;
+  background:linear-gradient(145deg,rgba(37,25,55,.98),rgba(13,10,22,.98));
+  border:1px solid rgba(190,145,255,.22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 5px 18px rgba(0,0,0,.2);
+  transition:transform .22s cubic-bezier(.2,.8,.2,1),color .22s ease,
+    border-color .22s ease,box-shadow .22s ease,background .22s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.header-icons button .aura-ui-icon{width:25px;height:25px}
+.header-icons button:active,.nav:active{transform:scale(.88)}
+.header-icons button.aura-icon-tap{animation:auraIconTap .42s cubic-bezier(.2,.8,.2,1)}
+.header-icons button:focus-visible,.nav:focus-visible{
+  outline:2px solid rgba(211,166,255,.85);outline-offset:3px;
+}
+.nav{
+  display:grid;place-items:center;
+  width:54px;height:54px;flex:0 1 54px;
+  padding:0;line-height:0;font-size:0;
+  border-radius:18px;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .24s cubic-bezier(.2,.8,.2,1),background .24s ease,
+    color .24s ease,box-shadow .24s ease;
+}
+.nav .aura-ui-icon{width:28px;height:28px;flex-basis:28px;transition:transform .24s cubic-bezier(.2,.8,.2,1),filter .24s ease}
+.nav.active{
+  color:#e0baff;
+  background:linear-gradient(145deg,rgba(110,53,160,.32),rgba(66,35,102,.2));
+  border:1px solid rgba(194,143,255,.18);
+  box-shadow:0 7px 22px rgba(127,58,190,.2),inset 0 1px rgba(255,255,255,.07);
+  transform:translateY(-3px);
+}
+.nav.active .aura-ui-icon{filter:drop-shadow(0 0 7px rgba(195,126,255,.7));transform:scale(1.06)}
+.nav[data-page="create"] .aura-create-icon{width:31px;height:31px}
+.nav[data-page="create"]{color:#d6aaff}
+.nav.active:after{bottom:-7px}
+@keyframes auraIconTap{
+  0%{transform:scale(1)}
+  42%{transform:scale(.88) rotate(-5deg)}
+  76%{transform:scale(1.07) rotate(2deg)}
+  100%{transform:scale(1)}
+}
+@media(hover:hover){
+  .header-icons button:hover{
+    color:#f0dcff;border-color:rgba(207,160,255,.52);
+    box-shadow:0 0 0 3px rgba(168,85,247,.08),0 7px 22px rgba(120,54,180,.22);
+    transform:translateY(-2px);
+  }
+  .nav:not(.active):hover{color:#d9b8ff;background:rgba(155,92,255,.09)}
+}
+@media(max-width:380px){
+  .header-icons{gap:7px}
+  .header-icons button{width:41px;height:41px;flex-basis:41px}
+  .bottom{height:72px}
+  .nav{width:49px;height:50px;flex-basis:49px}
+  .nav .aura-ui-icon{width:26px;height:26px;flex-basis:26px}
+}
+@media(prefers-reduced-motion:reduce){
+  .header-icons button,.nav,.nav .aura-ui-icon{transition:none!important;animation:none!important}
+}
+
 </style>
 <style>
   html.aura-booting #authScreen{display:none!important}
@@ -222,6 +305,482 @@ document.addEventListener("click",e=>{
   }
 },true);
 </script>
+
+<style id="aura-message-longpress-v2">
+/* AURA message cards and reliable mobile conversation scrolling */
+#chat{min-height:0;}
+#chat .chat-panel{height:calc(100dvh - 190px);min-height:360px;max-height:none;overflow:hidden;display:flex;flex-direction:column;}
+#chat .chat-head{flex:0 0 auto;}
+#chat .chat-messages{flex:1 1 auto;min-height:0;height:auto;max-height:none;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:rgba(185,125,255,.45) transparent;padding:18px 13px 24px;gap:13px;}
+#chat .bubble{position:relative;max-width:min(84%,420px);padding:13px 15px;border:1px solid rgba(190,145,255,.16);border-radius:20px 20px 20px 7px;background:linear-gradient(145deg,rgba(39,29,58,.98),rgba(24,18,38,.98));color:#f5edff;box-shadow:0 7px 22px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.035);user-select:none;-webkit-user-select:none;touch-action:pan-y;transition:transform .16s ease,border-color .16s ease;}
+#chat .bubble.mine{background:linear-gradient(135deg,#7135b7,#a34fe0);border-color:rgba(224,190,255,.28);border-radius:20px 20px 7px 20px;color:#fff;}
+#chat .bubble:active{transform:scale(.985);}
+#chat .bubble small{font-size:10px;letter-spacing:.15px;opacity:.72;margin-top:8px;}
+#chat .bubble img,#chat .bubble video{max-width:100%;border-radius:14px;display:block;margin-top:9px;}
+#chat .chat-tools{flex:0 0 auto;}
+#chat .chat-compose{flex:0 0 auto;position:relative;bottom:auto;}
+.aura-message-menu{position:fixed;z-index:99999;min-width:158px;padding:7px;border:1px solid rgba(204,164,255,.28);border-radius:17px;background:linear-gradient(145deg,#211631,#100d1b);box-shadow:0 15px 45px rgba(0,0,0,.48),0 0 22px rgba(168,85,247,.16);backdrop-filter:blur(18px);animation:auraMenuPop .14s ease-out;}
+.aura-message-menu button{width:100%;display:flex;align-items:center;gap:11px;padding:12px 13px;border:0;border-radius:11px;background:transparent;color:#eadbff;text-align:left;font-size:14px;font-weight:700;}
+.aura-message-menu button+button{margin-top:2px;}
+.aura-message-menu button:active{background:rgba(168,85,247,.2);}
+.aura-message-menu button span{width:20px;text-align:center;color:#c18aff;font-size:17px;}
+.aura-message-menu button.danger{color:#ffb9ca;}
+.aura-message-menu button.danger span{color:#ff8da9;}
+@keyframes auraMenuPop{from{opacity:0;transform:translateY(7px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:600px){#chat .chat-panel{height:calc(100dvh - 174px);min-height:300px;}#chat .chat-messages{padding:14px 10px calc(20px + env(safe-area-inset-bottom));}#chat .bubble{max-width:90%;padding:12px 13px;}}
+@media(max-height:600px){#chat .chat-panel{height:calc(100dvh - 145px);}}
+</style>
+
+
+<style id="aura-professional-messenger-ui">
+/* Immersive, Messenger-style AURA conversation screen */
+html.aura-chat-mode,html.aura-chat-mode body{height:100%;min-height:100%;overflow:hidden;overscroll-behavior:none}
+body.chat-open{padding:0!important;margin:0!important;max-width:none!important;overflow:hidden!important;background:#090711}
+body.chat-open>header,body.chat-open>.bottom{display:none!important}
+body.chat-open #chat.page.active{display:block!important;position:fixed!important;inset:0!important;z-index:500!important;width:100%;max-width:600px;margin:0 auto!important;padding:0!important;height:100vh;height:100dvh;overflow:hidden!important;background:radial-gradient(ellipse at 50% 0%,rgba(117,43,255,.16),transparent 48%),#090711;animation:none!important}
+#chat .chat-panel{height:100%;width:100%;min-height:0!important;max-height:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:hidden;display:flex;flex-direction:column;background:transparent}
+#chat .chat-head{height:76px;min-height:76px;flex:0 0 76px;position:relative!important;top:auto!important;z-index:5;padding:10px 15px!important;gap:12px!important;border-bottom:1px solid rgba(190,145,255,.16)!important;background:rgba(13,10,22,.96)!important;backdrop-filter:blur(22px)}
+#chat .chat-back-icon{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;border:0!important;border-radius:50%;background:rgba(168,85,247,.12)!important;color:#e4caff!important;font-size:34px!important;line-height:1;padding:0!important}
+#chat .chat-head .chat-person-link{min-width:0;flex:1;display:flex;align-items:center;gap:11px;padding:0!important;text-align:left}
+#chat .chat-head .chat-person-link img{width:46px;height:46px;object-fit:cover;border:2px solid #bd79ff;box-shadow:0 0 15px rgba(168,85,247,.24)}
+#chat .chat-person-meta{display:block;min-width:0;line-height:1.25}
+#chat .chat-person-meta strong{display:block;color:#fff;font-size:15px;font-weight:800;max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#chat #presenceLabel{display:block;margin-top:4px;color:#a99bbd;font-size:11px}
+#chat #presenceLabel.is-online{color:#8ee6b2}
+#chat .chat-messages{flex:1 1 auto!important;min-height:0!important;height:auto!important;max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;padding:18px 14px 22px!important;gap:10px!important;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(185,125,255,.32) transparent;background:transparent}
+#chat .bubble{max-width:min(82%,430px);padding:11px 14px!important;border-radius:19px 19px 19px 6px!important;font-size:14px!important;line-height:1.48;box-shadow:0 5px 18px rgba(0,0,0,.18)!important;overflow-wrap:anywhere}
+#chat .bubble.mine{margin-left:auto;border-radius:19px 19px 6px 19px!important;background:linear-gradient(135deg,#7136b5 0%,#9948d7 58%,#b45be9 100%)!important;border:1px solid rgba(226,190,255,.2)!important}
+#chat .bubble:not(.mine){background:linear-gradient(145deg,#211a30,#171322)!important;border:1px solid rgba(193,160,232,.13)!important}
+#chat .bubble small{display:block;margin-top:6px;font-size:10px;opacity:.7}
+#chat .bubble img,#chat .bubble video{max-width:min(100%,300px);max-height:360px;object-fit:cover;border-radius:13px;margin-top:8px}
+#chat .chat-compose-shell{flex:0 0 auto;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid rgba(190,145,255,.14);background:rgba(12,9,20,.97);backdrop-filter:blur(22px)}
+#chat .chat-compose{display:flex;align-items:center;gap:7px;padding:0!important;border:0!important;background:transparent!important;position:relative!important;bottom:auto!important}
+#chat #chatText{flex:1;min-width:0;height:44px;padding:0 16px!important;border:1px solid rgba(190,145,255,.18)!important;border-radius:24px!important;background:#171222!important;color:#fff!important;font-size:14px;outline:none;box-shadow:inset 0 1px 4px rgba(0,0,0,.2)}
+#chat #chatText::placeholder{color:#9588a8}
+#chat .compose-icon{width:39px;height:39px;flex:0 0 39px;display:grid;place-items:center;padding:0!important;margin:0!important;border:0!important;border-radius:50%!important;background:rgba(168,85,247,.13)!important;color:#d7b3ff!important;font-size:21px!important;line-height:1}
+#chat .send-message-btn{width:43px;height:43px;flex:0 0 43px;display:grid;place-items:center;padding:0!important;border:0!important;border-radius:50%!important;background:linear-gradient(135deg,#8535e8,#c05cf4)!important;color:#fff!important;font-size:19px!important;box-shadow:0 4px 15px rgba(146,64,220,.3)}
+#chat .send-message-btn:disabled{opacity:.55}
+#chat .chat-back{display:none!important}
+#auraMessageMenu{z-index:10000}
+@media(max-width:600px){body.chat-open #chat.page.active{width:100vw}#chat .chat-head{height:70px;min-height:70px;flex-basis:70px;padding:8px 12px!important}#chat .chat-messages{padding:14px 11px 18px!important}#chat .bubble{max-width:86%;font-size:14px!important}#chat .chat-compose-shell{padding-left:9px;padding-right:9px}}
+@media(min-width:601px){body.chat-open #chat.page.active{left:50%!important;right:auto!important;transform:translateX(-50%);border-left:1px solid rgba(190,145,255,.12);border-right:1px solid rgba(190,145,255,.12)}}
+</style>
+
+
+<style id="aura-inbox-professional-v1">
+/* AURA INBOX — scoped visual refresh; existing app logic and other pages untouched */
+#inbox.page{
+  min-height:calc(100svh - 144px);
+  padding:22px 20px calc(104px + env(safe-area-inset-bottom));
+  overflow:visible;
+  scroll-margin-top:72px;
+}
+#inbox > .heading{
+  font-size:clamp(29px,5.8vw,34px);
+  line-height:1.16;
+  letter-spacing:-.45px;
+  margin:8px 0 7px;
+}
+#inbox > .sub{
+  font-size:14px;
+  line-height:1.55;
+  margin:0 0 22px;
+  color:#a69bbd;
+}
+#inbox > div[style*="display:flex"]{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between;
+  flex-wrap:wrap!important;
+  gap:9px!important;
+  padding:12px 13px;
+  margin:0 0 17px!important;
+  border:1px solid rgba(190,145,255,.16);
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(31,21,49,.88),rgba(15,12,25,.92));
+  box-shadow:0 10px 28px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.025);
+}
+#inbox #enableNotifications{
+  flex:0 0 auto;
+  min-height:39px;
+  margin:0!important;
+  padding:9px 14px!important;
+  border-radius:13px!important;
+  font-size:12px!important;
+  line-height:1.2;
+  letter-spacing:.1px;
+  box-shadow:0 5px 16px rgba(145,67,255,.22)!important;
+  white-space:nowrap;
+}
+#inbox #enableNotifications:disabled{
+  opacity:.72;
+  box-shadow:none!important;
+  filter:saturate(.82);
+}
+#inbox #notificationStatus{
+  flex:1 1 150px;
+  min-width:0;
+  color:#a99dbd!important;
+  font-size:11px!important;
+  line-height:1.45;
+  text-align:right;
+}
+#inbox #peopleSearch{
+  display:block;
+  width:100%;
+  height:53px;
+  margin:0 0 18px!important;
+  padding:0 17px 0 48px!important;
+  border-radius:17px!important;
+  border:1px solid rgba(190,145,255,.19)!important;
+  background:
+    radial-gradient(circle at 20px 50%,transparent 6px,#a995c4 6.7px, #a995c4 7.8px,transparent 8.5px),
+    linear-gradient(var(--card),var(--card))!important;
+  color:var(--text);
+  font-size:14px!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.025),0 8px 22px rgba(0,0,0,.12);
+}
+#inbox #peopleSearch::placeholder{color:#827895;opacity:1}
+#inbox #peopleSearch:focus{
+  border-color:rgba(183,119,255,.65)!important;
+  box-shadow:0 0 0 3px rgba(168,85,247,.13),0 10px 25px rgba(0,0,0,.16)!important;
+}
+#inbox #peopleResults,
+#inbox #chatList{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:7px;
+  width:100%;
+}
+#inbox .chat-row.cv-row{
+  width:100%;
+  min-height:78px;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px 12px!important;
+  margin:0!important;
+  border:1px solid rgba(190,145,255,.105)!important;
+  border-radius:19px!important;
+  background:linear-gradient(115deg,rgba(25,19,39,.86),rgba(13,11,22,.74))!important;
+  color:var(--text);
+  text-align:left;
+  box-shadow:0 7px 20px rgba(0,0,0,.13);
+  transform:translateZ(0);
+  transition:background .24s ease,border-color .24s ease,box-shadow .24s ease,transform .24s cubic-bezier(.2,.8,.2,1)!important;
+  animation:auraInboxRowIn .42s cubic-bezier(.2,.8,.2,1) both;
+}
+#inbox .chat-row.cv-row:active{
+  transform:scale(.985)!important;
+  background:rgba(116,65,170,.18)!important;
+}
+#inbox .chat-row.cv-row:hover{
+  border-color:rgba(177,115,255,.32)!important;
+  background:linear-gradient(115deg,rgba(40,26,61,.94),rgba(19,14,31,.9))!important;
+  box-shadow:0 10px 26px rgba(0,0,0,.2),0 0 18px rgba(155,92,255,.08);
+  transform:translateY(-1px);
+}
+#inbox .chat-row.cv-row > img{
+  width:53px!important;
+  height:53px!important;
+  flex:0 0 53px;
+  padding:2px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid transparent!important;
+  background:linear-gradient(#151020,#151020) padding-box,var(--gradient) border-box!important;
+  box-shadow:0 0 15px rgba(155,92,255,.2);
+}
+#inbox .cv-main{flex:1;min-width:0}
+#inbox .cv-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:9px;
+  min-width:0;
+}
+#inbox .cv-top strong{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:14px;
+  line-height:1.35;
+  font-weight:800;
+  letter-spacing:.05px;
+  color:#f4edff;
+}
+#inbox .cv-top small{
+  flex:0 0 auto;
+  color:#8e84a2;
+  font-size:10px;
+  line-height:1.3;
+}
+#inbox .cv-last{
+  margin-top:5px;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#9b91ad;
+  font-size:12px;
+  line-height:1.45;
+}
+#inbox .cv-last.unread{color:#e5d4ff;font-weight:700}
+#inbox .cv-dot{
+  width:9px;
+  height:9px;
+  flex:0 0 9px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#a855f7,#e0aaff);
+  box-shadow:0 0 12px rgba(184,112,255,.8);
+  margin:0 4px;
+  animation:auraInboxPulse 2.2s ease-in-out infinite;
+}
+#inbox .empty{
+  padding:30px 18px;
+  margin-top:8px;
+  border:1px dashed rgba(190,145,255,.2);
+  border-radius:20px;
+  background:rgba(23,17,35,.55);
+  color:#a69bbd;
+  line-height:1.6;
+}
+#inbox .empty h3{color:#eee3ff}
+html.aura-light #inbox > div[style*="display:flex"],
+html.aura-light #inbox .chat-row.cv-row{
+  background:linear-gradient(135deg,#fff,#faf7ff)!important;
+  border-color:rgba(124,58,237,.15)!important;
+  box-shadow:0 8px 22px rgba(74,39,120,.07)!important;
+}
+html.aura-light #inbox .cv-top strong{color:#302044}
+html.aura-light #inbox .cv-last{color:#78698d}
+html.aura-light #inbox #notificationStatus{color:#78698d!important}
+html.aura-light #inbox #peopleSearch{
+  background:linear-gradient(#fff,#fff)!important;
+}
+@keyframes auraInboxRowIn{
+  from{opacity:0;transform:translateY(9px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes auraInboxPulse{
+  0%,100%{box-shadow:0 0 7px rgba(184,112,255,.45);transform:scale(.94)}
+  50%{box-shadow:0 0 14px rgba(184,112,255,.9);transform:scale(1.08)}
+}
+@media(max-width:420px){
+  #inbox.page{padding:18px 15px calc(100px + env(safe-area-inset-bottom))}
+  #inbox > div[style*="display:flex"]{padding:10px 11px}
+  #inbox #notificationStatus{text-align:left;flex-basis:100%;padding:0 2px}
+  #inbox .chat-row.cv-row{min-height:74px;padding:11px 10px!important;gap:11px}
+  #inbox .chat-row.cv-row > img{width:49px!important;height:49px!important;flex-basis:49px}
+}
+@media(prefers-reduced-motion:reduce){
+  #inbox *,#inbox *::before,#inbox *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
+</style>
+
+
+<style id="aura-inbox-aesthetic-v2">
+#inbox.aura-inbox-page{
+  box-sizing:border-box;
+  min-height:calc(100svh - 145px);
+  padding:clamp(20px,5vw,30px) clamp(16px,4.8vw,25px) calc(112px + env(safe-area-inset-bottom));
+  overflow-x:hidden;
+  overflow-y:visible;
+}
+#inbox .aura-inbox-top{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
+  margin:2px 0 24px;
+}
+#inbox .aura-inbox-title-wrap{min-width:0;flex:1}
+#inbox .aura-inbox-title{
+  display:flex;align-items:center;gap:9px;
+  width:max-content;max-width:100%;
+  margin:0!important;
+  font-size:clamp(31px,8vw,43px)!important;
+  line-height:1.1!important;
+  letter-spacing:-.8px;
+  color:#f4eaff;
+  animation:auraInboxTitleIn .72s cubic-bezier(.18,.82,.24,1) both;
+}
+#inbox .aura-title-spark{
+  display:inline-block;
+  font-family:serif;
+  font-size:.47em;
+  color:#d9a6ff;
+  text-shadow:0 0 13px rgba(190,115,255,.9);
+  animation:auraTitleSpark 2.8s ease-in-out infinite;
+}
+#inbox .aura-inbox-title-wrap .sub{
+  margin:8px 0 0!important;
+  max-width:29ch;
+  color:#a99dbb;
+  font-size:13px!important;
+  line-height:1.5;
+  animation:auraInboxTitleIn .85s .06s both;
+}
+#inbox .aura-notify-bell{
+  position:relative;display:grid;place-items:center;
+  flex:0 0 47px;width:47px;height:47px;margin:1px 0 0;
+  border:1px solid rgba(193,145,255,.25);border-radius:16px;
+  color:#dfc2ff;
+  background:linear-gradient(145deg,rgba(49,31,72,.92),rgba(18,14,29,.96));
+  box-shadow:0 8px 22px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.08),0 0 18px rgba(158,93,255,.1);
+  cursor:pointer;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+#inbox .aura-notify-bell:active{transform:scale(.91)}
+#inbox .aura-notify-bell svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#inbox .aura-bell-indicator{
+  position:absolute;right:8px;top:8px;width:7px;height:7px;border-radius:50%;
+  background:#887b99;box-shadow:0 0 0 2px #171020;transition:all .25s ease;
+}
+#inbox .aura-bell-indicator.is-on{background:#c78aff;box-shadow:0 0 10px #bd75ff,0 0 0 2px #171020}
+#inbox .aura-search-wrap{
+  display:flex;align-items:center;gap:11px;
+  height:54px;width:100%;box-sizing:border-box;
+  padding:0 14px;margin:0 0 17px;
+  border:1px solid rgba(185,139,239,.19);border-radius:17px;
+  background:linear-gradient(115deg,rgba(28,21,42,.96),rgba(15,12,24,.96));
+  box-shadow:inset 0 1px rgba(255,255,255,.035),0 9px 24px rgba(0,0,0,.17);
+  transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease;
+}
+#inbox .aura-search-wrap:focus-within{
+  border-color:rgba(190,132,255,.58);
+  box-shadow:0 0 0 3px rgba(160,91,245,.12),0 10px 25px rgba(0,0,0,.2);
+}
+#inbox .aura-search-wrap>svg{width:19px;height:19px;flex:0 0 19px;fill:none;stroke:#bca5d7;stroke-width:1.8;stroke-linecap:round}
+#inbox #peopleSearch{
+  flex:1;min-width:0;width:100%;height:100%;margin:0!important;padding:0!important;
+  border:0!important;outline:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;
+  color:#f4eaff;font-size:14px!important;
+}
+#inbox #peopleSearch::placeholder{color:#8f849f;opacity:1}
+#inbox .aura-search-hint{font-size:8px;letter-spacing:1.2px;color:#78698c;font-weight:800}
+#inbox #peopleResults,#inbox #chatList{
+  display:flex;flex-direction:column;gap:9px;width:100%;min-width:0;
+}
+#inbox #peopleResults:empty{display:none}
+#inbox .chat-row.cv-row,
+#inbox #peopleResults .chat-row{
+  position:relative;box-sizing:border-box;width:100%;min-height:76px;
+  display:flex;align-items:center;gap:13px;
+  padding:12px 13px!important;margin:0!important;
+  border:1px solid rgba(188,143,240,.14)!important;border-radius:20px!important;
+  background:linear-gradient(120deg,rgba(29,21,44,.9),rgba(14,12,23,.91))!important;
+  color:#f3eaff;text-align:left;
+  box-shadow:0 8px 22px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.025);
+  transform:translateZ(0);
+  transition:transform .24s cubic-bezier(.2,.8,.2,1),border-color .24s ease,box-shadow .24s ease,background .24s ease!important;
+  animation:auraConversationIn .48s cubic-bezier(.2,.8,.2,1) both;
+  -webkit-tap-highlight-color:transparent;
+}
+#inbox .chat-row.cv-row:active,#inbox #peopleResults .chat-row:active{transform:scale(.982)!important}
+#inbox .chat-row.cv-row:hover,#inbox #peopleResults .chat-row:hover{
+  border-color:rgba(184,125,255,.34)!important;
+  box-shadow:0 11px 26px rgba(0,0,0,.22),0 0 17px rgba(157,91,255,.07);
+}
+#inbox .chat-row.cv-row>img,#inbox #peopleResults .chat-row>img{
+  width:53px!important;height:53px!important;flex:0 0 53px;
+  padding:2px;box-sizing:border-box;object-fit:cover;border-radius:50%;
+  border:2px solid #b77aff!important;
+  background:#fff!important;
+  box-shadow:0 0 0 3px rgba(169,102,255,.11),0 0 17px rgba(159,87,255,.18);
+}
+#inbox .cv-main{flex:1;min-width:0}
+#inbox .cv-top{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+#inbox .cv-top strong{
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:14px;line-height:1.35;font-weight:800;color:#f5edff;letter-spacing:.1px;
+}
+#inbox .cv-top small{flex:0 0 auto;color:#9287a4;font-size:10px;line-height:1.3}
+#inbox .cv-last{
+  margin-top:5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:#a69ab8;font-size:12px;line-height:1.45;
+}
+#inbox .cv-last.unread{color:#e4caff;font-weight:750}
+#inbox .cv-dot{
+  width:8px;height:8px;flex:0 0 8px;margin:0 3px;border-radius:50%;
+  background:linear-gradient(135deg,#a855f7,#e4b5ff);
+  box-shadow:0 0 12px rgba(190,118,255,.8);
+  animation:auraUnreadPulse 2.1s ease-in-out infinite;
+}
+#inbox #peopleResults .chat-row{min-height:66px}
+#inbox #peopleResults .chat-row>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+#inbox #peopleResults .chat-row strong{font-size:13px;color:#f5edff}
+#inbox #peopleResults .chat-row span{font-size:11px;color:#a99dbb}
+#inbox .empty{
+  margin:5px 0;padding:24px 18px;border:1px dashed rgba(190,145,255,.22);
+  border-radius:20px;background:rgba(25,18,38,.62);color:#a99dbb;
+  text-align:center;line-height:1.6;font-size:13px;
+}
+#inbox .aura-notify-backdrop[hidden]{display:none!important}
+#inbox .aura-notify-backdrop{
+  position:fixed;inset:0;z-index:10050;display:grid;place-items:center;
+  padding:22px;box-sizing:border-box;
+  background:rgba(5,4,10,.68);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  opacity:0;transition:opacity .22s ease;
+}
+#inbox .aura-notify-backdrop.is-visible{opacity:1}
+#inbox .aura-notify-modal{
+  position:relative;width:min(100%,360px);box-sizing:border-box;
+  padding:27px 22px 21px;border-radius:27px;text-align:center;
+  border:1px solid rgba(204,164,255,.27);
+  background:radial-gradient(circle at 50% -10%,rgba(153,84,255,.25),transparent 48%),linear-gradient(145deg,#211632,#100d1b 76%);
+  box-shadow:0 25px 80px rgba(0,0,0,.55),0 0 38px rgba(148,83,255,.15),inset 0 1px rgba(255,255,255,.07);
+  transform:translateY(18px) scale(.96);transition:transform .28s cubic-bezier(.18,.82,.24,1);
+}
+#inbox .aura-notify-backdrop.is-visible .aura-notify-modal{transform:translateY(0) scale(1)}
+#inbox .aura-notify-close{
+  position:absolute;right:13px;top:11px;width:32px;height:32px;border:0;border-radius:50%;
+  background:rgba(255,255,255,.06);color:#d9c8ec;font-size:23px;line-height:1;cursor:pointer;
+}
+#inbox .aura-notify-symbol{
+  display:grid;place-items:center;width:58px;height:58px;margin:0 auto 13px;border-radius:20px;
+  color:#efdfff;font-size:28px;
+  background:linear-gradient(145deg,#9b45ff,#d48bff);
+  box-shadow:0 9px 25px rgba(156,68,255,.3),inset 0 1px rgba(255,255,255,.35);
+}
+#inbox .aura-notify-kicker{font-size:9px;font-weight:800;letter-spacing:2px;color:#b995dc}
+#inbox .aura-notify-modal h2{margin:8px 0 8px;color:#f6edff;font-size:23px;line-height:1.2}
+#inbox .aura-notify-status{margin:0 auto 20px;max-width:29ch;color:#a99bb9;font-size:13px;line-height:1.55}
+#inbox .aura-notify-action{
+  width:100%;min-height:48px;padding:12px 16px;border:0;border-radius:15px;
+  background:linear-gradient(110deg,#8b35f5,#c45bff 58%,#dfa0ff);
+  color:#fff;font-size:14px;font-weight:800;letter-spacing:.1px;
+  box-shadow:0 9px 22px rgba(157,67,255,.25);cursor:pointer;
+  transition:transform .2s ease,filter .2s ease;
+}
+#inbox .aura-notify-action:active{transform:scale(.975)}
+#inbox .aura-notify-action.is-disable{background:linear-gradient(110deg,#39264e,#5c3a78);border:1px solid rgba(206,164,255,.2);box-shadow:none}
+#inbox .aura-notify-action:disabled{opacity:.48;cursor:not-allowed}
+#inbox .aura-notify-foot{display:block;margin-top:15px;color:#716580;font-size:10px;letter-spacing:.2px}
+html.aura-light #inbox .aura-search-wrap,
+html.aura-light #inbox .chat-row.cv-row,
+html.aura-light #inbox #peopleResults .chat-row{background:linear-gradient(120deg,#fff,#faf7ff)!important;border-color:rgba(124,58,237,.14)!important}
+html.aura-light #inbox .aura-inbox-title{color:#302044}
+html.aura-light #inbox .cv-top strong,html.aura-light #inbox #peopleResults .chat-row strong{color:#302044}
+html.aura-light #inbox .cv-last,html.aura-light #inbox #peopleResults .chat-row span{color:#78698d}
+html.aura-light #inbox #peopleSearch{color:#302044}
+@keyframes auraInboxTitleIn{from{opacity:0;transform:translateY(12px);filter:blur(4px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes auraTitleSpark{0%,100%{transform:rotate(0) scale(.88);opacity:.7}50%{transform:rotate(18deg) scale(1.16);opacity:1}}
+@keyframes auraConversationIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes auraUnreadPulse{0%,100%{box-shadow:0 0 6px rgba(190,118,255,.45)}50%{box-shadow:0 0 14px rgba(190,118,255,.95)}}
+@media(max-width:390px){
+ #inbox.aura-inbox-page{padding-left:15px;padding-right:15px}
+ #inbox .aura-inbox-top{margin-bottom:20px}
+ #inbox .aura-inbox-title{font-size:34px!important}
+ #inbox .aura-notify-bell{width:44px;height:44px;flex-basis:44px}
+ #inbox .aura-search-hint{display:none}
+ #inbox .chat-row.cv-row{min-height:72px;padding:10px 11px!important;gap:11px}
+ #inbox .chat-row.cv-row>img{width:49px!important;height:49px!important;flex-basis:49px}
+}
+@media(prefers-reduced-motion:reduce){
+ #inbox *,#inbox *::before,#inbox *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -248,7 +807,7 @@ document.addEventListener("click",e=>{
   </div>
   <input id="email" type="email" placeholder="Email address" autocomplete="email">
   <input id="phone" class="hidden" type="tel" placeholder="+8801XXXXXXXXX" autocomplete="tel">
-  <input id="password" type="password" placeholder="Create a password" autocomplete="current-password">
+  <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password">
   <div id="pwHints" class="pw-hints hidden">
    <span data-rule="len">8+ characters</span>
    <span data-rule="upper">Uppercase (A-Z)</span>
@@ -274,9 +833,9 @@ document.addEventListener("click",e=>{
   </svg><span>AURA</span>
  </div>
  <div class="header-icons">
-  <button id="themeButton" aria-label="Toggle dark mode">☾</button>
-  <button id="activityButton" aria-label="Activity">♧</button>
-  <button id="inboxButton" aria-label="Open messages">▤<span id="headerUnreadBadge" class="badge"></span></button>
+  <button id="themeButton" aria-label="Toggle dark mode"><svg class="aura-ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.2 15.1A8.3 8.3 0 0 1 8.9 4.8 8.4 8.4 0 1 0 19.2 15.1Z"/><path d="M16.8 3.2v3.2M15.2 4.8h3.2"/></svg></button>
+  <button id="activityButton" aria-label="Activity"><svg class="aura-ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5c-1.8-2.5-5.4-5.4-5.4-9.2a3.2 3.2 0 0 1 6.1-1.4 3.2 3.2 0 0 1 6.1 1.4c0 3.8-3.6 6.7-5.4 9.2Z"/><path d="M12 9.8v10.7M8.7 14.5h6.6"/></svg></button>
+  <button id="inboxButton" aria-label="Open messages"><svg class="aura-ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v13H4z"/><path d="M4 9.5h16M4 14.5h16M8 5.5v13M16 5.5v13"/></svg><span id="headerUnreadBadge" class="badge"></span></button>
  </div>
 </header>
 
@@ -359,33 +918,58 @@ document.addEventListener("click",e=>{
  <p id="uploadStatus"></p>
 </section>
 
-<section class="page" id="inbox">
- <div class="heading">Messages</div><div class="sub">Your conversations on AURA.</div>
- <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 16px">
-  <button class="primary" id="enableNotifications" type="button">🔔 Enable Notifications</button>
-  <small id="notificationStatus" style="color:var(--muted)">Get alerts for new messages.</small>
+<section class="page aura-inbox-page" id="inbox">
+ <div class="aura-inbox-top">
+  <div class="aura-inbox-title-wrap">
+   <div class="heading aura-inbox-title">Messages<span class="aura-title-spark">✦</span></div>
+   <div class="sub">Your conversations on AURA.</div>
+  </div>
+  <button class="aura-notify-bell" id="auraNotificationBell" type="button" aria-label="Notification settings" title="Notification settings">
+   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+   <i class="aura-bell-indicator" id="auraBellIndicator"></i>
+  </button>
  </div>
- <input class="search" id="peopleSearch" placeholder="Find a person by username">
- <div id="peopleResults"></div><div id="chatList" class="chat-layout"></div>
+ <label class="aura-search-wrap" for="peopleSearch">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+  <input class="search" id="peopleSearch" placeholder="Search by username or ID" autocomplete="off">
+  <span class="aura-search-hint">SEARCH</span>
+ </label>
+ <div id="peopleResults" class="aura-people-results"></div>
+ <div id="chatList" class="chat-layout aura-chat-list"></div>
+
+ <div class="aura-notify-backdrop" id="auraNotifyBackdrop" hidden>
+  <section class="aura-notify-modal" role="dialog" aria-modal="true" aria-labelledby="auraNotifyTitle">
+   <button class="aura-notify-close" id="auraNotifyClose" type="button" aria-label="Close">×</button>
+   <div class="aura-notify-symbol" id="auraNotifySymbol">♧</div>
+   <div class="aura-notify-kicker">AURA PREFERENCES</div>
+   <h2 id="auraNotifyTitle">Stay in the loop</h2>
+   <p id="notificationStatus" class="aura-notify-status">Get gentle alerts when a new message arrives.</p>
+   <button class="aura-notify-action" id="auraNotificationAction" type="button">Enable notifications</button>
+   <span class="aura-notify-foot">Your little world, always in reach.</span>
+  </section>
+ </div>
 </section>
 
-<section class="page" id="chat">
- <div class="chat-back"><button id="backChats">← Back to Inbox</button></div>
+<section class="page" id="chat" aria-label="Conversation">
  <div class="chat-panel">
   <div class="chat-head">
-   <img id="chatAvatar" class="avatar" alt="">
-   <div style="min-width:0"><strong id="chatName">Chat</strong><div id="presenceLabel" style="font-size:11px;color:var(--muted)">Offline</div></div>
+   <button id="backChats" class="chat-back-icon" type="button" aria-label="Back to inbox" title="Back to inbox">‹</button>
+   <button type="button" class="chat-person-link" id="chatProfileLink" aria-label="View profile">
+    <img id="chatAvatar" class="avatar" alt="">
+    <span class="chat-person-meta"><strong id="chatName">Chat</strong><span id="presenceLabel">Offline</span></span>
+   </button>
   </div>
-  <div id="chatMessages" class="chat-messages"></div>
-  <div class="chat-tools">
-   <button id="emojiButton">😊 Emoji</button><button id="replyCancel" class="hidden">Cancel reply</button>
-   <span id="replyLabel" style="font-size:11px;color:var(--muted)"></span>
+  <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+  <div class="chat-compose-shell">
+   <form id="chatForm" class="chat-compose">
+    <button id="emojiButton" class="compose-icon" type="button" aria-label="Add emoji">☺</button>
+    <input id="chatText" type="text" maxlength="2000" placeholder="Message..." autocomplete="off" aria-label="Write a message">
+    <label class="compose-icon attach-icon" aria-label="Attach photo or video">＋<input id="chatImage" type="file" accept="image/*,video/*" hidden></label>
+    <button class="send-message-btn" type="submit" aria-label="Send message">➤</button>
+   </form>
+   <button id="replyCancel" class="hidden" type="button" aria-hidden="true" tabindex="-1">Cancel reply</button>
+   <span id="replyLabel" class="hidden" aria-hidden="true"></span>
   </div>
-  <form id="chatForm" class="chat-compose">
-   <input id="chatText" type="text" maxlength="2000" placeholder="Write a message..." autocomplete="off">
-   <label class="primary" style="margin:0;padding:9px 12px;cursor:pointer">＋<input id="chatImage" type="file" accept="image/*,video/*" hidden></label>
-   <button type="submit">Send</button>
-  </form>
  </div>
 </section>
 
@@ -448,11 +1032,11 @@ document.addEventListener("click",e=>{
 </section>
 
 <nav class="bottom">
- <button class="nav active" data-page="home" aria-label="Home">⌂</button>
- <button class="nav" data-page="explore" aria-label="Explore">⌕</button>
- <button class="nav" data-page="create" aria-label="Create">⊕</button>
- <button class="nav" data-page="inbox" aria-label="Inbox">▤<span id="navUnreadBadge" class="badge"></span></button>
- <button class="nav" data-page="profile" aria-label="Profile">◉</button>
+ <button class="nav active" data-page="home" aria-label="Home"><svg class="aura-ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3.5 10.5 8.5-7 8.5 7v9.8a.7.7 0 0 1-.7.7H4.2a.7.7 0 0 1-.7-.7z"/><path d="M9 21v-6.5h6V21"/></svg></button>
+ <button class="nav" data-page="explore" aria-label="Explore"><svg class="aura-ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5M8.3 10.8h5M10.8 8.3v5"/></svg></button>
+ <button class="nav" data-page="create" aria-label="Create"><svg class="aura-ui-icon aura-create-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg></button>
+ <button class="nav" data-page="inbox" aria-label="Inbox"><svg class="aura-ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5h16v15H4z"/><path d="M4 9h16M4 14h16M8 4.5v15M16 4.5v15"/></svg><span id="navUnreadBadge" class="badge"></span></button>
+ <button class="nav" data-page="profile" aria-label="Profile"><svg class="aura-ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.7-3.6 3.4-5.5 7.5-5.5s6.8 1.9 7.5 5.5"/></svg></button>
 </nav>
 
 <div class="modal" id="storyModal">
@@ -498,9 +1082,19 @@ function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&l
 function validPassword(p){return p.length>=8&&/[A-Z]/.test(p)&&/[a-z]/.test(p)&&/[0-9]/.test(p)&&/[^A-Za-z0-9]/.test(p);}
 function mediaIsVideo(url){return /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url||"")||String(url||"").includes("story-video-")||String(url||"").includes("message-video-");}
 function showPage(name,button){
+ if(document.body.classList.contains("chat-open") && name!=="chat" && $("chatMessages") && activeConversation){
+  window.AURA_CHAT_SCROLL=window.AURA_CHAT_SCROLL||Object.create(null);
+  window.AURA_CHAT_SCROLL[String(activeConversation.id)]=$("chatMessages").scrollTop;
+ }
  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===name));
  document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n===button));
- window.scrollTo({top:0,behavior:"smooth"});
+ document.body.classList.toggle("chat-open",name==="chat");
+ if(name==="chat"){
+  document.documentElement.classList.add("aura-chat-mode");
+ }else{
+  document.documentElement.classList.remove("aura-chat-mode");
+  window.scrollTo({top:0,behavior:"smooth"});
+ }
 }
 function profilePage(){showPage("profile",document.querySelector('[data-page="profile"]'));}
 function authMethodChanged(){
@@ -511,7 +1105,10 @@ function authMethodChanged(){
 $("authMethod").addEventListener("change",authMethodChanged);
 
 function setAuthMode(signup){
- signupMode=signup;$("authTitle").textContent=signup?"Create your account":"Welcome to AURA";
+ signupMode=signup;
+ $("password").placeholder=signup?"Create password":"Enter your password";
+ $("password").autocomplete=signup?"new-password":"current-password";
+ $("authTitle").textContent=signup?"Create your account":"Welcome to AURA";
  $("authSubtitle").textContent=signup?"Join your little world ✨":"Your little world starts here ✨";
  $("authButton").textContent=signup?"Create Account":"Login";
  $("signupName").classList.toggle("hidden",!signup);
@@ -684,11 +1281,21 @@ $("activityButton").addEventListener("click",()=>openActivity());
 $("themeButton").addEventListener("click",toggleTheme);
 $("settingsTheme").addEventListener("click",toggleTheme);
 function toggleTheme(){
- document.body.classList.toggle("dark");
- $("themeButton").textContent=document.body.classList.contains("dark")?"☀":"☾";
- localStorage.setItem("aura-dark",document.body.classList.contains("dark")?"1":"0");
+ const root=document.documentElement;
+ const makeLight=!root.classList.contains("aura-light");
+ root.classList.toggle("aura-light",makeLight);
+ document.body.classList.toggle("dark",!makeLight);
+ localStorage.setItem("aura_theme",makeLight?"light":"dark");
+ localStorage.setItem("aura-dark",makeLight?"0":"1");
+ window.AURA_SYNC_THEME_ICON&&window.AURA_SYNC_THEME_ICON();
 }
-if(localStorage.getItem("aura-dark")==="1")document.body.classList.add("dark");
+if(localStorage.getItem("aura_theme")==="light"){
+ document.documentElement.classList.add("aura-light");
+ document.body.classList.remove("dark");
+}else if(localStorage.getItem("aura_theme")==="dark"||localStorage.getItem("aura-dark")==="1"){
+ document.documentElement.classList.remove("aura-light");
+ document.body.classList.add("dark");
+}
 
 function changePassword(){
  const p=prompt("Enter your new password (8+ chars, uppercase, lowercase, number and symbol):");if(p===null)return;
@@ -1240,21 +1847,39 @@ async function loadMessages(){
    const {data:reads}=await supabase.from("message_reads").select("message_id").eq("user_id",activePerson.id).in("message_id",ownIds);
    readSet=new Set((reads||[]).map(x=>x.message_id));
   }
-  $("chatMessages").innerHTML="";
+  const messageViewport=$("chatMessages");
+  const conversationKey=String(activeConversation.id);
+  window.AURA_CHAT_SCROLL=window.AURA_CHAT_SCROLL||Object.create(null);
+  const savedScroll=window.AURA_CHAT_SCROLL[conversationKey];
+  const wasAtBottom=!messageViewport.dataset.hasRendered || (messageViewport.scrollHeight-messageViewport.scrollTop-messageViewport.clientHeight<100);
+  const previousScrollTop=messageViewport.dataset.hasRendered
+    ? (messageViewport.scrollTop || savedScroll || 0)
+    : (savedScroll || 0);
+  messageViewport.innerHTML="";
   rows.forEach(m=>{
-   const mine=m.sender_id===currentUser.id,div=document.createElement("div");div.className="bubble"+(mine?" mine":"");
+   const mine=m.sender_id===currentUser.id,div=document.createElement("div");div.className="bubble"+(mine?" mine":"");div.dataset.messageId=m.id;
    let media="";
    if(m.image_url){
     if(mediaIsVideo(m.image_url))media=`<video src="${esc(m.image_url)}" controls playsinline preload="metadata"></video>`;
     else media=`<img src="${esc(m.image_url)}" alt="Shared image" loading="lazy">`;
    }
-   div.innerHTML=`<div>${esc(m.content||"").replace(/\n/g,"<br>")}</div>${media}
-   <small>${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${mine?(readSet.has(m.id)?" · Seen":" · Sent"):""}</small>
-   ${mine?`<button data-delete-message="${esc(m.id)}" style="border:0;background:none;color:inherit;font-size:10px;margin-top:4px">Delete</button>`:""}`;
+   div.setAttribute("role","button");
+   div.setAttribute("aria-label",mine?"Your message. Press and hold for options":"Message. Press and hold for options");
+   div.innerHTML=`<div class="message-content">${esc(m.content||"").replace(/\n/g,"<br>")}</div>${media}
+   <small>${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${mine?(readSet.has(m.id)?" · Seen":" · Sent"):""}</small>`;
    $("chatMessages").appendChild(div);
   });
-  $("chatMessages").scrollTop=$("chatMessages").scrollHeight;await refreshUnreadCount();
-  $("chatMessages").querySelectorAll("[data-delete-message]").forEach(b=>b.addEventListener("click",()=>deleteMessage(b.dataset.deleteMessage)));
+  requestAnimationFrame(()=>{
+   if(wasAtBottom && !savedScroll){messageViewport.scrollTop=messageViewport.scrollHeight;}
+   else if(wasAtBottom){messageViewport.scrollTop=messageViewport.scrollHeight;}
+   else{messageViewport.scrollTop=previousScrollTop;}
+   window.AURA_CHAT_SCROLL[conversationKey]=messageViewport.scrollTop;
+  });
+  messageViewport.onscroll=()=>{
+   window.AURA_CHAT_SCROLL[conversationKey]=messageViewport.scrollTop;
+  };
+  messageViewport.dataset.hasRendered="1";
+  await refreshUnreadCount();
  }catch(e){toast("Messages could not load: "+e.message);}
  finally{chatLoading=false;if(chatPending){chatPending=false;loadMessages();}}
 }
@@ -1275,12 +1900,45 @@ function subscribePresence(){
  }).subscribe(async status=>{if(status==="SUBSCRIBED")await presenceChannel.track({user_id:currentUser.id,online_at:new Date().toISOString()});});
 }
 async function deleteMessage(id){
+ if(!window.auraConfirm||!(await window.auraConfirm("Delete this message?")))return;
  const {error}=await supabase.from("messages").delete().eq("id",id).eq("sender_id",currentUser.id);
- if(error)toast(error.message);else await loadMessages();
+ if(error)toast("Delete failed: "+error.message);else{toast("Message deleted.");await loadMessages();}
+}
+function auraEditMessageDialog(currentText){
+ return new Promise(resolve=>{
+  const overlay=document.createElement("div");overlay.className="aura-edit-overlay";overlay.setAttribute("role","presentation");
+  overlay.innerHTML=`<section class="aura-edit-card" role="dialog" aria-modal="true" aria-labelledby="auraEditTitle"><div class="aura-edit-mark">✦</div><h2 id="auraEditTitle">Edit message</h2><p>Make your words shine.</p><textarea maxlength="2000" aria-label="Edit your message"></textarea><div class="aura-edit-actions"><button type="button" class="aura-edit-cancel">Cancel</button><button type="button" class="aura-edit-save">Save changes</button></div></section>`;
+  const field=overlay.querySelector("textarea");field.value=currentText;document.body.appendChild(overlay);
+  const finish=value=>{overlay.remove();document.removeEventListener("keydown",onKey);resolve(value);};
+  overlay.querySelector(".aura-edit-cancel").addEventListener("click",()=>finish(null));
+  overlay.querySelector(".aura-edit-save").addEventListener("click",()=>finish(field.value));
+  overlay.addEventListener("click",e=>{if(e.target===overlay)finish(null)});
+  const onKey=e=>{if(e.key==="Escape")finish(null);else if(e.key==="Enter"&&(e.ctrlKey||e.metaKey))finish(field.value)};
+  document.addEventListener("keydown",onKey);field.focus();field.setSelectionRange(field.value.length,field.value.length);
+ });
+}
+async function editMessage(id){
+ const bubble=$(`chatMessages`).querySelector(`[data-message-id="${CSS.escape(id)}"]`);
+ const current=bubble?.querySelector(".message-content")?.innerText||"";
+ const updated=await auraEditMessageDialog(current);if(updated===null||updated.trim()===current.trim()||!updated.trim())return;
+ const {error}=await supabase.from("messages").update({content:updated.trim().slice(0,2000)}).eq("id",id).eq("sender_id",currentUser.id);
+ if(error)toast("Edit failed: "+error.message);else{toast("Message updated.");await loadMessages();}
+}
+async function reportChatMessage(id){
+ const bubble=$(`chatMessages`).querySelector(`[data-message-id="${CSS.escape(id)}"]`);
+ const row=await supabase.from("messages").select("sender_id,content,image_url").eq("id",id).maybeSingle();
+ if(row.error||!row.data){toast("Could not report this message.");return}
+ const reason=prompt("Why are you reporting this message?\nExamples: harassment, spam, inappropriate content.");
+ if(!reason||reason.trim().length<2)return;
+ const details=`Message ID: ${id}
+Content: ${(row.data.content||"").slice(0,700)}
+Media: ${row.data.image_url?"Attached":"None"}`;
+ const {error}=await supabase.from("user_reports").insert({reporter_id:currentUser.id,reported_user_id:row.data.sender_id,reason:("Message: "+reason.trim()).slice(0,100),details:details.slice(0,1000)});
+ if(error)toast("Report failed: "+error.message);else toast("Message report submitted. Thank you.");
 }
 async function sendChatMessage(content,imageUrl=null){
  if(!activeConversation)return;
- let body=content.trim();if(replyTo)body="↪ "+replyTo+"\n"+body;if(!body&&!imageUrl)return;
+ let body=content.trim();if(!body&&!imageUrl)return;
  const sendButton=$("chatForm").querySelector('button[type="submit"]');sendButton.disabled=true;
  const {error}=await supabase.from("messages").insert({conversation_id:activeConversation.id,sender_id:currentUser.id,content:body||null,image_url:imageUrl});
  sendButton.disabled=false;
@@ -1298,11 +1956,51 @@ $("chatImage").addEventListener("change",async e=>{
 });
 $("emojiButton").addEventListener("click",()=>{$("chatText").value+=" 😊";$("chatText").focus();});
 $("replyCancel").addEventListener("click",()=>{replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");});
-$("chatMessages").addEventListener("dblclick",e=>{
- const bubble=e.target.closest(".bubble");if(!bubble)return;
- replyTo=bubble.querySelector("div")?.textContent?.slice(0,100)||"";
- $("replyLabel").textContent="Replying to: "+replyTo;$("replyCancel").classList.remove("hidden");$("chatText").focus();
+let messageHoldTimer=null,messageHoldStart=null,suppressMessageClick=false;
+function closeMessageMenu(){document.getElementById("auraMessageMenu")?.remove();}
+function openMessageMenu(bubble,x,y){
+ closeMessageMenu();
+ const id=bubble.dataset.messageId,mine=bubble.classList.contains("mine");
+ const menu=document.createElement("div");menu.id="auraMessageMenu";menu.className="aura-message-menu";
+ const choices=mine?[["edit","✎","Edit"],["delete","⌫","Delete"]]:[["report","⚑","Report"]];
+ choices.forEach(([action,icon,label])=>{
+  const button=document.createElement("button");button.type="button";button.dataset.action=action;button.dataset.messageId=id;
+  if(action==="delete")button.classList.add("danger");
+  button.innerHTML=`<span>${icon}</span>${label}`;menu.appendChild(button);
+ });
+ document.body.appendChild(menu);
+ const w=menu.offsetWidth,h=menu.offsetHeight;
+ menu.style.left=Math.max(10,Math.min(x-w/2,window.innerWidth-w-10))+"px";
+ menu.style.top=Math.max(10,Math.min(y-h-12,window.innerHeight-h-10))+"px";
+}
+function cancelMessageHold(){if(messageHoldTimer)clearTimeout(messageHoldTimer);messageHoldTimer=null;messageHoldStart=null;}
+$("chatMessages").addEventListener("pointerdown",e=>{
+ const bubble=e.target.closest(".bubble");if(!bubble||e.target.closest("button,a,input,video,audio"))return;
+ cancelMessageHold();messageHoldStart={x:e.clientX,y:e.clientY,bubble};
+ messageHoldTimer=setTimeout(()=>{openMessageMenu(bubble,messageHoldStart.x,messageHoldStart.y);suppressMessageClick=true;messageHoldTimer=null;},520);
 });
+$("chatMessages").addEventListener("pointermove",e=>{
+ if(!messageHoldStart)return;
+ if(Math.hypot(e.clientX-messageHoldStart.x,e.clientY-messageHoldStart.y)>12)cancelMessageHold();
+},{passive:true});
+["pointerup","pointercancel","pointerleave"].forEach(type=>$("chatMessages").addEventListener(type,cancelMessageHold));
+$("chatMessages").addEventListener("contextmenu",e=>{
+ const bubble=e.target.closest(".bubble");if(!bubble)return;
+ e.preventDefault();openMessageMenu(bubble,e.clientX,e.clientY);
+});
+document.addEventListener("click",e=>{
+ const action=e.target.closest("#auraMessageMenu [data-action]");
+ if(action){
+  const id=action.dataset.messageId,kind=action.dataset.action;closeMessageMenu();
+  if(kind==="edit")editMessage(id);else if(kind==="delete")deleteMessage(id);else if(kind==="report")reportChatMessage(id);
+  return;
+ }
+ if(!e.target.closest("#auraMessageMenu"))closeMessageMenu();
+});
+$("chatMessages").addEventListener("click",e=>{
+ if(suppressMessageClick){e.preventDefault();e.stopPropagation();suppressMessageClick=false;return;}
+});
+$("chatProfileLink").addEventListener("click",()=>{if(activePerson?.id)openUserProfile(activePerson.id);});
 $("backChats").addEventListener("click",async()=>{
  if(chatChannel){await supabase.removeChannel(chatChannel);chatChannel=null;}
  if(presenceChannel){await supabase.removeChannel(presenceChannel);presenceChannel=null;}
@@ -1477,12 +2175,83 @@ async function enablePushNotifications(){
   if(saveResult.error)throw saveResult.error;toast("Notifications enabled successfully 🔔");updateNotificationStatus();
  }catch(error){console.error("Push setup:",error);toast("Could not enable notifications: "+error.message);}
 }
-function updateNotificationStatus(){
- const button=$("enableNotifications"),status=$("notificationStatus"),supported="Notification"in window;
- if(status)status.textContent=!supported?"Notifications are not supported":Notification.permission==="granted"?"Notifications are enabled":Notification.permission==="denied"?"Notifications are blocked in browser settings":"Notifications are not enabled";
- if(button){button.textContent=supported&&Notification.permission==="granted"?"Notifications Enabled":"🔔 Enable Notifications";button.disabled=!supported||Notification.permission==="granted";}
+async function auraHasActivePushSubscription(){
+ try{
+  if(!("serviceWorker"in navigator)||!("PushManager"in window))return false;
+  const registration=await navigator.serviceWorker.getRegistration();
+  if(!registration)return false;
+  return !!(await registration.pushManager.getSubscription());
+ }catch(error){console.warn("Could not inspect notification subscription:",error);return false;}
 }
-$("enableNotifications").addEventListener("click",enablePushNotifications);
+async function disablePushNotifications(){
+ if(!currentUser){toast("Please log in first.");return}
+ try{
+  const registration=("serviceWorker"in navigator)?await navigator.serviceWorker.getRegistration():null;
+  const subscription=registration?await registration.pushManager.getSubscription():null;
+  if(subscription){
+   const endpoint=subscription.endpoint;
+   const {error}=await supabase.from("push_subscriptions").delete().eq("user_id",currentUser.id).eq("endpoint",endpoint);
+   if(error)throw error;
+   const unsubscribed=await subscription.unsubscribe();
+   if(!unsubscribed)throw new Error("The browser could not disable this subscription.");
+  }
+  toast("Notifications disabled for this device.");
+  await updateNotificationStatus();
+ }catch(error){
+  console.error("Disable push notifications:",error);
+  toast("Could not disable notifications: "+error.message);
+ }
+}
+async function updateNotificationStatus(){
+ const status=$("notificationStatus"),bell=$("auraNotificationBell"),indicator=$("auraBellIndicator"),action=$("auraNotificationAction");
+ const supported=("Notification"in window)&&("serviceWorker"in navigator)&&("PushManager"in window);
+ let active=false;
+ if(supported&&Notification.permission==="granted")active=await auraHasActivePushSubscription();
+ if(status){
+  status.textContent=!supported
+   ?"Notifications are not supported by this browser."
+   :Notification.permission==="denied"
+    ?"Notifications are blocked in browser settings. Change the permission there to use AURA alerts."
+    :active
+     ?"Notifications are on. You’ll be alerted when a new message arrives."
+     :"Notifications are off. Turn them on to hear when someone messages you.";
+ }
+ if(indicator)indicator.classList.toggle("is-on",active);
+ if(bell)bell.setAttribute("aria-label",active?"Notification settings — enabled":"Notification settings — disabled");
+ if(action){
+  action.textContent=active?"Disable notifications":"Enable notifications";
+  action.disabled=!supported||Notification.permission==="denied";
+  action.classList.toggle("is-disable",active);
+ }
+}
+function openAuraNotificationPopup(){
+ const backdrop=$("auraNotifyBackdrop");
+ if(!backdrop)return;
+ backdrop.hidden=false;
+ requestAnimationFrame(()=>backdrop.classList.add("is-visible"));
+ updateNotificationStatus();
+}
+function closeAuraNotificationPopup(){
+ const backdrop=$("auraNotifyBackdrop");
+ if(!backdrop)return;
+ backdrop.classList.remove("is-visible");
+ setTimeout(()=>{backdrop.hidden=true;},220);
+}
+$("auraNotificationBell").addEventListener("click",openAuraNotificationPopup);
+$("auraNotifyClose").addEventListener("click",closeAuraNotificationPopup);
+$("auraNotifyBackdrop").addEventListener("click",event=>{
+ if(event.target===$("auraNotifyBackdrop"))closeAuraNotificationPopup();
+});
+document.addEventListener("keydown",event=>{
+ if(event.key==="Escape"&&$("auraNotifyBackdrop")&&!$("auraNotifyBackdrop").hidden)closeAuraNotificationPopup();
+});
+$("auraNotificationAction").addEventListener("click",async()=>{
+ const active=await auraHasActivePushSubscription();
+ if(active)await disablePushNotifications();
+ else await enablePushNotifications();
+ await updateNotificationStatus();
+ if(!("Notification"in window)||Notification.permission!=="denied")closeAuraNotificationPopup();
+});
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&currentUser){refreshUnreadCount();if(activeConversation)loadMessages();}});
 window.addEventListener("online",()=>toast("You are back online ✨"));
 window.addEventListener("offline",()=>toast("You are offline. Check your internet connection."));
@@ -4080,14 +4849,26 @@ window.auraConfirm = function (message) {
   const root = document.documentElement;
   const light = localStorage.getItem("aura_theme") === "light";
   if (light) root.classList.add("aura-light");
+  const themeGlyph = (light) => light
+    ? '<svg class="aura-ui-icon aura-theme-glyph" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="5.2"/><path d="M16 2.8v4M16 25.2v4M2.8 16h4M25.2 16h4M6.7 6.7l2.9 2.9M22.4 22.4l2.9 2.9M25.3 6.7l-2.9 2.9M9.6 22.4l-2.9 2.9"/><path d="M11.5 16c1.2-2.3 3.1-3.7 5.8-4.2"/></svg>'
+    : '<svg class="aura-ui-icon aura-theme-glyph" viewBox="0 0 32 32" aria-hidden="true"><path d="M24.8 20.8A12 12 0 0 1 11.2 7.2 12.2 12.2 0 1 0 24.8 20.8Z"/><path d="m22.8 5 .8 2.1 2.1.8-2.1.8-.8 2.1-.8-2.1-2.1-.8 2.1-.8z"/></svg>';
   const syncIcon = () => {
     const b = document.getElementById("themeButton");
-    if (b) b.textContent = root.classList.contains("aura-light") ? "☀" : "☾";
+    const lightMode = root.classList.contains("aura-light");
+    if (b) {
+      b.innerHTML = themeGlyph(lightMode);
+      b.setAttribute("aria-label", lightMode ? "Switch to dark theme" : "Switch to light theme");
+      b.title = lightMode ? "Dark theme" : "Light theme";
+    }
+    document.body.classList.toggle("dark", !lightMode);
   };
+  window.AURA_SYNC_THEME_ICON = syncIcon;
   const toggle = () => {
     const on = !root.classList.contains("aura-light");
     root.classList.toggle("aura-light", on);
+    document.body.classList.toggle("dark", !on);
     localStorage.setItem("aura_theme", on ? "light" : "dark");
+    localStorage.setItem("aura-dark", on ? "0" : "1");
     syncIcon();
   };
   document.addEventListener("click", e => {
@@ -5076,6 +5857,132 @@ drawerOverlay?.addEventListener("click", e => {
   enhanceVideos();
 })();
 </script>
+
+<style id="aura-chat-aesthetic-v3">
+/* AURA conversation screen: compact back control + custom edit sheet */
+#chat{min-height:0;padding-top:10px;}
+#chat .chat-back{height:42px;margin:0 0 10px;display:flex;align-items:center;}
+#chat .chat-back button{width:40px;height:40px;padding:0;display:grid;place-items:center;border-radius:15px;border:1px solid rgba(190,145,255,.24);background:linear-gradient(145deg,rgba(44,29,66,.92),rgba(19,14,31,.96));color:#dfbaff;box-shadow:0 5px 18px rgba(112,48,173,.16);font-size:0;transition:transform .18s ease,background .18s ease;}
+#chat .chat-back button span{font-family:Arial,sans-serif;font-size:35px;line-height:1;transform:translate(-1px,-2px);}
+#chat .chat-back button:active{transform:scale(.92);}
+#chat .chat-panel{border-radius:26px;border:1px solid rgba(190,145,255,.2);background:linear-gradient(160deg,rgba(25,18,39,.98),rgba(11,9,19,.99));box-shadow:0 16px 45px rgba(0,0,0,.28),0 0 28px rgba(129,63,190,.08);}
+#chat .chat-head{padding:15px 16px;border-bottom:1px solid rgba(190,145,255,.15);}
+#chat .chat-messages{scroll-padding-bottom:20px;}
+.aura-edit-overlay{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(5,3,11,.76);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:auraEditFade .18s ease;}
+.aura-edit-card{width:min(100%,440px);padding:25px 22px 20px;border-radius:26px;border:1px solid rgba(213,174,255,.28);background:radial-gradient(ellipse at 10% 0%,rgba(139,68,204,.24),transparent 48%),linear-gradient(150deg,#211632,#100c1b 78%);box-shadow:0 22px 70px rgba(0,0,0,.55),0 0 35px rgba(151,75,220,.18);color:#f7efff;}
+.aura-edit-mark{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#8738e8,#d17bff);color:white;font-size:22px;box-shadow:0 5px 18px rgba(157,73,231,.35);}
+.aura-edit-card h2{font-family:Georgia,serif;font-size:25px;margin:15px 0 5px;color:#f4e6ff;}
+.aura-edit-card p{margin:0 0 17px;color:#bba7d0;font-size:13px;}
+.aura-edit-card textarea{display:block;width:100%;min-height:116px;max-height:35vh;resize:vertical;box-sizing:border-box;padding:14px 15px;border-radius:16px;border:1px solid rgba(193,145,242,.27);outline:none;background:rgba(9,7,16,.72);color:#fff;font:inherit;font-size:15px;line-height:1.5;}
+.aura-edit-card textarea:focus{border-color:#bd78ff;box-shadow:0 0 0 3px rgba(173,101,245,.14);}
+.aura-edit-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+.aura-edit-actions button{min-height:42px;padding:0 17px;border-radius:14px;font-weight:700;font-size:13px;}
+.aura-edit-cancel{border:1px solid rgba(196,157,230,.22);background:rgba(255,255,255,.045);color:#cdb8df;}
+.aura-edit-save{border:0;background:linear-gradient(110deg,#8436ed,#c56cf4);color:white;box-shadow:0 6px 18px rgba(147,63,219,.28);}
+@keyframes auraEditFade{from{opacity:0}to{opacity:1}}
+@media(max-width:420px){#chat{padding-top:8px;}#chat .chat-panel{border-radius:22px;} .aura-edit-card{padding:22px 18px 17px;border-radius:23px;}}
+</style>
+
 </body>
 
 </html>
+
+
+<style id="aura-signature-glass-refresh">
+/* Stable AURA signature glyphs: fixed viewboxes, dimensions and contrast in both themes */
+.aura-ui-icon{width:27px;height:27px;flex:0 0 27px;display:block;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.header-icons button,.nav{isolation:isolate;position:relative;overflow:visible}
+.header-icons button{width:46px;height:46px;flex:0 0 46px;border-radius:17px;background:linear-gradient(145deg,rgba(44,27,66,.96),rgba(15,10,25,.96));border:1px solid rgba(190,145,255,.27);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 22px rgba(24,8,42,.16)}
+.header-icons button::before,.nav::before{content:"";position:absolute;inset:1px;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.11),transparent 48%);pointer-events:none}
+.header-icons button:active,.nav:active{transform:scale(.91)}
+.header-icons button.aura-icon-tap{animation:auraGlyphTap .44s cubic-bezier(.2,.8,.2,1)}
+@keyframes auraGlyphTap{0%{transform:scale(1)}42%{transform:scale(.88) rotate(-5deg)}75%{transform:scale(1.05) rotate(2deg)}100%{transform:scale(1)}}
+.nav{width:54px;height:54px;flex:0 1 54px;border-radius:19px;color:#9588a9}
+.nav .aura-ui-icon{width:29px;height:29px;flex-basis:29px;transition:transform .3s cubic-bezier(.2,.8,.2,1),filter .3s ease}
+.nav.active{color:#d9a5ff;background:linear-gradient(145deg,rgba(160,86,255,.2),rgba(89,48,135,.12));border:1px solid rgba(188,137,255,.2);box-shadow:0 8px 24px rgba(128,62,214,.14),inset 0 1px 0 rgba(255,255,255,.12)}
+.nav.active .aura-ui-icon{transform:translateY(-1px) scale(1.08);filter:drop-shadow(0 0 7px currentColor)}
+#themeButton .aura-theme-glyph{width:27px;height:27px;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+#themeButton:active .aura-theme-glyph{transform:rotate(28deg) scale(.88)}
+/* Light mode: force readable AURA surfaces, labels, form controls and navigation */
+html.aura-light{
+ --bg:#f5f0ff;--card:#fff;--card2:#f0e8fb;--text:#241832;--muted:#796b8d;
+ --line:#e4d8f2;--pink:#8950c9;--purple:#8545d5;--accent:#8746d7;
+ --gradient:linear-gradient(135deg,#7936ce,#a35be9 55%,#d8b4ff);
+ --shadow:0 12px 34px rgba(104,63,151,.10);
+ color-scheme:light;
+}
+html.aura-light body{background:radial-gradient(ellipse at 50% -15%,rgba(181,133,235,.15),transparent 48%),#f7f3ff!important;color:#281d39!important}
+html.aura-light header{background:rgba(255,255,255,.84)!important;border-bottom-color:#e8ddf5!important}
+html.aura-light .logo{color:#7540b7!important}
+html.aura-light .header-icons button{background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(245,237,255,.96))!important;color:#7543aa!important;border-color:#e3d5f2!important;box-shadow:inset 0 1px 0 #fff,0 7px 20px rgba(89,56,124,.10)!important}
+html.aura-light .nav{color:#786889!important}
+html.aura-light .nav.active{color:#8545d5!important;background:linear-gradient(145deg,#fff,#f0e5ff)!important;border-color:#dfc9f5!important;box-shadow:0 8px 23px rgba(121,65,180,.13)!important}
+html.aura-light .heading,html.aura-light .profile-name,html.aura-light .empty h3{color:#281d39!important}
+html.aura-light .sub,html.aura-light .profile-bio{color:#796b8d!important}
+html.aura-light .post,html.aura-light .chat-panel,html.aura-light .create-box,html.aura-light .auth-card{background:linear-gradient(145deg,#fff,#faf7ff)!important;border-color:#e7dcf3!important;color:#281d39!important;box-shadow:0 12px 32px rgba(92,57,130,.09)!important}
+html.aura-light .post-user,html.aura-light .caption,html.aura-light .comment-list,html.aura-light .chat-head,html.aura-light .chat-compose{color:#281d39!important}
+html.aura-light .search,html.aura-light .field,html.aura-light input,html.aura-light textarea,html.aura-light select{background:#fff!important;color:#281d39!important;border-color:#dfd2ed!important}
+html.aura-light input::placeholder,html.aura-light textarea::placeholder{color:#9a8ba9!important;opacity:1}
+html.aura-light .bottom{background:rgba(255,255,255,.88)!important;border-top-color:#e7dcf3!important;box-shadow:0 -8px 28px rgba(87,54,126,.07)}
+html.aura-light .chat-row,html.aura-light .cv-row{background:linear-gradient(135deg,#fff,#faf7ff)!important;border-color:#e7dcf3!important;color:#281d39!important}
+html.aura-light .chat-row span,html.aura-light .cv-last,html.aura-light .cv-top small{color:#796b8d!important}
+html.aura-light .bubble:not(.mine){background:#fff!important;color:#281d39!important;border:1px solid #e6d9f2!important}
+html.aura-light .bubble.mine{background:linear-gradient(135deg,#8d4bd8,#b36be8)!important;color:#fff!important}
+html.aura-light .chat-messages{background:linear-gradient(180deg,#faf7ff,#f3edfb)!important}
+html.aura-light .aura-sheet,.html.aura-light .aura-sheet{background:linear-gradient(145deg,#fff,#f7f0ff)!important;color:#281d39!important;border-color:#e5d7f2!important}
+html.aura-light .sheet-title,html.aura-light .sheet-option{color:#332247!important}
+html.aura-light .sheet-option{background:#f8f3ff!important;border-color:#e7dcf3!important}
+html.aura-light .sheet-cancel{background:#eee4fa!important;color:#56317f!important;border-color:#dfd0f0!important}
+html.aura-light .secondary{background:#f1e8fb!important;color:#633a91!important;border-color:#dfd0f0!important}
+html.aura-light .more-btn,.html.aura-light .action{color:#7543aa!important}
+html.aura-light .filter,.html.aura-light .filter-btn,.html.aura-light .tab-btn{color:#663c91!important}
+html.aura-light .filter.active,.html.aura-light .filter-btn.active,.html.aura-light .tab-btn.active{color:#fff!important}
+html.aura-light .nav .badge,html.aura-light .header-icons .badge{color:#fff!important}
+@media(prefers-reduced-motion:reduce){.header-icons button,.nav,.nav .aura-ui-icon{transition:none!important;animation:none!important}}
+</style>
+<script id="aura-signature-icon-runtime">
+(() => {
+ const svg = {
+  themeDark:'<svg class="aura-ui-icon aura-theme-glyph" viewBox="0 0 32 32" aria-hidden="true"><path d="M24.8 20.8A12 12 0 0 1 11.2 7.2 12.2 12.2 0 1 0 24.8 20.8Z"/><path d="m22.8 5 .8 2.1 2.1.8-2.1.8-.8 2.1-.8-2.1-2.1-.8 2.1-.8z"/></svg>',
+  themeLight:'<svg class="aura-ui-icon aura-theme-glyph" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="5.2"/><path d="M16 2.8v4M16 25.2v4M2.8 16h4M25.2 16h4M6.7 6.7l2.9 2.9M22.4 22.4l2.9 2.9M25.3 6.7l-2.9 2.9M9.6 22.4l-2.9 2.9"/></svg>',
+  home:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="m4 14 12-10 12 10v13H4z"/><path d="M12 27V17h8v10"/><path d="m9 11 7-6 7 6"/></svg>',
+  explore:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><circle cx="14" cy="14" r="9"/><path d="m20.5 20.5 7 7M14 9l3 5-5 3z"/></svg>',
+  create:'<svg class="aura-ui-icon aura-create-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.5 19 12l8.5 4-8.5 3-3 9-3-9-8.5-3 8.5-4z"/><circle cx="16" cy="16" r="3.2"/></svg>',
+  inbox:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 7.5 16 4l11 3.5v17L16 28 5 24.5z"/><path d="M5 13h22M10 18h12M12 23h8"/></svg>',
+  profile:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="10" r="5.5"/><path d="M5 28c.8-6 4.8-9 11-9s10.2 3 11 9"/><circle cx="16" cy="16" r="14" opacity=".25"/></svg>',
+  activity:'<svg class="aura-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 27S4 19 4 11.5A6.5 6.5 0 0 1 16 8a6.5 6.5 0 0 1 12 3.5C28 19 16 27 16 27Z"/><path d="M16 10v10M11 15h10"/></svg>'
+ };
+ function setThemeIcon(){
+  const b=document.getElementById('themeButton');
+  if(!b)return;
+  const light=document.documentElement.classList.contains('aura-light');
+  b.innerHTML=light?svg.themeLight:svg.themeDark;
+  b.setAttribute('aria-label',light?'Switch to dark theme':'Switch to light theme');
+ }
+ function setNavIcon(selector,markup){
+  const b=document.querySelector(selector);
+  if(!b)return;
+  const badge=b.querySelector('.badge');
+  b.innerHTML=markup;
+  if(badge)b.appendChild(badge);
+ }
+ setNavIcon('.nav[data-page="home"]',svg.home);
+ setNavIcon('.nav[data-page="explore"]',svg.explore);
+ setNavIcon('.nav[data-page="create"]',svg.create);
+ setNavIcon('.nav[data-page="inbox"]',svg.inbox);
+ setNavIcon('.nav[data-page="profile"]',svg.profile);
+ const activity=document.getElementById('activityButton');
+ if(activity)activity.innerHTML=svg.activity;
+ setThemeIcon();
+ document.addEventListener('click',e=>{
+  const b=e.target.closest('.header-icons button,.nav');
+  if(!b)return;
+  b.classList.remove('aura-icon-tap');
+  void b.offsetWidth;
+  b.classList.add('aura-icon-tap');
+  setTimeout(()=>b.classList.remove('aura-icon-tap'),460);
+ },true);
+ const observer=new MutationObserver(setThemeIcon);
+ observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+})();
+</script>
