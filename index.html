@@ -226,7 +226,6 @@ body.dark{--bg:#080710}
   </svg><span>AURA</span>
  </div>
  <div class="header-icons">
-  <button id="installButton" aria-label="Install AURA" title="Install AURA">↓</button>
   <button id="themeButton" aria-label="Toggle dark mode">☾</button>
   <button id="activityButton" aria-label="Activity">♧</button>
   <button id="inboxButton" aria-label="Open messages">▤<span id="headerUnreadBadge" class="badge"></span></button>
@@ -343,8 +342,7 @@ body.dark{--bg:#080710}
  <div class="chat-back"><button id="backSettings">← Profile</button></div>
  <div class="heading">Settings</div><div class="sub">Manage your AURA account.</div>
  <div class="settings-row"><div>🔐</div><div><strong>Change Password</strong><small>Update your account password.</small></div><button class="secondary" id="settingsPassword">Change</button></div>
- <div class="settings-row"><div>📲</div><div><strong>Install AURA</strong><small>Add AURA to your home screen.</small></div><button class="secondary" id="settingsInstall">Install</button></div>
- <div class="settings-row"><div>🔔</div><div><strong>Notifications</strong><small>Manage message alerts.</small></div><button class="secondary" id="settingsNotify">Open</button></div>
+  <div class="settings-row"><div>🔔</div><div><strong>Notifications</strong><small>Manage message alerts.</small></div><button class="secondary" id="settingsNotify">Open</button></div>
  <div class="settings-row"><div>🚫</div><div><strong>Blocked accounts</strong><small>Review accounts you blocked.</small></div><button class="secondary" id="blockedAccountsButton">View</button></div>
  <div class="settings-row"><div>🌙</div><div><strong>Appearance</strong><small>Switch the app theme.</small></div><button class="secondary" id="settingsTheme">Toggle</button></div>
  <p class="install-note">AURA settings. Some options depend on your browser and Supabase permissions.</p>
@@ -1164,24 +1162,6 @@ window.addEventListener("offline",()=>toast("You are offline. Check your interne
 window.addEventListener("focus",()=>{if(currentUser){refreshUnreadCount();updateNotificationStatus();}});
 updateNotificationStatus();
 
-/* PWA INSTALL */
-window.addEventListener("beforeinstallprompt",e=>{
- e.preventDefault();installPrompt=e;$("installButton")?.classList.remove("hidden");
-});
-window.addEventListener("appinstalled",()=>{
- installPrompt=null;toast("AURA installed successfully ✨");
-});
-async function installAURA(){
- if(installPrompt){
-  installPrompt.prompt();const result=await installPrompt.userChoice;
-  if(result.outcome==="accepted")toast("AURA is being installed.");
-  installPrompt=null;return;
- }
- if(window.matchMedia("(display-mode: standalone)").matches){toast("AURA is already installed.");return}
- toast("To install: open browser menu ⋮ and choose Add to Home screen or Install app.");
-}
-$("installButton").addEventListener("click",installAURA);
-$("settingsInstall").addEventListener("click",installAURA);
 
 /* VIDEO HANDLING */
 const auraVideoObserver=new IntersectionObserver(entries=>{
@@ -2167,108 +2147,168 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
 </style>
 
 <section class="page" id="editProfile">
-  <div class="chat-back"><button id="backEditProfile">← Profile</button></div>
-  <div class="heading">Edit Profile</div>
-  <div class="sub">Customize your AURA identity ✨</div>
-  <div class="edit-card">
-    <div class="edit-avatar-box">
-      <img id="editAvatarPreview" src="" alt="Preview">
-      <label class="secondary" style="cursor:pointer;margin:0">
-        📷 Change Profile Photo
-        <input type="file" id="editAvatarInput" accept="image/*" hidden>
-      </label>
-    </div>
-    <label class="field-label">Nickname (Display Name)</label>
-    <input class="field" id="editNickname" placeholder="Enter your nickname">
-    <label class="field-label">Username</label>
-    <input class="field" id="editUsername" placeholder="Choose a unique username">
-    <label class="field-label">Bio</label>
-    <textarea class="field" id="editBio" rows="3" placeholder="Tell your story..."></textarea>
-    <button class="primary" id="saveProfileBtn" style="width:100%;margin:14px 0 0">Save Changes ✨</button>
+ <div class="chat-back"><button id="backEditProfile">← Profile</button></div>
+ <div class="heading">Edit Profile</div>
+ <div class="sub">Shape how your AURA world looks ✨</div>
+ <style>
+  .ep-preview{display:flex;gap:14px;align-items:center;padding:16px;border-radius:22px;background:linear-gradient(145deg,#171326,#0d0b17);border:1px solid #2b2040;margin-bottom:16px;box-shadow:var(--shadow)}
+  .ep-pav{width:58px;height:58px;border-radius:50%;object-fit:cover;border:2px solid #a855f7;box-shadow:0 0 14px rgba(168,85,247,.35);flex-shrink:0}
+  .ep-preview strong{display:block;font-size:16px;overflow-wrap:anywhere}
+  .ep-preview span{display:block;color:#c18aff;font-size:12px;margin-top:2px;overflow-wrap:anywhere}
+  .ep-preview p{color:var(--muted);font-size:12px;margin-top:4px;overflow-wrap:anywhere}
+  .ep-count{float:right;font-weight:600;color:var(--muted);font-size:11px}
+  .ep-hint{font-size:11px;color:var(--muted);margin:2px 4px 8px}
+  .ep-hint.ok{color:#8fe3b0}
+  .ep-hint.bad{color:#ff9bb7}
+ </style>
+ <div class="ep-preview">
+  <img id="epPreviewAvatar" class="ep-pav" alt="">
+  <div style="min-width:0"><strong id="epPreviewName">AURA User</strong><span id="epPreviewUser">@username</span><p id="epPreviewBio"></p></div>
+ </div>
+ <div class="edit-card">
+  <div class="edit-avatar-box">
+   <img id="epAvatar" alt="Profile photo">
+   <label class="secondary" style="cursor:pointer;margin:0">📷 Change Photo<input type="file" id="epAvatarInput" accept="image/*" hidden></label>
   </div>
+  <label class="field-label">Nickname <span class="ep-count" id="epNickCount">0/40</span></label>
+  <input class="field" id="epNickname" maxlength="40" placeholder="How people see you" autocomplete="off">
+  <label class="field-label">Username</label>
+  <input class="field" id="epUsername" maxlength="24" placeholder="your_handle" autocomplete="off">
+  <p class="ep-hint" id="epUserHint">Lowercase letters, numbers, _ and . only</p>
+  <label class="field-label">Bio <span class="ep-count" id="epBioCount">0/150</span></label>
+  <textarea class="field" id="epBio" rows="3" maxlength="150" placeholder="Tell your story..."></textarea>
+  <button class="primary" id="epSave" style="width:100%;margin:14px 0 6px">Save Changes ✨</button>
+  <button class="secondary" id="epCancel" style="width:100%">Cancel</button>
+ </div>
 </section>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 const sb = createClient("https://lntvyexkbxlfimlhjpvg.supabase.co", "sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv");
+const $ = id => document.getElementById(id);
+const FALLBACK = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
+let me = null, avatarFile = null, usernameOk = true, checkTimer = null;
 
-const oldEditBtn = document.getElementById("editProfileButton");
-if (oldEditBtn) {
-  const newEditBtn = oldEditBtn.cloneNode(true);
-  oldEditBtn.parentNode.replaceChild(newEditBtn, oldEditBtn);
-
-  let selectedAvatarFile = null;
-
-  newEditBtn.addEventListener("click", async () => {
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session?.user) return;
-    const { data: prof } = await sb.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
-    selectedAvatarFile = null;
-    document.getElementById("editAvatarPreview").src = prof?.avatar_url || document.getElementById("myPic").src;
-    document.getElementById("editNickname").value = prof?.full_name || "";
-    document.getElementById("editUsername").value = prof?.username || "";
-    document.getElementById("editBio").value = prof?.bio || "";
-    document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "editProfile"));
-    document.querySelectorAll(".nav").forEach(n => n.classList.remove("active"));
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
-  document.getElementById("backEditProfile").addEventListener("click", () => {
-    document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "profile"));
-    document.querySelector('.nav[data-page="profile"]')?.classList.add("active");
-  });
-
-  document.getElementById("editAvatarInput").addEventListener("change", e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    selectedAvatarFile = file;
-    document.getElementById("editAvatarPreview").src = URL.createObjectURL(file);
-  });
-
-  document.getElementById("saveProfileBtn").addEventListener("click", async () => {
-    const btn = document.getElementById("saveProfileBtn");
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session?.user) return;
-
-    const full_name = document.getElementById("editNickname").value.trim();
-    const username = document.getElementById("editUsername").value.trim().toLowerCase().replace(/[^a-z0-9_.]/g, "");
-    const bio = document.getElementById("editBio").value.trim();
-
-    if (!username) {
-      alert("Username cannot be empty!");
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "Saving...";
-
-    try {
-      let avatar_url = document.getElementById("myPic").src;
-      if (selectedAvatarFile) {
-        const ext = (selectedAvatarFile.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
-        const path = `${session.user.id}/avatar-${Date.now()}.${ext}`;
-        const { error: upErr } = await sb.storage.from("aura-media").upload(path, selectedAvatarFile);
-        if (upErr) throw upErr;
-        avatar_url = sb.storage.from("aura-media").getPublicUrl(path).data.publicUrl;
-      }
-
-      const { error } = await sb.from("profiles").update({ full_name, username, bio, avatar_url }).eq("id", session.user.id);
-      if (error) throw error;
-
-      document.getElementById("myName").textContent = full_name || username;
-      document.getElementById("myBio").textContent = bio || "Living in my own little world 🌷";
-      document.getElementById("myPic").src = avatar_url;
-
-      document.getElementById("backEditProfile").click();
-    } catch (err) {
-      alert("Error: " + (err.message || "Could not update profile"));
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Save Changes ✨";
-    }
-  });
+const normalize = v => v.trim().toLowerCase().replace(/[^a-z0-9_.]/g, "");
+function setHint(text, cls) { const h = $("epUserHint"); h.textContent = text; h.className = "ep-hint " + (cls || ""); }
+function renderPreview() {
+  const u = normalize($("epUsername").value);
+  $("epPreviewName").textContent = $("epNickname").value.trim() || "AURA User";
+  $("epPreviewUser").textContent = u ? "@" + u : "@username";
+  $("epPreviewBio").textContent = $("epBio").value.trim() || "Living in my own little world 🌷";
+  $("epNickCount").textContent = $("epNickname").value.length + "/40";
+  $("epBioCount").textContent = $("epBio").value.length + "/150";
 }
+async function checkUsername() {
+  const u = normalize($("epUsername").value);
+  $("epUsername").value = u;
+  renderPreview();
+  if (!me) return;
+  if (u.length < 3) { usernameOk = false; setHint("At least 3 characters", "bad"); return; }
+  if (u === me.username) { usernameOk = true; setHint("This is your current username", "ok"); return; }
+  setHint("Checking...", "");
+  const { data, error } = await sb.from("profiles").select("id").eq("username", u).neq("id", me.id).maybeSingle();
+  if (u !== normalize($("epUsername").value)) return;
+  if (error) { usernameOk = false; setHint("Could not check: " + error.message, "bad"); return; }
+  usernameOk = !data;
+  setHint(data ? "Username already taken" : "✓ Username is available", data ? "bad" : "ok");
+}
+function showEditPage() {
+  document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "editProfile"));
+  document.querySelectorAll(".nav").forEach(n => n.classList.remove("active"));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+async function openEdit() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) return;
+  const { data: prof, error } = await sb.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
+  if (error) { alert(error.message); return; }
+  me = prof || { id: session.user.id, username: "", full_name: "", bio: "", avatar_url: null };
+  avatarFile = null;
+  usernameOk = true;
+  $("epAvatar").src = me.avatar_url || FALLBACK;
+  $("epPreviewAvatar").src = me.avatar_url || FALLBACK;
+  $("epNickname").value = me.full_name || "";
+  $("epUsername").value = me.username || "";
+  $("epBio").value = me.bio || "";
+  setHint("Lowercase letters, numbers, _ and . only", "");
+  renderPreview();
+  showEditPage();
+}
+
+const oldEditBtn = $("editProfileButton");
+const editBtn = oldEditBtn.cloneNode(true);
+oldEditBtn.replaceWith(editBtn);
+editBtn.addEventListener("click", openEdit);
+
+$("backEditProfile").addEventListener("click", () => {
+  document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "profile"));
+  document.querySelector('.nav[data-page="profile"]')?.classList.add("active");
+});
+$("epCancel").addEventListener("click", () => $("backEditProfile").click());
+$("epNickname").addEventListener("input", renderPreview);
+$("epBio").addEventListener("input", renderPreview);
+$("epUsername").addEventListener("input", () => {
+  renderPreview();
+  clearTimeout(checkTimer);
+  checkTimer = setTimeout(checkUsername, 400);
+});
+$("epAvatarInput").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  avatarFile = file;
+  const url = URL.createObjectURL(file);
+  $("epAvatar").src = url;
+  $("epPreviewAvatar").src = url;
+});
+
+$("epSave").addEventListener("click", async () => {
+  if (!me) return;
+  const btn = $("epSave");
+  const nickname = $("epNickname").value.trim();
+  if (!nickname) { alert("Nickname cannot be empty."); return; }
+  await checkUsername();
+  const username = normalize($("epUsername").value);
+  if (username.length < 3) { alert("Username must be at least 3 characters."); return; }
+  if (!usernameOk) { alert("Please choose an available username."); return; }
+  const bio = $("epBio").value.trim().slice(0, 150);
+  btn.disabled = true;
+  btn.textContent = "Saving...";
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.user) throw new Error("Please log in again.");
+    let avatar_url = me.avatar_url || null;
+    if (avatarFile) {
+      const ext = (avatarFile.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const path = `${session.user.id}/avatar-${Date.now()}.${ext}`;
+      const { error: upErr } = await sb.storage.from("aura-media").upload(path, avatarFile);
+      if (upErr) throw upErr;
+      avatar_url = sb.storage.from("aura-media").getPublicUrl(path).data.publicUrl;
+    }
+    const { error } = await sb.from("profiles").update({ full_name: nickname, username, bio, avatar_url }).eq("id", session.user.id);
+    if (error) {
+      if (error.code === "23505") { usernameOk = false; setHint("Username already taken", "bad"); alert("That username is already taken."); return; }
+      throw error;
+    }
+    me = { ...me, full_name: nickname, username, bio, avatar_url };
+    $("myName").textContent = nickname;
+    $("myBio").textContent = bio || "Living in my own little world 🌷";
+    if (avatar_url) $("myPic").src = avatar_url;
+    $("backEditProfile").click();
+    const t = document.createElement("div");
+    t.className = "toast";
+    t.textContent = "Profile updated ✨";
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+  } catch (err) {
+    alert("Error: " + (err.message || "Could not update profile"));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Save Changes ✨";
+  }
+});
 </script>
+
 
 <style>
 #gunPopup{position:fixed;top:78px;left:50%;transform:translateX(-50%) translateY(-15px) scale(.95);width:92%;max-width:410px;height:68px;background:radial-gradient(circle at 20% 50%,#281548,#0c0916 80%);border:1.5px solid #a855f7;border-radius:20px;box-shadow:0 15px 40px rgba(168,85,247,.5),inset 0 0 20px rgba(168,85,247,.25);z-index:99999;display:flex;align-items:center;padding:0 18px;overflow:hidden;pointer-events:none;opacity:0;visibility:hidden;transition:all .28s cubic-bezier(.2,1,.3,1)}
