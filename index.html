@@ -3845,8 +3845,12 @@ document.querySelectorAll('.nav[data-page="profile"]').forEach(n => n.addEventLi
     el.className = "gp-bar gp-top";
     el.innerHTML = mark + '<div class="gp-text"><b class="gp-shine">Welcome to our Aura ✨</b>Log in or continue as guest.</div><button class="gp-x" aria-label="Close">✕</button>';
     document.body.appendChild(el);
+    document.body.classList.add("aw-busy");
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("show")));
-    const hide = () => { el.classList.remove("show"); setTimeout(() => el.remove(), 450); };
+    const hide = () => {
+      el.classList.remove("show");
+      setTimeout(() => { el.remove(); document.body.classList.remove("aw-busy"); }, 450);
+    };
     el.querySelector(".gp-x").addEventListener("click", hide);
     setTimeout(hide, 3800);
   }
@@ -3942,5 +3946,10 @@ document.querySelectorAll('.nav[data-page="profile"]').forEach(n => n.addEventLi
   }, true);
 })();
 </script>
+<!-- WELCOME BAR vs LIVE ANIMATION v34 -->
+<style>
+  body.aw-busy .aura-live-stage{opacity:0!important;transition:opacity .3s ease!important}
+  .aura-live-stage{transition:opacity .3s ease}
+</style>
 </body>
 </html>
