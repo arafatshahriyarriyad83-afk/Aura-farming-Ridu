@@ -2299,5 +2299,63 @@ auraObserver.observe(document.body, { childList: true, subtree: true });
 
 </script>
 
+<!-- AURA Custom Logout Confirmation Modal -->
+<style>
+#auraLogoutModal{position:fixed;inset:0;background:rgba(6,5,12,.82);backdrop-filter:blur(12px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeInModal .22s ease}
+#auraLogoutModal.show{display:flex}
+.logout-card{width:100%;max-width:340px;background:linear-gradient(145deg,#181228,#0d0b17);border:1.5px solid #9333ea;border-radius:26px;padding:26px 22px;text-align:center;box-shadow:0 20px 55px rgba(147,51,234,.45),inset 0 0 25px rgba(168,85,247,.15);transform:scale(.92);animation:popCard .25s cubic-bezier(.2,1.5,.4,1) forwards}
+.logout-icon{width:58px;height:58px;margin:0 auto 14px;border-radius:50%;background:rgba(168,85,247,.16);border:1px solid #c084fc;display:grid;place-items:center;font-size:26px;box-shadow:0 0 20px rgba(168,85,247,.35)}
+.logout-card h3{font-family:'Playfair Display',serif;font-size:22px;color:#f5eaff;margin-bottom:8px}
+.logout-card p{color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:22px}
+.logout-actions{display:flex;gap:10px}
+.logout-actions button{flex:1;padding:12px;border-radius:14px;font-weight:800;font-size:13px;margin:0}
+@keyframes fadeInModal{from{opacity:0}to{opacity:1}}
+@keyframes popCard{to{transform:scale(1)}}
+</style>
+
+<div id="auraLogoutModal">
+  <div class="logout-card">
+    <div class="logout-icon">🚪</div>
+    <h3>Leaving AURA?</h3>
+    <p>Are you sure you want to log out of your account?</p>
+    <div class="logout-actions">
+      <button class="secondary" id="cancelAuraLogout">Stay ✨</button>
+      <button class="danger" id="confirmAuraLogout">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from "https://jsdelivr.net";
+const sbOut = createClient("https://supabase.co", "sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv");
+
+const oldLogout = document.getElementById("logoutButton");
+if (oldLogout) {
+  const newLogout = oldLogout.cloneNode(true);
+  oldLogout.parentNode.replaceChild(newLogout, oldLogout);
+
+  newLogout.addEventListener("click", () => {
+    document.getElementById("auraLogoutModal").classList.add("show");
+  });
+
+  document.getElementById("cancelAuraLogout").addEventListener("click", () => {
+    document.getElementById("auraLogoutModal").classList.remove("show");
+  });
+
+  document.getElementById("auraLogoutModal").addEventListener("click", (e) => {
+    if (e.target.id === "auraLogoutModal") {
+      document.getElementById("auraLogoutModal").classList.remove("show");
+    }
+  });
+
+  document.getElementById("confirmAuraLogout").addEventListener("click", async () => {
+    const btn = document.getElementById("confirmAuraLogout");
+    btn.disabled = true;
+    btn.textContent = "Logging out...";
+    await sbOut.auth.signOut();
+    location.reload();
+  });
+}
+</script>
 </body>
 </html>
