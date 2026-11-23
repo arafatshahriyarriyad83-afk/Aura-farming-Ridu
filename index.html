@@ -2324,20 +2324,16 @@ auraObserver.observe(document.body, { childList: true, subtree: true });
     </div>
   </div>
 </div>
-
-<script type="module">
-import { createClient } from "https://esm.sh";
-const sbOut = createClient("https://supabase.co", "sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv");
-
-// Intercept any Log out button click before browser confirm() fires
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest("button");
-  if (btn && btn.textContent.trim().toLowerCase() === "log out" && btn.id !== "confirmAuraLogout") {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    document.getElementById("auraLogoutModal").classList.add("show");
+<script>
+// Override native confirm() specifically for Log out
+const _origConfirm = window.confirm;
+window.confirm = function(msg) {
+  if (typeof msg === "string" && msg.toLowerCase().includes("log out")) {
+    document.getElementById("auraLogoutModal")?.classList.add("show");
+    return false;
   }
-}, true);
+  return _origConfirm.apply(this, arguments);
+};
 
 document.getElementById("cancelAuraLogout")?.addEventListener("click", () => {
   document.getElementById("auraLogoutModal").classList.remove("show");
@@ -2349,12 +2345,14 @@ document.getElementById("auraLogoutModal")?.addEventListener("click", (e) => {
   }
 });
 
-document.getElementById("confirmAuraLogout")?.addEventListener("click", async () => {
+document.getElementById("confirmAuraLogout")?.addEventListener("click", () => {
   const btn = document.getElementById("confirmAuraLogout");
   btn.disabled = true;
   btn.textContent = "Logging out...";
-  await sbOut.auth.signOut();
-  localStorage.clear();
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith("sb-") || k.includes("supabase")) localStorage.removeItem(k);
+  });
+  sessionStorage.clear();
   location.reload();
 });
 </script>
