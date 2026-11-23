@@ -1,75 +1,74 @@
 
+/* AURA — Service Worker */
+
 const CACHE_NAME = "aura-cache-v1";
 
-const APP_FILES = [
-  "./",
-  "./index.html",
-  "./manifest.json"
-];
+/* PUSH NOTIFICATION */
+self.addEventListener("push", (event) => {
+  let payload = {};
 
-// Install
-self.addEventListener("install", (event) => {
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch {
+    payload = {
+      body: event.data ? event.data.text() : "You have a new notification."
+    };
+  }
+
+  const title = payload.title || "AURA 💜";
+  const options = {
+    body: payload.body || "You have a new message.",
+    icon: "./icon-192.png",
+    badge: "./icon-192.png",
+    tag: payload.tag || "aura-notification",
+    data: {
+      url: payload.url || payload.data?.url || "./"
+    },
+    vibrate: [200, 100, 200]
+  };
+
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(APP_FILES);
-    })
+    self.registration.showNotification(title, options)
   );
+});
 
+/* NOTIFICATION CLICK */
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  event.waitUntil((async () => {
+    const target = new URL(
+      event.notification.data?.url || "./",
+      self.location.origin
+    );
+
+    // Only allow navigation within AURA's own domain.
+    if (target.origin !== self.location.origin) {
+      target.href = self.registration.scope;
+    }
+
+    const windows = await clients.matchAll({
+      type: "window",
+      includeUncontrolled: true
+    });
+
+    for (const client of windows) {
+      if (new URL(client.url).origin === self.location.origin) {
+        await client.navigate(target.href);
+        return client.focus();
+      }
+    }
+
+    return clients.openWindow(target.href);
+  })());
+});
+
+/* SERVICE WORKER INSTALL */
+self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
-// Activate
+/* SERVICE WORKER ACTIVATE */
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      );
-    })
-  );
-
-  self.clients.claim();
-});
-
-// Fetch
-self.addEventListener("fetch", (event) => {
-  const request = event.request;
-
-  if (request.method !== "GET") return;
-
-  const url = new URL(request.url);
-
-  // Supabase এবং বাইরের API request cache করবে না
-  if (
-    url.hostname.includes("supabase.co") ||
-    url.hostname.includes("googleapis.com")
-  ) {
-    return;
-  }
-
-  event.respondWith(
-    fetch(request)
-      .then((response) => {
-        if (
-          response &&
-          response.status === 200 &&
-          url.origin === self.location.origin
-        ) {
-          const responseClone = response.clone();
-
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseClone);
-          });
-        }
-
-        return response;
-      })
-      .catch(() => {
-        return caches.match(request).then((cachedResponse) => {
-          return cachedResponse || caches.match("./index.html");
-        });
-      })
-  );
+  event.waitUntil(clients.claim());
 });
