@@ -2326,37 +2326,39 @@ auraObserver.observe(document.body, { childList: true, subtree: true });
 </div>
 
 <script type="module">
-import { createClient } from "https://jsdelivr.net";
+import { createClient } from "https://esm.sh";
 const sbOut = createClient("https://supabase.co", "sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv");
 
-const oldLogout = document.getElementById("logoutButton");
-if (oldLogout) {
-  const newLogout = oldLogout.cloneNode(true);
-  oldLogout.parentNode.replaceChild(newLogout, oldLogout);
-
-  newLogout.addEventListener("click", () => {
+// Intercept any Log out button click before browser confirm() fires
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (btn && btn.textContent.trim().toLowerCase() === "log out" && btn.id !== "confirmAuraLogout") {
+    e.preventDefault();
+    e.stopImmediatePropagation();
     document.getElementById("auraLogoutModal").classList.add("show");
-  });
+  }
+}, true);
 
-  document.getElementById("cancelAuraLogout").addEventListener("click", () => {
+document.getElementById("cancelAuraLogout")?.addEventListener("click", () => {
+  document.getElementById("auraLogoutModal").classList.remove("show");
+});
+
+document.getElementById("auraLogoutModal")?.addEventListener("click", (e) => {
+  if (e.target.id === "auraLogoutModal") {
     document.getElementById("auraLogoutModal").classList.remove("show");
-  });
+  }
+});
 
-  document.getElementById("auraLogoutModal").addEventListener("click", (e) => {
-    if (e.target.id === "auraLogoutModal") {
-      document.getElementById("auraLogoutModal").classList.remove("show");
-    }
-  });
-
-  document.getElementById("confirmAuraLogout").addEventListener("click", async () => {
-    const btn = document.getElementById("confirmAuraLogout");
-    btn.disabled = true;
-    btn.textContent = "Logging out...";
-    await sbOut.auth.signOut();
-    location.reload();
-  });
-}
+document.getElementById("confirmAuraLogout")?.addEventListener("click", async () => {
+  const btn = document.getElementById("confirmAuraLogout");
+  btn.disabled = true;
+  btn.textContent = "Logging out...";
+  await sbOut.auth.signOut();
+  localStorage.clear();
+  location.reload();
+});
 </script>
+
 <!-- AURA Speed Booster -->
 <link rel="preconnect" href="https://supabase.co" crossorigin>
 <link rel="dns-prefetch" href="https://supabase.co">
