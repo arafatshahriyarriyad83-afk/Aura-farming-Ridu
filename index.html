@@ -492,7 +492,7 @@ async function loadProfile(){
  currentProfile=data;$("myName").textContent=data.full_name||data.username||"AURA User";
  $("myBio").textContent=data.bio||"Living in my own little world 🌷";$("myPic").src=data.avatar_url||FALLBACK_AVATAR;
 }
-async function safeLoad(label,fn){try{await fn()}catch(error){console.error(label+":",error);toast(label+" could not load. Check Supabase permissions.");}}
+async function safeLoad(label,fn){try{await fn()}catch(error){console.error(label+":",error);if(label==="Feed"&&window.auraWelcomeFeed){window.auraWelcomeFeed();}else{toast(label+" could not load. Check Supabase permissions.");}}}
 async function loadFollowing(){
  const {data,error}=await supabase.from("follows").select("following_id").eq("follower_id",currentUser.id);
  if(error)throw error;followingIds=new Set((data||[]).map(x=>x.following_id));
@@ -3127,5 +3127,64 @@ document.getElementById("confirmAuraLogout")?.addEventListener("click", () => {
   input:focus,textarea:focus{border-color:#a855f7!important;box-shadow:0 0 0 3px rgba(168,85,247,.18)}
   .search:focus{box-shadow:0 0 0 3px rgba(168,85,247,.18)}
 </style>
+<!-- AURA FEED WELCOME POPUP (shown instead of the feed error) -->
+<style>
+  .fw-pop{position:fixed;left:50%;top:50%;z-index:700;width:min(86vw,340px);padding:30px 22px 24px;border-radius:28px;text-align:center;color:#f7f3ff;background:linear-gradient(160deg,rgba(38,22,66,.97),rgba(12,9,22,.97));border:1px solid rgba(190,145,255,.35);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(155,92,255,.35);opacity:0;transform:translate(-50%,-50%) scale(.85);transition:opacity .4s ease,transform .5s cubic-bezier(.2,1.4,.4,1);cursor:pointer}
+  .fw-pop.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .fw-icon{font-size:38px;display:inline-block;animation:fwFloat 2.6s ease-in-out infinite}
+  .fw-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;line-height:1.3;margin:10px 0 6px}
+  .fw-letter{display:inline-block;white-space:pre;background:linear-gradient(135deg,#fff,#e0aaff 60%,#b44cff);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transform:translateY(14px) scale(.8);filter:blur(6px);animation:awLetter .6s cubic-bezier(.2,1.3,.4,1) forwards;animation-delay:calc(var(--i) * 40ms + .15s)}
+  .fw-pop p{margin:0;color:#b4a7d1;font-size:13px}
+  .fw-bar{height:3px;border-radius:3px;background:var(--gradient);margin-top:18px;transform-origin:left;animation:fwBar 3.4s linear forwards}
+  @keyframes fwBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+  @keyframes fwFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(8deg)}}
+</style>
+<script>
+(() => {
+  function playChime() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      const ctx = new AC();
+      const play = () => {
+        const now = ctx.currentTime;
+        [[659.25, 0], [987.77, 0.13]].forEach(([freq, delay]) => {
+          const o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = "sine";
+          o.frequency.value = freq;
+          g.gain.setValueAtTime(0.0001, now + delay);
+          g.gain.exponentialRampToValueAtTime(0.18, now + delay + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, now + delay + 0.9);
+          o.connect(g).connect(ctx.destination);
+          o.start(now + delay);
+          o.stop(now + delay + 1);
+        });
+      };
+      if (ctx.state === "running") play();
+      else ctx.resume().then(() => { if (ctx.state === "running") play(); }).catch(() => {});
+    } catch (e) {}
+  }
+  window.auraWelcomeFeed = function () {
+    document.querySelectorAll(".fw-pop").forEach(n => n.remove());
+    const el = document.createElement("div");
+    el.className = "fw-pop";
+    el.innerHTML = '<div class="fw-icon">✨</div><h3 class="fw-title"></h3><p>Scroll, like and explore your world</p><div class="fw-bar"></div>';
+    const title = el.querySelector(".fw-title");
+    "Welcome to your AURA feed ✨".split("").forEach((ch, i) => {
+      const s = document.createElement("span");
+      s.className = "fw-letter";
+      s.textContent = ch;
+      s.style.setProperty("--i", i);
+      title.appendChild(s);
+    });
+    document.body.appendChild(el);
+    requestAnimationFrame(() => el.classList.add("show"));
+    playChime();
+    const close = () => { el.classList.remove("show"); setTimeout(() => el.remove(), 450); };
+    el.addEventListener("click", close);
+    setTimeout(close, 3600);
+  };
+})();
+</script>
 </body>
 </html>
