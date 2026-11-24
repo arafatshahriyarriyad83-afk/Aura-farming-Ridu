@@ -781,8 +781,38 @@ html.aura-light #inbox #peopleSearch{color:#302044}
 }
 </style>
 
+
+<style id="aura-account-tools-v1">
+#auraMediaReview,#auraReportPage,#auraPasswordPage{position:fixed;inset:0;z-index:12000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(5,4,13,.88);backdrop-filter:blur(18px)}
+#auraMediaReview.open,#auraReportPage.open,#auraPasswordPage.open{display:flex;animation:auraReviewFade .22s ease both}
+.aura-tool-card{width:100%;max-width:440px;max-height:90dvh;overflow:auto;padding:22px;border:1px solid rgba(198,151,255,.28);border-radius:28px;background:linear-gradient(155deg,#211632,#100d1b 72%);box-shadow:0 24px 75px rgba(0,0,0,.55),0 0 35px rgba(168,85,247,.18);animation:auraReviewCard .34s cubic-bezier(.16,1,.3,1) both}
+.aura-tool-mark{width:54px;height:54px;margin:0 auto 12px;display:grid;place-items:center;border-radius:19px;background:linear-gradient(135deg,#792cff,#c05cf4);font-size:26px;box-shadow:0 8px 24px rgba(155,92,255,.35)}
+.aura-tool-card h2{text-align:center;font-family:'Playfair Display',serif;font-size:25px;margin:5px 0 7px;color:#f7efff}
+.aura-tool-card>p{text-align:center;color:#a99abb;font-size:13px;margin-bottom:17px}
+.aura-tool-preview{width:100%;max-height:48dvh;min-height:130px;display:grid;place-items:center;overflow:hidden;border-radius:20px;background:#080710;border:1px solid rgba(190,145,255,.16);margin:14px 0}
+.aura-tool-preview img,.aura-tool-preview video{display:block;max-width:100%;max-height:46dvh;object-fit:contain}
+.aura-tool-field{width:100%;margin:7px 0;padding:14px 15px;border-radius:14px;border:1px solid rgba(190,145,255,.23);background:#171222;color:#fff;outline:none}
+.aura-tool-field:focus{border-color:#bd83ff;box-shadow:0 0 0 3px rgba(168,85,247,.13)}
+.aura-tool-actions{display:flex;gap:10px;margin-top:16px}
+.aura-tool-actions button{flex:1;min-height:48px;border-radius:15px;font-weight:800}
+.aura-tool-cancel{border:1px solid rgba(190,145,255,.3);background:transparent;color:#e3d2fa}
+.aura-tool-primary{border:0;background:linear-gradient(135deg,#792cff,#b44cff,#e0aaff);color:white;box-shadow:0 8px 22px rgba(155,92,255,.3)}
+.aura-tool-primary:disabled{opacity:.55}
+.aura-tool-error{min-height:17px;color:#ff9fba;font-size:12px;text-align:center;margin-top:10px}
+html.aura-light .aura-tool-card{background:linear-gradient(155deg,#fff,#f6efff);border-color:rgba(124,58,237,.2)}
+html.aura-light .aura-tool-card h2{color:#302044}html.aura-light .aura-tool-card>p{color:#78698d}html.aura-light .aura-tool-field{background:#fff;color:#302044}
+@keyframes auraReviewFade{from{opacity:0}to{opacity:1}}
+@keyframes auraReviewCard{from{opacity:0;transform:translateY(22px) scale(.96);filter:blur(5px)}to{opacity:1;transform:none;filter:blur(0)}}
+@media(prefers-reduced-motion:reduce){#auraMediaReview.open,#auraReportPage.open,#auraPasswordPage.open,.aura-tool-card{animation:none!important}}
+</style>
+
 </head>
 <body>
+
+<div id="auraMediaReview" aria-hidden="true"><section class="aura-tool-card" role="dialog" aria-modal="true" aria-labelledby="auraMediaTitle"><div class="aura-tool-mark">✧</div><h2 id="auraMediaTitle">Ready to share?</h2><p>Take one last look before sending your media.</p><div class="aura-tool-preview" id="auraMediaPreview"></div><div class="aura-tool-actions"><button type="button" class="aura-tool-cancel" id="auraMediaCancel">Cancel</button><button type="button" class="aura-tool-primary" id="auraMediaSend">Send</button></div><div class="aura-tool-error" id="auraMediaError"></div></section></div>
+<div id="auraReportPage" aria-hidden="true"><section class="aura-tool-card" role="dialog" aria-modal="true" aria-labelledby="auraReportTitle"><div class="aura-tool-mark">⚑</div><h2 id="auraReportTitle">Report account</h2><p>Tell us what happened. Reports are reviewed by the AURA team.</p><select id="auraReportReason" class="aura-tool-field"><option value="">Choose a reason</option><option>Spam or fake account</option><option>Harassment or bullying</option><option>Impersonation</option><option>Inappropriate content</option><option>Scam or fraud</option><option>Other</option></select><textarea id="auraReportDetails" class="aura-tool-field" rows="4" maxlength="1000" placeholder="Additional details (optional)"></textarea><div class="aura-tool-actions"><button type="button" class="aura-tool-cancel" id="auraReportCancel">Cancel</button><button type="button" class="aura-tool-primary" id="auraReportSubmit">Submit report</button></div><div class="aura-tool-error" id="auraReportError"></div></section></div>
+<div id="auraPasswordPage" aria-hidden="true"><section class="aura-tool-card" role="dialog" aria-modal="true" aria-labelledby="auraPasswordTitle"><div class="aura-tool-mark">🔐</div><h2 id="auraPasswordTitle">Change password</h2><p>Choose a strong new password for your AURA account.</p><input id="auraNewPassword" class="aura-tool-field" type="password" autocomplete="new-password" placeholder="New password (8+ characters)"><input id="auraConfirmPassword" class="aura-tool-field" type="password" autocomplete="new-password" placeholder="Confirm new password"><div class="aura-tool-actions"><button type="button" class="aura-tool-cancel" id="auraPasswordCancel">Cancel</button><button type="button" class="aura-tool-primary" id="auraPasswordSave">Save password</button></div><div class="aura-tool-error" id="auraPasswordError"></div></section></div>
+
 
 <div id="authScreen">
  <div class="auth-card">
@@ -1220,7 +1250,6 @@ async function startApp(user){
  if(startedUserId===user.id&&currentUser?.id===user.id){$("authScreen").classList.add("hidden");return}
  currentUser=user;
  appStartPromise=(async()=>{
-  $("authScreen").classList.add("hidden");
   await loadProfile();
   savePrivateBirth(user).catch(()=>{});
   showMyGender();
@@ -1228,6 +1257,9 @@ async function startApp(user){
   if("serviceWorker"in navigator)registerAURASW();
   await Promise.all([safeLoad("Feed",loadFeed),safeLoad("Stories",loadStories),safeLoad("Profile stats",loadMyStats)]);
   await refreshUnreadCount();subscribeGlobalMessages();updateNotificationStatus();
+  document.body.classList.add("aura-app-ready");
+  document.documentElement.classList.remove("aura-booting");
+  $("authScreen").classList.add("hidden");
  })();
  try{await appStartPromise;startedUserId=user.id;}finally{appStartPromise=null;}
 }
@@ -1298,11 +1330,20 @@ if(localStorage.getItem("aura_theme")==="light"){
 }
 
 function changePassword(){
- const p=prompt("Enter your new password (8+ chars, uppercase, lowercase, number and symbol):");if(p===null)return;
- if(!validPassword(p)){toast("Password does not meet the security requirements.");return}
- supabase.auth.updateUser({password:p}).then(({error})=>error?toast(error.message):toast("Password updated."));
+ if(!currentUser||currentUser.guest){toast("Please log in first.");return}
+ $("auraNewPassword").value="";$("auraConfirmPassword").value="";$("auraPasswordError").textContent="";openAuraTool("auraPasswordPage");
 }
 $("settingsPassword").addEventListener("click",changePassword);
+$("auraPasswordCancel").addEventListener("click",()=>closeAuraTool("auraPasswordPage"));
+$("auraPasswordSave").addEventListener("click",async()=>{
+ const p=$("auraNewPassword").value,confirm=$("auraConfirmPassword").value,btn=$("auraPasswordSave");
+ if(!validPassword(p)){$("auraPasswordError").textContent="Use 8+ characters with uppercase, lowercase, a number and a symbol.";return}
+ if(p!==confirm){$("auraPasswordError").textContent="Passwords do not match.";return}
+ btn.disabled=true;$("auraPasswordError").textContent="Updating password…";
+ try{const {error}=await supabase.auth.updateUser({password:p});if(error)throw error;closeAuraTool("auraPasswordPage");toast("Password updated successfully.");}
+ catch(e){$("auraPasswordError").textContent=e.message||"Could not update password.";}
+ finally{btn.disabled=false;}
+});
 $("settingsButton").addEventListener("click",()=>showPage("settings",null));
 $("backSettings").addEventListener("click",profilePage);
 $("settingsNotify").addEventListener("click",openInbox);
@@ -1567,13 +1608,23 @@ async function unblockUser(id){
  if(error){toast(error.message);return}
  blockedIds.delete(id);toast("Account unblocked.");await loadBlockedAccounts();await loadFeed();await loadStories();
 }
+let auraReportTargetId=null;
+function closeAuraTool(id){const el=$(id);if(!el)return;el.classList.remove("open");el.setAttribute("aria-hidden","true");}
+function openAuraTool(id){const el=$(id);el.classList.add("open");el.setAttribute("aria-hidden","false");}
 async function reportUser(id){
- const reason=prompt("Why are you reporting this account?\nExamples: Spam, harassment, inappropriate content.");
- if(!reason||reason.trim().length<2)return;
- const details=prompt("Additional details (optional):")||null;
- const {error}=await supabase.from("user_reports").insert({reporter_id:currentUser.id,reported_user_id:id,reason:reason.trim().slice(0,100),details:details?.slice(0,1000)||null});
- if(error)toast("Report failed: "+error.message);else toast("Report submitted. Thank you.");
+ if(!currentUser||currentUser.guest){toast("Please log in to report an account.");return}
+ if(!id||id===currentUser.id){toast("You cannot report your own account.");return}
+ auraReportTargetId=id;$("auraReportReason").value="";$("auraReportDetails").value="";$("auraReportError").textContent="";openAuraTool("auraReportPage");
 }
+$("auraReportCancel").addEventListener("click",()=>closeAuraTool("auraReportPage"));
+$("auraReportSubmit").addEventListener("click",async()=>{
+ const reason=$("auraReportReason").value,details=$("auraReportDetails").value.trim(),btn=$("auraReportSubmit");
+ if(!reason){$("auraReportError").textContent="Please choose a reason.";return}
+ btn.disabled=true;$("auraReportError").textContent="Submitting securely…";
+ try{const {error}=await supabase.from("user_reports").insert({reporter_id:currentUser.id,reported_user_id:auraReportTargetId,reason:reason.slice(0,100),details:details.slice(0,1000)||null});if(error)throw error;closeAuraTool("auraReportPage");toast("Report submitted. Thank you.");}
+ catch(e){$("auraReportError").textContent="Report failed: "+e.message;}
+ finally{btn.disabled=false;}
+});
 async function loadBlockedAccounts(){
  await loadBlocked();const box=$("blockedList");box.innerHTML="";
  if(!blockedIds.size){box.innerHTML='<div class="empty">You have not blocked anyone.</div>';showPage("blocked",null);return}
@@ -1901,7 +1952,7 @@ async function loadMessages(){
  finally{chatLoading=false;if(chatPending){chatPending=false;loadMessages();}}
 }
 function scheduleChatRefresh(){
- clearTimeout(chatRefreshTimer);chatRefreshTimer=setTimeout(()=>loadMessages(),250);
+ clearTimeout(chatRefreshTimer);chatRefreshTimer=setTimeout(()=>loadMessages(),110);
 }
 function subscribeChat(){
  if(chatChannel)supabase.removeChannel(chatChannel);
@@ -1986,22 +2037,46 @@ Media: ${row.data.image_url?"Attached":"None"}`;
  if(error)toast("Report failed: "+error.message);else toast("Message report submitted. Thank you.");
 }
 async function sendChatMessage(content,imageUrl=null){
- if(!activeConversation)return;
- let body=content.trim();if(!body&&!imageUrl)return;
- const sendButton=$("chatForm").querySelector('button[type="submit"]');sendButton.disabled=true;
- const {error}=await supabase.from("messages").insert({conversation_id:activeConversation.id,sender_id:currentUser.id,content:body||null,image_url:imageUrl});
- sendButton.disabled=false;
- if(error){toast(error.message);return}
- $("chatText").value="";replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");await loadMessages();
+ if(!activeConversation||!currentUser||currentUser.guest)return;
+ const body=String(content||"").trim();if(!body&&!imageUrl)return;
+ const sendButton=$("chatForm").querySelector('button[type="submit"]'),viewport=$("chatMessages");
+ sendButton.disabled=true;const original=sendButton.textContent;sendButton.textContent="…";
+ const optimistic=document.createElement("div");optimistic.className="bubble mine aura-message-pending";
+ optimistic.innerHTML=`<div class="message-content">${esc(body).replace(/\n/g,"<br>")}</div>${imageUrl?`<img src="${esc(imageUrl)}" alt="Shared image">`:""}<small>Sending…</small>`;
+ viewport.appendChild(optimistic);viewport.scrollTop=viewport.scrollHeight;
+ if(!imageUrl)$("chatText").value="";
+ try{
+  const {data,error}=await supabase.from("messages").insert({conversation_id:activeConversation.id,sender_id:currentUser.id,content:body||null,image_url:imageUrl}).select("*").single();
+  if(error)throw error;
+  optimistic.remove();
+  if(data){const div=document.createElement("div");div.className="bubble mine";div.dataset.messageId=data.id;div.setAttribute("role","button");div.setAttribute("aria-label","Your message. Press and hold for options");
+   const media=data.image_url?(mediaIsVideo(data.image_url)?`<video src="${esc(data.image_url)}" controls playsinline preload="metadata"></video>`:`<img src="${esc(data.image_url)}" alt="Shared image" loading="lazy">`):"";
+   div.innerHTML=`<div class="message-content">${esc(data.content||"").replace(/\n/g,"<br>")}</div>${media}<small>${new Date(data.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})} · Sent</small>`;viewport.appendChild(div);viewport.scrollTop=viewport.scrollHeight;
+  }
+  replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");
+  // Refresh receipts/list quietly; don't hold the send interaction open.
+  refreshUnreadCount().catch(()=>{});
+ }catch(error){optimistic.remove();if(!imageUrl)$("chatText").value=body;toast("Message failed: "+error.message);}
+ finally{sendButton.disabled=false;sendButton.textContent=original;}
 }
 $("chatForm").addEventListener("submit",e=>{e.preventDefault();sendChatMessage($("chatText").value);});
-$("chatImage").addEventListener("change",async e=>{
- const file=e.target.files[0];if(!file)return;
- try{
-  const video=file.type.startsWith("video/");
-  const url=await uploadMedia(file,video?"message-video":"message-image");
-  await sendChatMessage("",url);
- }catch(err){toast(err.message);}e.target.value="";
+let auraPendingChatMedia=null,auraPendingChatPreview=null;
+function closeMediaReview(){closeAuraTool("auraMediaReview");if(auraPendingChatPreview){URL.revokeObjectURL(auraPendingChatPreview);auraPendingChatPreview=null;}auraPendingChatMedia=null;$("chatImage").value="";}
+$("auraMediaCancel").addEventListener("click",closeMediaReview);
+$("chatImage").addEventListener("change",e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ if(!file.type.startsWith("image/")&&!file.type.startsWith("video/")){toast("Choose an image or video.");e.target.value="";return}
+ if(file.size>50*1024*1024){toast("Maximum file size is 50 MB.");e.target.value="";return}
+ auraPendingChatMedia=file;auraPendingChatPreview=URL.createObjectURL(file);
+ const preview=$("auraMediaPreview");preview.innerHTML="";
+ const media=document.createElement(file.type.startsWith("video/")?"video":"img");media.src=auraPendingChatPreview;if(media.tagName==="VIDEO"){media.controls=true;media.playsInline=true;}else media.alt="Media preview";preview.appendChild(media);
+ $("auraMediaError").textContent="";openAuraTool("auraMediaReview");
+});
+$("auraMediaSend").addEventListener("click",async()=>{
+ const file=auraPendingChatMedia;if(!file)return;const btn=$("auraMediaSend");btn.disabled=true;btn.textContent="Sending…";
+ try{const video=file.type.startsWith("video/");const url=await uploadMedia(file,video?"message-video":"message-image");closeMediaReview();await sendChatMessage("",url);}
+ catch(err){$("auraMediaError").textContent=err.message||"Could not send media.";}
+ finally{btn.disabled=false;btn.textContent="Send";}
 });
 $("emojiButton").addEventListener("click",()=>{$("chatText").value+=" 😊";$("chatText").focus();});
 $("replyCancel").addEventListener("click",()=>{replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");});
@@ -4285,7 +4360,7 @@ document.getElementById("confirmAuraLogout")?.addEventListener("click", () => {
     const feed = document.getElementById("feed");
     const end = () => { document.documentElement.classList.remove("aura-booting"); splash.remove(); };
     const mo = new MutationObserver(() => {
-      if (auth?.classList.contains("hidden") || feed?.children.length) { end(); mo.disconnect(); }
+      if (document.body.classList.contains("aura-app-ready") || (!auth?.classList.contains("hidden") && !document.documentElement.classList.contains("aura-booting"))) { end(); mo.disconnect(); }
     });
     mo.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["class"] });
     setTimeout(() => { end(); mo.disconnect(); }, 7000);
@@ -5877,8 +5952,17 @@ drawerOverlay?.addEventListener("click", e => {
     feedEl.querySelectorAll("video.post-image").forEach(vid => {
       if (vid.dataset.auraVidEnhanced) return;
       vid.dataset.auraVidEnhanced = "1";
+      // Keep the audio state consistent across native loop/replay cycles.
+      // Some mobile browsers restore a video's default muted state on replay.
+      vid.defaultMuted = false;
       vid.muted = globalMuted;
+      vid.volume = 1;
       vid.loop = true;
+      vid.playsInline = true;
+      vid.addEventListener("play", () => {
+        vid.muted = globalMuted;
+        if (!globalMuted) vid.volume = 1;
+      });
 
       const wrap = document.createElement("div");
       wrap.className = "aura-video-wrap";
@@ -5896,7 +5980,11 @@ drawerOverlay?.addEventListener("click", e => {
         e.stopPropagation();
         globalMuted = !globalMuted;
         document.querySelectorAll("#feed video.post-image").forEach(v => {
+          v.defaultMuted = false;
           v.muted = globalMuted;
+          v.volume = 1;
+          // Resume from the user's sound-button gesture if the video paused.
+          if (v.paused) v.play().catch(() => {});
         });
         document.querySelectorAll(".aura-sound-btn").forEach(b => {
           b.textContent = globalMuted ? "🔇" : "🔊";
