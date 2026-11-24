@@ -1136,7 +1136,7 @@ function toast(m){
  document.body.appendChild(el);setTimeout(()=>el.remove(),3200);
 }
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function validPassword(p){return p.length>=8&&/[A-Z]/.test(p)&&/[a-z]/.test(p)&&/[0-9]/.test(p)&&/[^A-Za-z0-9]/.test(p);}
+function validPassword(p){return typeof p==="string"&&p.length>=8;}
 function mediaIsVideo(url){return /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url||"")||String(url||"").includes("story-video-")||String(url||"").includes("message-video-");}
 function showPage(name,button){
  if(document.body.classList.contains("chat-open") && name!=="chat" && $("chatMessages") && activeConversation){
@@ -1364,7 +1364,7 @@ $("settingsPassword").addEventListener("click",changePassword);
 $("auraPasswordCancel").addEventListener("click",()=>closeAuraTool("auraPasswordPage"));
 $("auraPasswordSave").addEventListener("click",async()=>{
  const p=$("auraNewPassword").value,confirm=$("auraConfirmPassword").value,btn=$("auraPasswordSave");
- if(!validPassword(p)){$("auraPasswordError").textContent="Use 8+ characters with uppercase, lowercase, a number and a symbol.";return}
+ if(!validPassword(p)){$("auraPasswordError").textContent="Use a new password with at least 8 characters.";return}
  if(p!==confirm){$("auraPasswordError").textContent="Passwords do not match.";return}
  btn.disabled=true;$("auraPasswordError").textContent="Updating password…";
  try{const {error}=await supabase.auth.updateUser({password:p});if(error)throw error;closeAuraTool("auraPasswordPage");toast("Password updated successfully.");}
@@ -1945,11 +1945,8 @@ async function loadMessages(){
   const messageViewport=$("chatMessages");
   const conversationKey=String(activeConversation.id);
   window.AURA_CHAT_SCROLL=window.AURA_CHAT_SCROLL||Object.create(null);
+  // AURA chat always opens and refreshes at the newest message.
   const savedScroll=window.AURA_CHAT_SCROLL[conversationKey];
-  const wasAtBottom=!messageViewport.dataset.hasRendered || (messageViewport.scrollHeight-messageViewport.scrollTop-messageViewport.clientHeight<100);
-  const previousScrollTop=messageViewport.dataset.hasRendered
-    ? (messageViewport.scrollTop || savedScroll || 0)
-    : (savedScroll || 0);
   messageViewport.innerHTML="";
   rows.forEach(m=>{
    const mine=m.sender_id===currentUser.id,div=document.createElement("div");div.className="bubble"+(mine?" mine":"");div.dataset.messageId=m.id;
@@ -1964,15 +1961,25 @@ async function loadMessages(){
    <small>${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${mine?(readSet.has(m.id)?" · Seen":" · Sent"):""}</small>`;
    $("chatMessages").appendChild(div);
   });
-  requestAnimationFrame(()=>{
-   if(wasAtBottom && !savedScroll){messageViewport.scrollTop=messageViewport.scrollHeight;}
-   else if(wasAtBottom){messageViewport.scrollTop=messageViewport.scrollHeight;}
-   else{messageViewport.scrollTop=previousScrollTop;}
-   window.AURA_CHAT_SCROLL[conversationKey]=messageViewport.scrollTop;
-  });
-  messageViewport.onscroll=()=>{
+  const pinChatToLatest=()=>{
+   if(!document.body.classList.contains("chat-open") || !messageViewport.isConnected)return;
+   messageViewport.scrollTop=messageViewport.scrollHeight;
    window.AURA_CHAT_SCROLL[conversationKey]=messageViewport.scrollTop;
   };
+  requestAnimationFrame(()=>{pinChatToLatest();requestAnimationFrame(pinChatToLatest);});
+  // Images/videos can increase message height after the first layout; follow them too.
+  if(!messageViewport.dataset.bottomPinBound){
+   messageViewport.addEventListener("load",e=>{
+    if(e.target && /^(IMG|VIDEO)$/.test(e.target.tagName))requestAnimationFrame(()=>{
+     if(document.body.classList.contains("chat-open"))messageViewport.scrollTop=messageViewport.scrollHeight;
+    });
+   },true);
+   messageViewport.addEventListener("loadedmetadata",()=>{
+    if(document.body.classList.contains("chat-open"))requestAnimationFrame(()=>messageViewport.scrollTop=messageViewport.scrollHeight);
+   },true);
+   messageViewport.dataset.bottomPinBound="1";
+  }
+  messageViewport.onscroll=()=>{window.AURA_CHAT_SCROLL[conversationKey]=messageViewport.scrollTop;};
   messageViewport.dataset.hasRendered="1";
   await refreshUnreadCount();
  }catch(e){toast("Messages could not load: "+e.message);}
@@ -3734,7 +3741,7 @@ document.getElementById("confirmAuraLogout")?.addEventListener("click", () => {
     -webkit-backdrop-filter: blur(22px) !important;
     border: 1px solid rgba(224, 170, 255, 0.22) !important;
     box-shadow: 0 25px 70px rgba(121, 44, 255, 0.25), inset 0 0 25px rgba(180, 76, 255, 0.08) !important;
-    animation: cardEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: cardEntrance 0.72s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* Live breathing glow on the logo */
@@ -6395,7 +6402,7 @@ html:not(.aura-light) .bottom .aura-liquid-lens{
 #auraStartup{
  position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;overflow:hidden;
  background:radial-gradient(ellipse at 50% 42%,rgba(117,54,181,.24),transparent 48%),#090611;
- opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease;
+ opacity:1;visibility:visible;transition:opacity .38s ease,visibility .38s ease;
 }
 #auraStartup.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
 #auraStartup .startup-core{position:relative;display:flex;flex-direction:column;align-items:center;gap:18px}
@@ -6471,7 +6478,7 @@ html:not(.aura-light) .bottom .aura-liquid-lens{
   splash.innerHTML='<div class="startup-core"><div class="startup-halo"></div><div class="startup-orbit"></div><svg class="startup-mark" viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 5 95 50 50 95 5 50 50 5Z" stroke="#b878ff" stroke-width="4"/><path d="M50 22 78 50 50 78 22 50 50 22Z" stroke="#d8baff" stroke-width="4"/><path d="M50 38 62 50 50 62 38 50 50 38Z" fill="#f0ddff"/><path d="M50 12v76M12 50h76" stroke="#b878ff" stroke-opacity=".25" stroke-width="1"/></svg><div class="startup-word">AURA</div><div class="startup-tag">YOUR LITTLE WORLD</div></div>';
   document.body.appendChild(splash);
   const finish=()=>{splash.classList.add('is-leaving');setTimeout(()=>splash.remove(),600)};
-  setTimeout(finish,2700);
+  setTimeout(finish,1900);
  }
 })();
 </script>
@@ -6523,60 +6530,41 @@ html:not(.aura-light) .bottom .aura-liquid-lens{
 @media(prefers-reduced-motion:reduce){#auraStartup::before,#auraStartup::after,#auraStartup .startup-mark,#auraStartup .startup-orbit,#auraStartup .startup-halo,#auraStartup .startup-word,#auraStartup .startup-tag{animation:none!important}}
 </style>
 
-<style id="aura-pookie-live-motion-v4">
-/* Noticeable live motion, confined to an opened chat only. */
-@keyframes auraPookiePetalFall{0%{transform:translate3d(0,-12vh,0) rotate(0deg) scale(.75);opacity:0}12%{opacity:.9}82%{opacity:.82}100%{transform:translate3d(var(--drift,35px),115vh,0) rotate(540deg) scale(1.12);opacity:0}}
+<style id="aura-pookie-live-motion-v6">
+/* The live layer is attached to BODY, not #chatMessages, so message refreshes never delete it. */
+#auraPookieLiveOverlay{position:fixed;z-index:501;top:70px;bottom:78px;left:0;right:0;width:min(100vw,600px);margin:0 auto;overflow:hidden;pointer-events:none;visibility:hidden;opacity:0;contain:layout paint}
+body.chat-open #auraPookieLiveOverlay{visibility:visible;opacity:1}
+#auraPookieLiveOverlay .petal{position:absolute;top:-42px;left:var(--left);font-size:var(--size);color:#fff4fb;text-shadow:0 0 8px #ff9bd4,0 0 18px #ffb9e2;animation:auraPookiePetalFall var(--duration) linear var(--delay) infinite;will-change:transform,opacity}
+#auraPookieLiveOverlay .heart{position:absolute;left:var(--left);top:var(--top);font-size:var(--size);color:#fff;text-shadow:0 0 8px #ff79c6,0 0 20px #ff62c2,0 0 34px #e8a5ff;animation:auraPookieHeartFloat var(--duration) ease-in-out var(--delay) infinite;will-change:transform,opacity}
+#auraPookieLiveOverlay .glow{position:absolute;width:55vw;height:55vw;max-width:360px;max-height:360px;border-radius:50%;background:radial-gradient(circle,rgba(255,177,224,.34),rgba(207,126,255,.13) 42%,transparent 70%);left:var(--left);top:var(--top);animation:auraPookieGlowPulse 5s ease-in-out var(--delay) infinite}
+#auraPookieLiveOverlay .spark{position:absolute;left:var(--left);top:var(--top);font-size:var(--size);color:#fff8ff;text-shadow:0 0 8px #fff,0 0 18px #ff83d1;animation:auraPookieHeartFloat var(--duration) ease-in-out var(--delay) infinite}
+#auraPookieLiveOverlay .petal,#auraPookieLiveOverlay .heart,#auraPookieLiveOverlay .glow,#auraPookieLiveOverlay .spark{animation-play-state:paused!important}
+body.chat-open #auraPookieLiveOverlay .petal,body.chat-open #auraPookieLiveOverlay .heart,body.chat-open #auraPookieLiveOverlay .glow,body.chat-open #auraPookieLiveOverlay .spark{animation-play-state:running!important}
+@keyframes auraPookiePetalFall{0%{transform:translate3d(0,-8vh,0) rotate(0deg) scale(.75);opacity:0}12%{opacity:.9}82%{opacity:.82}100%{transform:translate3d(var(--drift,35px),110vh,0) rotate(540deg) scale(1.12);opacity:0}}
 @keyframes auraPookieHeartFloat{0%,100%{transform:translateY(8px) scale(.88);opacity:.42}50%{transform:translateY(-28px) scale(1.18);opacity:1}}
-@keyframes auraPookieGlowPulse{0%,100%{opacity:.35;filter:blur(12px)}50%{opacity:.78;filter:blur(22px)}}
-body.chat-open #chat #chatMessages{position:relative!important;isolation:isolate!important;overflow-x:hidden!important}
-#chat #chatMessages .aura-pookie-live-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:2!important;contain:layout paint}
-#chat #chatMessages .aura-pookie-live-layer .petal{position:absolute;top:-12vh;left:var(--left);font-size:var(--size);color:#fff4fb;text-shadow:0 0 8px #ff9bd4,0 0 18px #ffb9e2;animation:auraPookiePetalFall var(--duration) linear var(--delay) infinite;will-change:transform,opacity}
-#chat #chatMessages .aura-pookie-live-layer .heart{position:absolute;left:var(--left);top:var(--top);font-size:var(--size);color:#fff;text-shadow:0 0 8px #ff79c6,0 0 20px #ff62c2,0 0 34px #e8a5ff;animation:auraPookieHeartFloat var(--duration) ease-in-out var(--delay) infinite;will-change:transform,opacity}
-#chat #chatMessages .aura-pookie-live-layer .glow{position:absolute;width:55vw;height:55vw;max-width:360px;max-height:360px;border-radius:50%;background:radial-gradient(circle,rgba(255,177,224,.34),rgba(207,126,255,.13) 42%,transparent 70%);left:var(--left);top:var(--top);animation:auraPookieGlowPulse 5s ease-in-out var(--delay) infinite}
-#chat #chatMessages .aura-pookie-live-layer .petal,#chat #chatMessages .aura-pookie-live-layer .heart,#chat #chatMessages .aura-pookie-live-layer .glow{animation-play-state:paused!important}
-body.chat-open #chat #chatMessages .aura-pookie-live-layer .petal,body.chat-open #chat #chatMessages .aura-pookie-live-layer .heart,body.chat-open #chat #chatMessages .aura-pookie-live-layer .glow{animation-play-state:running!important}
-body.chat-open #chat #chatMessages>*:not(.aura-pookie-live-layer){position:relative;z-index:3!important}
-body.chat-open #chat .chat-messages{background-size:112% 112%!important;animation:auraSceneDrift 13s ease-in-out infinite alternate!important}
-@media(prefers-reduced-motion:reduce){body.chat-open #chat #chatMessages .aura-pookie-live-layer .petal,body.chat-open #chat #chatMessages .aura-pookie-live-layer .heart,#chat #chatMessages .aura-pookie-live-layer .glow{animation-duration:14s!important}}
+@keyframes auraPookieGlowPulse{0%,100%{opacity:.28;filter:blur(12px)}50%{opacity:.75;filter:blur(22px)}}
+@media(max-width:600px){#auraPookieLiveOverlay{top:70px;bottom:78px;width:100vw}}
+@media(prefers-reduced-motion:reduce){#auraPookieLiveOverlay .petal,#auraPookieLiveOverlay .heart,#auraPookieLiveOverlay .glow,#auraPookieLiveOverlay .spark{animation-duration:14s!important}}
 </style>
-<script id="aura-pookie-live-motion-v5-js">
+<script id="aura-pookie-live-motion-v6-js">
 (()=>{
- const host=()=>document.getElementById('chatMessages');
- let scheduled=false;
- const ensureLayer=()=>{
-  scheduled=false;
-  const h=host();
-  if(!h || !document.body.classList.contains('chat-open')) return;
-  if(h.querySelector(':scope > .aura-pookie-live-layer')) return;
-  const layer=document.createElement('div');
-  layer.className='aura-pookie-live-layer';
-  layer.setAttribute('aria-hidden','true');
+ const createOverlay=()=>{
+  if(document.getElementById('auraPookieLiveOverlay'))return;
+  const layer=document.createElement('div');layer.id='auraPookieLiveOverlay';layer.setAttribute('aria-hidden','true');
   const make=(cls,char,left,top,size,duration,delay,drift)=>{
    const e=document.createElement('span');e.className=cls;e.textContent=char;
-   e.style.setProperty('--left',left);e.style.setProperty('--top',top);
-   e.style.setProperty('--size',size);e.style.setProperty('--duration',duration);
-   e.style.setProperty('--delay',delay);e.style.setProperty('--drift',drift);
-   layer.appendChild(e);
+   e.style.setProperty('--left',left);e.style.setProperty('--top',top);e.style.setProperty('--size',size);
+   e.style.setProperty('--duration',duration);e.style.setProperty('--delay',delay);e.style.setProperty('--drift',drift);layer.appendChild(e);
   };
-  for(let i=0;i<24;i++)make('petal',['✿','❀','✧','❁'][i%4],(i*17+5)%100+'%','0px',(13+(i%4)*5)+'px',(10+(i%6)*3)+'s',(-i*.91)+'s',((i%2?1:-1)*(18+(i%5)*13))+'px');
-  for(let i=0;i<10;i++)make('heart','♡',(i*13+7)%96+'%',(i*19+8)%86+'%',(19+(i%3)*8)+'px',(4+(i%4)*.8)+'s',(-i*.7)+'s','0px');
-  for(let i=0;i<4;i++)make('glow','',(i*29+4)%80+'%',(i*23+12)%75+'%','1px',(5+i)+'s',(-i*1.3)+'s','0px');
-  h.prepend(layer);
+  for(let i=0;i<26;i++)make('petal',['✿','❀','✧','❁'][i%4],(i*17+5)%100+'%','0px',(13+(i%4)*5)+'px',(10+(i%6)*3)+'s',(-i*.91)+'s',((i%2?1:-1)*(18+(i%5)*13))+'px');
+  for(let i=0;i<12;i++)make('heart','♡',(i*13+7)%96+'%',(i*19+8)%86+'%',(19+(i%3)*8)+'px',(4+(i%4)*.8)+'s',(-i*.7)+'s','0px');
+  for(let i=0;i<5;i++)make('glow','',(i*23+4)%80+'%',(i*19+12)%75+'%','1px',(5+i)+'s',(-i*1.3)+'s','0px');
+  for(let i=0;i<14;i++)make('spark','✦',(i*29+8)%96+'%',(i*31+4)%90+'%',(9+(i%3)*4)+'px',(2.8+(i%4)*.7)+'s',(-i*.43)+'s','0px');
+  document.body.appendChild(layer);
  };
- const schedule=()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(ensureLayer)};
- const observeHost=()=>{
-  const h=host();if(!h)return;
-  new MutationObserver(()=>{
-   // loadMessages() clears chatMessages with innerHTML="" on every refresh.
-   // Recreate the animation layer after that happens, but only while chat is open.
-   if(document.body.classList.contains('chat-open') && !h.querySelector(':scope > .aura-pookie-live-layer'))schedule();
-  }).observe(h,{childList:true});
- };
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{observeHost();schedule()},{once:true});
- else {observeHost();schedule()}
- new MutationObserver(()=>{if(document.body.classList.contains('chat-open'))schedule()})
-  .observe(document.body,{attributes:true,attributeFilter:['class']});
- document.addEventListener('visibilitychange',()=>{if(!document.hidden && document.body.classList.contains('chat-open'))schedule()});
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',createOverlay,{once:true});else createOverlay();
+ // Re-attach if any page script replaces body children; animation state follows body.chat-open CSS.
+ new MutationObserver(()=>{if(!document.getElementById('auraPookieLiveOverlay'))createOverlay()}).observe(document.body,{childList:true});
 })();
 </script>
 
