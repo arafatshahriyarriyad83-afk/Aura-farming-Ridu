@@ -367,7 +367,7 @@ body.chat-open #chat.page.active{display:block!important;position:fixed!importan
 #chat .send-message-btn{width:43px;height:43px;flex:0 0 43px;display:grid;place-items:center;padding:0!important;border:0!important;border-radius:50%!important;background:linear-gradient(135deg,#8535e8,#c05cf4)!important;color:#fff!important;font-size:19px!important;box-shadow:0 4px 15px rgba(146,64,220,.3)}
 #chat .send-message-btn:disabled{opacity:.55}#auraVoiceButton.recording{color:#ff9bbd!important;background:rgba(255,80,140,.16)!important;animation:auraVoicePulse .9s ease-in-out infinite alternate}@keyframes auraVoicePulse{to{transform:scale(1.08);box-shadow:0 0 18px rgba(255,80,140,.4)}}
 #chat .chat-back{display:none!important}
-#auraMessageMenu{z-index:10000}
+#auraMessageMenu{z-index:100600;position:fixed;touch-action:manipulation}
 @media(max-width:600px){body.chat-open #chat.page.active{width:100vw}#chat .chat-head{height:70px;min-height:70px;flex-basis:70px;padding:8px 12px!important}#chat .chat-messages{padding:14px 11px 18px!important}#chat .bubble{max-width:86%;font-size:14px!important}#chat .chat-compose-shell{padding-left:9px;padding-right:9px}}
 @media(min-width:601px){body.chat-open #chat.page.active{left:50%!important;right:auto!important;transform:translateX(-50%);border-left:1px solid rgba(190,145,255,.12);border-right:1px solid rgba(190,145,255,.12)}}
 </style>
@@ -1175,15 +1175,16 @@ html.aura-light .tc-stat{background:#fff}html.aura-light .tc-section-title{color
  <div class="tc-stats"><div class="tc-stat"><b id="tcStatSealed">0</b><span>SEALED</span></div><div class="tc-stat"><b id="tcStatReady">0</b><span>READY TO OPEN</span></div><div class="tc-stat"><b id="tcStatOpened">0</b><span>OPENED</span></div></div>
  <div class="tc-section-title">Your capsules</div><div class="tc-list" id="tcOwnList"><div class="tc-empty">Your future memories will live here.</div></div>
  <div class="tc-section-title">Shared with you</div><div class="tc-list" id="tcSharedList"><div class="tc-empty">Capsules shared with you will appear here.</div></div>
- <p class="tc-note">Capsules stay private until their unlock time. Shared capsules are visible only to invited AURA members. Media is stored in a private bucket.</p>
+ <div class="tc-section-title">Everyone · Public Capsules</div><div class="tc-list" id="tcPublicList"><div class="tc-empty">Public AURA memories will appear here.</div></div>
+ <p class="tc-note">Private capsules are only yours. Shared capsules are for invited friends. Everyone capsules appear to all signed-in AURA members after unlock. Sealed content and media stay private until the unlock date.</p>
 </section>
 <div class="tc-modal-backdrop" id="tcCreateModal" aria-hidden="true"><section class="tc-modal" role="dialog" aria-modal="true" aria-labelledby="tcCreateTitle"><h3 id="tcCreateTitle">Seal a moment ✦</h3><p class="tc-sub">Choose what to keep and when your future self can open it.</p>
  <form id="tcCreateForm">
   <label class="tc-field"><span>Capsule title</span><input id="tcTitle" maxlength="70" required placeholder="A letter to my future self"></label>
   <label class="tc-field"><span>Your message</span><textarea id="tcMessage" maxlength="5000" placeholder="Write something you want to remember…"></textarea></label>
   <label class="tc-field"><span>Unlock date & time</span><input id="tcUnlock" type="datetime-local" required></label>
-  <label class="tc-field"><span>Who can open it?</span><select id="tcVisibility"><option value="private">Only me · Private</option><option value="shared">Invite friends · Shared</option></select></label>
-  <div id="tcInviteArea" hidden><label class="tc-field"><span>Invite by username</span><input id="tcInviteSearch" maxlength="30" placeholder="Search AURA username"><div class="tc-search-results" id="tcInviteResults"></div></label><div id="tcInviteChips"></div></div>
+  <label class="tc-field"><span>Who can open it?</span><select id="tcVisibility"><option value="private">Only me · Private</option><option value="shared">Invite friends · Shared</option><option value="public">Everyone · Public</option></select></label>
+  <div id="tcInviteArea" hidden><label class="tc-field"><span>Mention an AURA friend by username</span><input id="tcInviteSearch" maxlength="50" placeholder="Type @username or full name…"><div class="tc-search-results" id="tcInviteResults"></div></label><div id="tcInviteChips"></div></div>
   <label class="tc-field"><span>Add one photo, video or audio (optional)</span><input id="tcMedia" type="file" accept="image/*,video/*,audio/*"><small class="tc-note">Maximum 40 MB. Media stays private until the capsule unlocks.</small></label>
   <div class="tc-modal-actions"><button type="button" id="tcCreateCancel">Cancel</button><button class="primary" id="tcSealButton" type="submit">Seal Capsule ✦</button></div>
  </form></section></div>
@@ -2154,14 +2155,22 @@ async function deleteMessage(id){
 }
 function auraEditMessageDialog(currentText){
  return new Promise(resolve=>{
-  const overlay=document.createElement("div");overlay.className="aura-edit-overlay";overlay.setAttribute("role","presentation");
-  overlay.innerHTML=`<section class="aura-edit-card" role="dialog" aria-modal="true" aria-labelledby="auraEditTitle"><div class="aura-edit-mark">✦</div><h2 id="auraEditTitle">Edit message</h2><p>Make your words shine.</p><textarea maxlength="2000" aria-label="Edit your message"></textarea><div class="aura-edit-actions"><button type="button" class="aura-edit-cancel">Cancel</button><button type="button" class="aura-edit-save">Save changes</button></div></section>`;
+  const overlay=document.createElement("div");overlay.className="aura-edit-overlay aura-edit-page";overlay.setAttribute("role","presentation");
+  overlay.innerHTML=`<section class="aura-edit-card" role="dialog" aria-modal="true" aria-labelledby="auraEditTitle">
+   <button type="button" class="aura-edit-back" aria-label="Back to chat">← Back to chat</button>
+   <div class="aura-edit-mark">✦</div><h2 id="auraEditTitle">Edit message</h2>
+   <p>Update your message and save the changes.</p>
+   <textarea maxlength="2000" aria-label="Edit your message" placeholder="Write your message…"></textarea>
+   <div class="aura-edit-actions"><button type="button" class="aura-edit-cancel">Cancel</button><button type="button" class="aura-edit-save">Save changes</button></div>
+   <small class="aura-edit-hint">Tip: Ctrl + Enter to save</small>
+  </section>`;
   const field=overlay.querySelector("textarea");field.value=currentText;document.body.appendChild(overlay);
   const finish=value=>{overlay.remove();document.removeEventListener("keydown",onKey);resolve(value);};
+  overlay.querySelector(".aura-edit-back").addEventListener("click",()=>finish(null));
   overlay.querySelector(".aura-edit-cancel").addEventListener("click",()=>finish(null));
   overlay.querySelector(".aura-edit-save").addEventListener("click",()=>finish(field.value));
   overlay.addEventListener("click",e=>{if(e.target===overlay)finish(null)});
-  const onKey=e=>{if(e.key==="Escape")finish(null);else if(e.key==="Enter"&&(e.ctrlKey||e.metaKey))finish(field.value)};
+  const onKey=e=>{if(e.key==="Escape")finish(null);else if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();finish(field.value)}};
   document.addEventListener("keydown",onKey);field.focus();field.setSelectionRange(field.value.length,field.value.length);
  });
 }
@@ -2271,6 +2280,15 @@ function openMessageMenu(bubble,x,y){
   button.innerHTML=`<span>${icon}</span>${label}`;menu.appendChild(button);
  });
  document.body.appendChild(menu);
+ menu.addEventListener("click",e=>{
+  const button=e.target.closest("button[data-action]");if(!button)return;
+  e.preventDefault();e.stopPropagation();
+  const action=button.dataset.action,messageId=button.dataset.messageId;
+  closeMessageMenu();
+  if(action==="edit")editMessage(messageId);
+  else if(action==="delete")deleteMessage(messageId);
+  else if(action==="report")reportChatMessage(messageId);
+ });
  const w=menu.offsetWidth,h=menu.offsetHeight;
  menu.style.left=Math.max(10,Math.min(x-w/2,window.innerWidth-w-10))+"px";
  menu.style.top=Math.max(10,Math.min(y-h-12,window.innerHeight-h-10))+"px";
@@ -2301,6 +2319,13 @@ document.addEventListener("click",e=>{
 });
 $("chatMessages").addEventListener("click",e=>{
  if(suppressMessageClick){e.preventDefault();e.stopPropagation();suppressMessageClick=false;return;}
+ const bubble=e.target.closest(".bubble");
+ if(!bubble||e.target.closest("button,a,input,video,audio"))return;
+ if(bubble.classList.contains("mine")){
+  e.preventDefault();e.stopPropagation();
+  const r=bubble.getBoundingClientRect();
+  openMessageMenu(bubble,r.left+r.width/2,r.top+Math.min(r.height/2,55));
+ }
 });
 $("chatProfileLink").addEventListener("click",()=>{if(activePerson?.id)openUserProfile(activePerson.id);});
 $("backChats").addEventListener("click",async()=>{
@@ -6746,14 +6771,75 @@ body.chat-open #auraPookieLiveOverlay .petal,body.chat-open #auraPookieLiveOverl
 })();
 </script>
 
+
+<style id="aura-moments-navigation-v1">
+#auraMomentActionLayer{position:fixed;inset:0;z-index:100500;background:rgba(5,3,12,.82);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:18px}
+#auraMomentActionLayer.show{display:flex}
+#auraMomentActionLayer .ama-card{width:min(620px,100%);max-height:min(88vh,820px);overflow:auto;background:linear-gradient(145deg,#171027,#0c0915);border:1px solid rgba(194,145,255,.32);border-radius:24px;padding:22px;color:#f4eaff;box-shadow:0 24px 90px #0009}
+#auraMomentActionLayer .ama-title{font:700 25px Georgia,serif;margin:0 0 10px}
+#auraMomentActionLayer .ama-muted{color:#b9a9c9}
+#auraMomentActionLayer .ama-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+#auraMomentActionLayer button{border:1px solid rgba(194,145,255,.35);border-radius:14px;padding:12px 18px;background:#2b1a43;color:#f3ddff;font-weight:700}
+#auraMomentActionLayer button.ama-primary{background:linear-gradient(120deg,#873fe0,#4f2c83);color:white}
+#auraMomentActionLayer .ama-reply{padding:13px 0;border-bottom:1px solid #ffffff18}
+#auraMomentActionLayer .ama-reply-input{width:100%;min-height:52px;resize:vertical;background:#090711;color:#fff;border:1px solid #59416f;border-radius:14px;padding:14px;font:inherit}
+#auraMomentActionLayer .ama-thread{max-height:42vh;overflow:auto;margin:15px 0}
+#auraMomentActionLayer .ama-moment-quote{border-left:3px solid #a66bea;padding:10px 14px;background:#ffffff08;border-radius:0 12px 12px 0;white-space:pre-wrap}
+.as-moment .as-moment-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.as-moment .as-moment-actions button{min-width:120px}
+</style>
+<div id="auraMomentActionLayer" aria-hidden="true"></div>
+<script id="aura-moments-navigation-v1">
+(()=>{
+ const layer=document.getElementById('auraMomentActionLayer');
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ window.auraMomentAction=(title,message,actions=[])=>{
+   layer.innerHTML=`<section class="ama-card" role="dialog" aria-modal="true"><h2 class="ama-title">${esc(title)}</h2><p class="ama-muted">${esc(message)}</p><div class="ama-actions">${actions.map((a,i)=>`<button type="button" class="${a.primary?'ama-primary':''}" data-ama-action="${i}">${esc(a.label)}</button>`).join('')}<button type="button" data-ama-close>Close</button></div></section>`;
+   layer.classList.add('show');layer.setAttribute('aria-hidden','false');
+   layer.onclick=e=>{if(e.target===layer||e.target.closest('[data-ama-close]')||e.target.closest('[data-ama-back]')){layer.classList.remove('show');layer.setAttribute('aria-hidden','true');if(e.target.closest('[data-ama-back]'))document.getElementById('auraMomentsList')?.scrollIntoView({behavior:'smooth',block:'start'});return}const b=e.target.closest('[data-ama-action]');if(b){const a=actions[Number(b.dataset.amaAction)];layer.classList.remove('show');layer.setAttribute('aria-hidden','true');a?.run?.()}};
+ };
+ window.auraMomentReplyPage=async(moment)=>{
+   if(!moment)return;
+   const id=moment.id;
+   layer.innerHTML=`<section class="ama-card" role="dialog" aria-modal="true"><button type="button" data-ama-back>← Back to Moments</button><h2 class="ama-title" style="margin-top:18px">Moment conversation ✦</h2><div class="ama-muted" id="amaMomentAuthor"></div><div class="ama-moment-quote" id="amaMomentContent"></div><div class="ama-thread" id="amaMomentThread">Loading replies…</div><textarea class="ama-reply-input" id="amaMomentReplyText" placeholder="Write a reply…"></textarea><div class="ama-actions"><button type="button" class="ama-primary" id="amaMomentReplySend">Send reply</button></div></section>`;
+   layer.classList.add('show');layer.setAttribute('aria-hidden','false');
+   document.getElementById('amaMomentAuthor').textContent='@'+(moment.profiles?.username||'AURA member')+' · '+new Date(moment.created_at).toLocaleString();
+   document.getElementById('amaMomentContent').textContent=moment.content||'';
+   const thread=document.getElementById('amaMomentThread');
+   const load=async()=>{
+     const {data,error}=await window.__auraMomentsDB.from('aura_moment_replies').select('id,moment_id,user_id,content,created_at').eq('moment_id',id).order('created_at',{ascending:true});
+     if(error){thread.textContent='Could not load replies: '+error.message;return}
+     const rows=data||[],uids=[...new Set(rows.map(x=>x.user_id).filter(Boolean))];
+     let people={};
+     if(uids.length){const p=await window.__auraMomentsDB.from('profiles').select('id,username').in('id',uids);(p.data||[]).forEach(x=>people[x.id]=x.username)}
+     thread.innerHTML=rows.length?rows.map(r=>`<div class="ama-reply"><b>@${esc(people[r.user_id]||'AURA member')}</b><div>${esc(r.content)}</div><small class="ama-muted">${new Date(r.created_at).toLocaleString()}</small></div>`).join(''):'<p class="ama-muted">No replies yet. Start the conversation ✨</p>';
+   };
+   await load();
+   const send=async()=>{
+     const box=document.getElementById('amaMomentReplyText'),button=document.getElementById('amaMomentReplySend'),content=box.value.trim();
+     if(!content)return;
+     if(!window.__auraMomentsUser?.id){if(window.auraMomentAction)window.auraMomentAction('Sign in required','Please sign in to reply to this Moment.');return}
+     button.disabled=true;button.textContent='Sending…';
+     const {error}=await window.__auraMomentsDB.from('aura_moment_replies').insert({moment_id:id,user_id:window.__auraMomentsUser.id,content});
+     button.disabled=false;button.textContent='Send reply';
+     if(error){if(window.toast)window.toast('Reply failed: '+error.message);else alert('Reply failed: '+error.message);return}
+     box.value='';await load();
+     if(window.toast)window.toast('Reply sent ✨');
+   };
+   document.getElementById('amaMomentReplySend').onclick=send;
+   document.getElementById('amaMomentReplyText').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
+ };
+})();
+</script>
+
 <script type="module" id="aura-studio-engine">
 import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-const db=createClient("https://lntvyexkbxlfimlhjpvg.supabase.co","sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv"),$=id=>document.getElementById(id),escA=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let user=null,friendRows=[],globalPresence=null,onlineIds=new Set();
+const db=createClient("https://lntvyexkbxlfimlhjpvg.supabase.co","sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv"),$=id=>document.getElementById(id),escA=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let user=null,friendRows=[],globalPresence=null,onlineIds=new Set();window.__auraMomentsDB=db;Object.defineProperty(window,'__auraMomentsUser',{get:()=>user});
 const prompts=['What small thing made today better?','What place feels like peace to you?','What song matches your mood?','What are you looking forward to?','Share a tiny win from today.'];async function getUser(){const {data}=await db.auth.getSession();user=data.session?.user||null;if(user&&!globalPresence){globalPresence=db.channel('aura-global-online',{config:{presence:{key:user.id}}});globalPresence.on('presence',{event:'sync'},()=>{onlineIds=new Set(Object.keys(globalPresence.presenceState()||{}));if($('auraOnlineFriends'))renderOnlineFriends()}).subscribe(status=>{if(status==='SUBSCRIBED')globalPresence.track({user_id:user.id,online_at:new Date().toISOString()})})}return user}function say(t){if(window.toast)window.toast(t);else console.log(t)}function openStudio(){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='auraStudio'));document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));window.scrollTo({top:0,behavior:'smooth'})}function tab(n){document.querySelectorAll('[data-as-tab]').forEach(b=>b.classList.toggle('active',b.dataset.asTab===n));document.querySelectorAll('.as-panel').forEach(p=>p.classList.toggle('active',p.id==='as-'+n));({reels:reels,moments:moments,friends:friends,saved:saved,drafts:drafts,notify:notifications,profiletools:profileTools,visits:visits}[n]||(()=>{}))()}
 $('openAuraStudio')?.addEventListener('click',()=>{openStudio();tab('reels')});$('openAuraReels')?.addEventListener('click',()=>{openStudio();tab('reels')});$('openAuraMoments')?.addEventListener('click',()=>{openStudio();tab('moments')});$('auraStudioBack')?.addEventListener('click',()=>document.querySelector('[data-page="explore"]')?.click());$('auraStudioTabs')?.addEventListener('click',e=>{let b=e.target.closest('[data-as-tab]');if(b)tab(b.dataset.asTab)});$('profileStudioButton')?.addEventListener('click',()=>{openStudio();tab('reels')});
-async function reels(){let box=$('auraReelsList');box.innerHTML='<div class="as-empty">Loading…</div>';let {data,error}=await db.from('posts').select('id,caption,media_url,created_at,profiles(username)').eq('media_type','video').order('created_at',{ascending:false}).limit(40);if(error){box.innerHTML='<div class="as-empty">'+escA(error.message)+'</div>';return}box.innerHTML=(data||[]).map(p=>`<article class="as-reel"><video src="${escA(p.media_url)}" controls playsinline preload="metadata"></video><div class="as-reel-caption"><b>@${escA(p.profiles?.username||'aura-user')}</b><br>${escA(p.caption||'')}</div></article>`).join('')||'<div class="as-empty">No videos yet. Share a video post ✨</div>';let vs=[...box.querySelectorAll('video')],io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&e.intersectionRatio>.65){vs.forEach(v=>{if(v!==e.target)v.pause()});e.target.play().catch(()=>{})}else e.target.pause()}),{threshold:[.2,.65]});vs.forEach(v=>io.observe(v))}
-async function moments(){let box=$('auraMomentsList'),{data,error}=await db.from('aura_moments').select('*,profiles(username)').order('created_at',{ascending:false}).limit(40);if(error){box.innerHTML='<div class="as-empty">Run the supplied SQL to enable Moments.</div>';return}box.innerHTML=(data||[]).map(m=>`<article class="as-moment"><small class="as-muted">@${escA(m.profiles?.username||'AURA member')} · ${new Date(m.created_at).toLocaleString()}</small><blockquote>${escA(m.content)}</blockquote><input class="as-input" data-mr="${m.id}" placeholder="Write a reply…"><button class="secondary" data-mrsend="${m.id}">Reply</button><div class="as-muted">${m.reply_count||0} replies</div></article>`).join('')||'<div class="as-empty">No moments yet. Start the conversation ✨</div>'}
-$('auraMomentRefresh')?.addEventListener('click',()=>$('auraMomentPrompt').textContent=prompts[Math.floor(Math.random()*prompts.length)]);$('auraMomentPost')?.addEventListener('click',async()=>{if(!await getUser())return say('Sign in first');let content=$('auraMomentText').value.trim();if(!content)return;let {error}=await db.from('aura_moments').insert({user_id:user.id,content,prompt:$('auraMomentPrompt').textContent});if(error)say(error.message);else{$('auraMomentText').value='';say('AURA Moment shared ✨');moments()}});$('auraMomentsList')?.addEventListener('click',async e=>{let b=e.target.closest('[data-mrsend]');if(!b)return;let id=b.dataset.mrsend,input=$('auraMomentsList').querySelector(`[data-mr="${CSS.escape(id)}"]`),content=input.value.trim();if(!content)return;let {error}=await db.from('aura_moment_replies').insert({moment_id:id,user_id:user.id,content});if(error)say(error.message);else moments()});
+async function reels(){let box=$('auraReelsList');box.innerHTML='<div class="as-empty">Loading…</div>';let {data,error}=await db.from('posts').select('id,caption,media_url,created_at,profiles(username)').eq('media_type','video').order('created_at',{ascending:false}).limit(40);if(error){box.innerHTML='<div class="as-empty">'+escA(error.message)+'</div>';return}box.innerHTML=(data||[]).map(p=>`<article class="as-reel"><video data-reel-src="${escA(p.media_url)}" controls playsinline preload="none"></video><div class="as-reel-caption"><b>@${escA(p.profiles?.username||'aura-user')}</b><br>${escA(p.caption||'')}</div></article>`).join('')||'<div class="as-empty">No videos yet. Share a video post ✨</div>';let vs=[...box.querySelectorAll('video')],io=new IntersectionObserver(es=>es.forEach(e=>{let v=e.target;if(e.isIntersecting&&e.intersectionRatio>.15&&!v.src){v.src=v.dataset.reelSrc;v.load()}if(!e.isIntersecting)v.pause()}),{rootMargin:'160px 0px',threshold:[0,.15,.65]});vs.forEach(v=>{io.observe(v);v.addEventListener('play',()=>vs.forEach(o=>{if(o!==v)o.pause()}))})}
+async function moments(){let box=$('auraMomentsList'),{data,error}=await db.from('aura_moments').select('*,profiles(username)').order('created_at',{ascending:false}).limit(40);if(error){box.innerHTML='<div class="as-empty">Run the supplied SQL to enable Moments.</div>';return}let rows=data||[],counts={};if(rows.length){let ids=rows.map(m=>m.id),r=await db.from('aura_moment_replies').select('moment_id').in('moment_id',ids);if(!r.error)(r.data||[]).forEach(x=>counts[x.moment_id]=(counts[x.moment_id]||0)+1)}box.innerHTML=rows.map(m=>`<article class="as-moment"><small class="as-muted">@${escA(m.profiles?.username||'AURA member')} · ${new Date(m.created_at).toLocaleString()}</small><blockquote>${escA(m.content)}</blockquote><div class="as-moment-actions"><button class="secondary" type="button" data-moment-open="${m.id}">Open replies · ${counts[m.id]||0}</button><button class="secondary" type="button" data-moment-quickreply="${m.id}">Reply ✦</button></div></article>`).join('')||'<div class="as-empty">No moments yet. Start the conversation ✨</div>'}
+$('auraMomentRefresh')?.addEventListener('click',()=>$('auraMomentPrompt').textContent=prompts[Math.floor(Math.random()*prompts.length)]);$('auraMomentPost')?.addEventListener('click',async()=>{if(!await getUser())return say('Sign in first');let content=$('auraMomentText').value.trim();if(!content)return;let {error}=await db.from('aura_moments').insert({user_id:user.id,content,prompt:$('auraMomentPrompt').textContent});if(error)say(error.message);else{$('auraMomentText').value='';say('AURA Moment shared ✨');moments()}});$('auraMomentsList')?.addEventListener('click',async e=>{let b=e.target.closest('[data-moment-open],[data-moment-quickreply]');if(!b)return;if(!await getUser())return say('Sign in first');let id=b.dataset.momentOpen||b.dataset.momentQuickreply;let {data,error}=await db.from('aura_moments').select('*,profiles(username)').eq('id',id).single();if(error)return say('Could not open Moment: '+error.message);window.auraMomentReplyPage(data)});
 async function friends(){let box=$('auraCloseFriendsList');if(!await getUser())return;let {data:f,error}=await db.from('follows').select('following_id').eq('follower_id',user.id);if(error)return box.textContent=error.message;let ids=(f||[]).map(x=>x.following_id);if(!ids.length)return box.innerHTML='<div class="as-empty">Follow people first.</div>';let [{data:people},{data:mine}]=await Promise.all([db.from('profiles').select('id,username,full_name,avatar_url').in('id',ids),db.from('aura_close_friends').select('friend_id').eq('user_id',user.id)]);let set=new Set((mine||[]).map(x=>x.friend_id));friendRows=people||[];renderFriends(set)}function renderFriends(set){let q=$('auraFriendSearch').value.toLowerCase();$('auraCloseFriendsList').innerHTML=friendRows.filter(p=>(p.username||'').toLowerCase().includes(q)).map(p=>`<div class="as-card as-row"><img src="${escA(p.avatar_url||'')}" alt=""><div><b>${escA(p.full_name||p.username)}</b><small>@${escA(p.username||'')}</small></div><button class="${set.has(p.id)?'secondary':'primary'}" data-cf="${p.id}">${set.has(p.id)?'Added':'＋ Add'}</button></div>`).join('')||'<div class="as-empty">No matching profiles.</div>'}$('auraFriendSearch')?.addEventListener('input',friends);$('auraCloseFriendsList')?.addEventListener('click',async e=>{let b=e.target.closest('[data-cf]');if(!b)return;let id=b.dataset.cf,{data}=await db.from('aura_close_friends').select('friend_id').eq('user_id',user.id);let has=(data||[]).some(x=>x.friend_id===id),r=has?await db.from('aura_close_friends').delete().eq('user_id',user.id).eq('friend_id',id):await db.from('aura_close_friends').insert({user_id:user.id,friend_id:id});if(r.error)say(r.error.message);else friends()});
 async function saved(){let [{data:cols,error},{data:items}]=await Promise.all([db.from('aura_collections').select('*').eq('user_id',user.id).order('created_at',{ascending:false}),db.from('aura_saved_posts').select('post_id,collection_id,posts(id,caption,media_url,media_type)').eq('user_id',user.id).order('created_at',{ascending:false})]);$('auraCollectionsList').innerHTML=error?'<div class="as-empty">SQL setup required.</div>':(cols||[]).map(c=>`<div class="as-card"><b>${escA(c.name)}</b><span class="as-badge">Private</span></div>`).join('')+'<div class="as-card"><h3>Saved Posts</h3>'+((items||[]).map(x=>`<p class="as-muted">${escA(x.posts?.caption||'Saved post')} · ${escA(x.posts?.media_type||'post')}</p>`).join('')||'<p class="as-muted">No saved posts yet. Tap the bookmark on any post.</p>')+'</div>'}$('auraCreateCollection')?.addEventListener('click',async()=>{if(!await getUser())return;let name=$('auraCollectionName').value.trim();if(!name)return;let {error}=await db.from('aura_collections').insert({user_id:user.id,name});if(error)say(error.message);else{$('auraCollectionName').value='';saved()}});
 async function drafts(){let {data,error}=await db.from('aura_post_drafts').select('*').eq('user_id',user.id).order('updated_at',{ascending:false});$('auraDraftsList').innerHTML=error?'<div class="as-empty">SQL setup required.</div>':(data||[]).map(d=>`<div class="as-card"><p>${escA(d.content)}</p><small class="as-muted">${new Date(d.updated_at).toLocaleString()}</small><button class="secondary" data-de="${d.id}">Edit</button><button class="danger" data-dd="${d.id}">Delete</button></div>`).join('')||'<div class="as-empty">No drafts saved.</div>'}$('auraSaveDraft')?.addEventListener('click',async()=>{if(!await getUser())return;let content=$('auraDraftText').value.trim();if(!content)return;let {error}=await db.from('aura_post_drafts').insert({user_id:user.id,content});if(error)say(error.message);else{$('auraDraftText').value='';drafts();say('Draft saved')}});$('auraDraftsList')?.addEventListener('click',async e=>{let edit=e.target.closest('[data-de]'),b=e.target.closest('[data-dd]');if(edit){let {data}=await db.from('aura_post_drafts').select('*').eq('id',edit.dataset.de).single();if(data){$('auraDraftText').value=data.content;let content=prompt('Edit your draft:',data.content);if(content===null)return;let {error}=await db.from('aura_post_drafts').update({content:content.trim()}).eq('id',data.id);if(error)say(error.message);else drafts()}return}if(!b)return;let {error}=await db.from('aura_post_drafts').delete().eq('id',b.dataset.dd);if(error)say(error.message);else drafts()});
@@ -6788,7 +6874,7 @@ import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
 const tcDB=createClient("https://lntvyexkbxlfimlhjpvg.supabase.co","sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv");
 const tc$=id=>document.getElementById(id);
 const tcEsc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let tcUser=null,tcOwn=[],tcShared=[],tcInvites=[],tcSearchTimer=null,tcBusy=false,tcCountdownTimer=null;
+let tcUser=null,tcOwn=[],tcShared=[],tcPublic=[],tcInvites=[],tcSearchTimer=null,tcBusy=false,tcCountdownTimer=null;
 const tcToast=m=>window.toast?window.toast(m):alert(m);
 const tcFmt=d=>new Intl.DateTimeFormat(undefined,{dateStyle:"medium",timeStyle:"short"}).format(new Date(d));
 const tcLocalMin=()=>{const d=new Date(Date.now()+5*60000);d.setSeconds(0,0);return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,16)};
@@ -6798,35 +6884,38 @@ function tcCloseCreate(){tc$ ('tcCreateModal').classList.remove("open");tc$ ('tc
 function tcOpenView(){tc$ ('tcViewModal').classList.add("open");tc$ ('tcViewModal').setAttribute("aria-hidden","false");}
 function tcCloseView(){tc$ ('tcViewModal').classList.remove("open");tc$ ('tcViewModal').setAttribute("aria-hidden","true");tc$ ('tcViewContent').innerHTML="";}
 function tcCard(c,isShared=false){const now=Date.now(),ready=new Date(c.unlock_at).getTime()<=now,opened=!!c.opened_at,locked=!ready;const status=opened?"OPENED":ready?"READY":"SEALED";const who=isShared?"Shared by @"+(c.owner_profile?.username||"member"):"Your capsule";const when=locked?`Unlocks ${tcFmt(c.unlock_at)}`:opened?`Opened ${tcFmt(c.opened_at)}`:"Ready to open";return `<article class="tc-card"><div class="tc-card-head"><div class="tc-card-icon">${opened?"✧":ready?"🔓":"🔒"}</div><div class="tc-card-main"><b>${tcEsc(c.title)}</b><small>${tcEsc(who)} · ${tcEsc(when)}</small></div><span class="tc-status">${status}</span></div><p>${locked?"A moment is waiting in the future. Come back when the seal is ready.":"Your saved moment is ready whenever you are."}</p><div class="tc-card-actions"><button class="primary" data-tc-open="${c.id}" ${locked?"disabled":""}>${opened?"View memory":"Open capsule ✦"}</button>${!isShared?`<button data-tc-delete="${c.id}">Delete</button>`:""}</div></article>`}
-async function tcLoad(){if(!tcUser)return;for(const id of ["tcOwnList","tcSharedList"])tc$(id).innerHTML='<div class="tc-empty">Loading your memories…</div>';
+async function tcLoad(){if(!tcUser)return;for(const id of ["tcOwnList","tcSharedList","tcPublicList"])tc$(id).innerHTML='<div class="tc-empty">Loading your memories…</div>';
  const {data:own,error:e1}=await tcDB.from("aura_capsules").select("id,owner_id,title,unlock_at,capsule_type,opened_at,created_at,notification_sent_at").eq("owner_id",tcUser.id).order("created_at",{ascending:false});
  if(e1){tc$ ('tcOwnList').innerHTML='<div class="tc-empty">Time Capsule setup is not complete yet. Run the AURA Time Capsule SQL setup, then refresh this page.</div>';tc$ ('tcSharedList').innerHTML="";return}
  const {data:members,error:e2}=await tcDB.from("aura_capsule_members").select("capsule_id").eq("user_id",tcUser.id);if(e2){tcToast(e2.message);return}
  const ownIds=(own||[]).map(x=>x.id),sharedIds=(members||[]).map(x=>x.capsule_id).filter(id=>!ownIds.includes(id));let shared=[];
  if(sharedIds.length){const q=await tcDB.from("aura_capsules").select("id,owner_id,title,unlock_at,capsule_type,opened_at,created_at").in("id",sharedIds).order("created_at",{ascending:false});if(!q.error)shared=q.data||[];}
- const ownerIds=[...new Set(shared.map(x=>x.owner_id))];if(ownerIds.length){const p=await tcDB.from("profiles").select("id,username").in("id",ownerIds);const map=new Map((p.data||[]).map(x=>[x.id,x]));shared.forEach(x=>x.owner_profile=map.get(x.owner_id));}
- tcOwn=own||[];tcShared=shared;
+ const pub=await tcDB.from("aura_capsules").select("id,owner_id,title,unlock_at,capsule_type,opened_at,created_at").eq("capsule_type","public").order("created_at",{ascending:false}).limit(60);
+ let publicRows=pub.error?[]:(pub.data||[]).filter(x=>x.owner_id!==tcUser.id&&!sharedIds.includes(x.id));
+ const ownerIds=[...new Set([...shared,...publicRows].map(x=>x.owner_id))];if(ownerIds.length){const p=await tcDB.from("profiles").select("id,username").in("id",ownerIds);const map=new Map((p.data||[]).map(x=>[x.id,x]));[...shared,...publicRows].forEach(x=>x.owner_profile=map.get(x.owner_id));}
+ tcOwn=own||[];tcShared=shared;tcPublic=publicRows;
  const now=Date.now(),sealed=tcOwn.filter(x=>new Date(x.unlock_at).getTime()>now).length,ready=tcOwn.filter(x=>new Date(x.unlock_at).getTime()<=now&&!x.opened_at).length,opened=tcOwn.filter(x=>x.opened_at).length;
  tc$ ('tcStatSealed').textContent=sealed;tc$ ('tcStatReady').textContent=ready;tc$ ('tcStatOpened').textContent=opened;
  tc$ ('tcOwnList').innerHTML=tcOwn.length?tcOwn.map(x=>tcCard(x)).join(''):'<div class="tc-empty">No capsules yet.<br>Seal a memory for your future self. ✦</div>';
  tc$ ('tcSharedList').innerHTML=shared.length?shared.map(x=>tcCard(x,true)).join(''):'<div class="tc-empty">Nothing shared with you yet.<br>When a friend invites you, it will appear here.</div>';
+ tc$ ('tcPublicList').innerHTML=publicRows.length?publicRows.map(x=>tcCard(x,true)).join(''):'<div class="tc-empty">No public capsules yet.<br>Everyone memories will appear here.</div>';
  // In-app reminder: create one notification when the owner next opens AURA after the unlock time.
  const due=tcOwn.filter(x=>new Date(x.unlock_at).getTime()<=now&&!x.notification_sent_at&&!x.opened_at);
  for(const c of due){await tcDB.from("aura_notifications").insert({user_id:tcUser.id,actor_id:tcUser.id,kind:"time_capsule",title:"Your Time Capsule is ready ✦",body:`${c.title} is ready to open.`,target_id:c.id});await tcDB.from("aura_capsules").update({notification_sent_at:new Date().toISOString()}).eq("id",c.id).eq("owner_id",tcUser.id);}
 }
 async function tcEnsureUser(){const {data:{session}}=await tcDB.auth.getSession();tcUser=session?.user||null;if(!tcUser){tcToast("Please log in to use AURA Time Capsule.");return false}return true}
-async function tcInviteSearch(q){tc$ ('tcInviteResults').innerHTML="";if(!q||q.length<2)return;const {data,error}=await tcDB.from("profiles").select("id,username,full_name,avatar_url").ilike("username",q.replace(/[%_]/g,"\\$&")+"%").neq("id",tcUser.id).limit(6);if(error){tc$ ('tcInviteResults').innerHTML=`<small class="tc-note">${tcEsc(error.message)}</small>`;return}tc$ ('tcInviteResults').innerHTML=(data||[]).filter(x=>!tcInvites.some(y=>y.id===x.id)).map(x=>`<button type="button" data-tc-invite="${x.id}" data-tc-username="${tcEsc(x.username||"")}"><img src="${tcEsc(x.avatar_url||"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80")}" alt=""><span><b>@${tcEsc(x.username||"user")}</b><small>${tcEsc(x.full_name||"")}</small></span><span style="margin-left:auto">＋</span></button>`).join('')||'<small class="tc-note">No matching members found.</small>'}
+async function tcInviteSearch(q){tc$ ('tcInviteResults').innerHTML="";if(!q||q.trim().length<2)return;const term=q.trim().replace(/^@/,"").replace(/[%_]/g,"\\$&");const base=tcDB.from("profiles").select("id,username,full_name,avatar_url").neq("id",tcUser.id);const [byUsername,byName]=await Promise.all([base.ilike("username",term+"%").limit(6),tcDB.from("profiles").select("id,username,full_name,avatar_url").neq("id",tcUser.id).ilike("full_name",term+"%").limit(6)]);const error=byUsername.error||byName.error;if(error){tc$ ('tcInviteResults').innerHTML=`<small class="tc-note">${tcEsc(error.message)}</small>`;return}const unique=new Map();[...(byUsername.data||[]),...(byName.data||[])].forEach(x=>unique.set(x.id,x));const data=[...unique.values()].filter(x=>!tcInvites.some(y=>y.id===x.id)).slice(0,8);tc$ ('tcInviteResults').innerHTML=data.map(x=>`<button type="button" data-tc-invite="${x.id}" data-tc-username="${tcEsc(x.username||"")}"><img src="${tcEsc(x.avatar_url||"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80")}" alt=""><span><b>@${tcEsc(x.username||"username-not-set")}</b><small>${tcEsc(x.full_name||"AURA member")}</small></span><span style="margin-left:auto">＋</span></button>`).join('')||'<small class="tc-note">No matching AURA username found.</small>'}
 function tcRenderInvites(){tc$ ('tcInviteChips').innerHTML=tcInvites.map(x=>`<span class="tc-chip">@${tcEsc(x.username)} <button type="button" data-tc-remove="${x.id}" aria-label="Remove">×</button></span>`).join('')}
-async function tcCreate(e){e.preventDefault();if(tcBusy)return;if(!await tcEnsureUser())return;const title=tc$ ('tcTitle').value.trim(),message=tc$ ('tcMessage').value.trim(),unlock=new Date(tc$ ('tcUnlock').value),kind=tc$ ('tcVisibility').value,file=tc$ ('tcMedia').files[0];if(!title){tcToast("Add a title for your capsule.");return}if(!Number.isFinite(unlock.getTime())||unlock.getTime()<Date.now()+60000){tcToast("Choose an unlock time at least one minute in the future.");return}if(kind==="shared"&&!tcInvites.length){tcToast("Invite at least one AURA friend for a shared capsule.");return}if(file&&file.size>40*1024*1024){tcToast("Media must be 40 MB or smaller.");return}if(file&&!/^(image|video|audio)\//.test(file.type)){tcToast("Choose an image, video or audio file.");return}
+async function tcCreate(e){e.preventDefault();if(tcBusy)return;if(!await tcEnsureUser())return;const title=tc$ ('tcTitle').value.trim(),message=tc$ ('tcMessage').value.trim(),unlock=new Date(tc$ ('tcUnlock').value),kind=tc$ ('tcVisibility').value,file=tc$ ('tcMedia').files[0];if(!title){tcToast("Add a title for your capsule.");return}if(!Number.isFinite(unlock.getTime())||unlock.getTime()<Date.now()+60000){tcToast("Choose an unlock time at least one minute in the future.");return}if(kind==="shared"&&!tcInvites.length){if(window.auraMomentAction)window.auraMomentAction("Invite an AURA friend","A shared capsule needs at least one friend. Open AURA Friends, choose someone, then return to seal it.",[{label:"Open AURA Friends",primary:true,run:()=>{document.querySelector("#openAuraStudio")?.click();document.querySelector('[data-as-tab="friends"]')?.click()}}]);else tcToast("Invite at least one AURA friend for a shared capsule.");return}if(file&&file.size>40*1024*1024){tcToast("Media must be 40 MB or smaller.");return}if(file&&!/^(image|video|audio)\//.test(file.type)){tcToast("Choose an image, video or audio file.");return}
  tcBusy=true;const btn=tc$ ('tcSealButton');btn.disabled=true;btn.textContent="Sealing your memory…";let capsuleId=null,uploadedPath=null;
  try{const ins=await tcDB.from("aura_capsules").insert({owner_id:tcUser.id,title,unlock_at:unlock.toISOString(),capsule_type:kind}).select("id").single();if(ins.error)throw ins.error;capsuleId=ins.data.id;
   let attachmentPath=null,attachmentMime=null;if(file){const ext=(file.name.split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,8)||'bin';uploadedPath=`${capsuleId}/${crypto.randomUUID()}.${ext}`;const up=await tcDB.storage.from("aura-capsules").upload(uploadedPath,file,{contentType:file.type,upsert:false});if(up.error)throw up.error;attachmentPath=uploadedPath;attachmentMime=file.type;}
   const content=await tcDB.from("aura_capsule_contents").insert({capsule_id:capsuleId,content:message||null,attachment_path:attachmentPath,attachment_mime:attachmentMime});if(content.error)throw content.error;
   if(kind==="shared"){const rows=tcInvites.map(x=>({capsule_id:capsuleId,user_id:x.id,invited_by:tcUser.id}));const m=await tcDB.from("aura_capsule_members").insert(rows);if(m.error)throw m.error;await tcDB.from("aura_notifications").insert(tcInvites.map(x=>({user_id:x.id,actor_id:tcUser.id,kind:"time_capsule_invite",title:"A friend shared a Time Capsule ✦",body:`You were invited to open “${title}” when it unlocks.`,target_id:capsuleId})));}
-  tcCloseCreate();tcToast("Your memory is sealed. It will be waiting on its unlock date. ✦");await tcLoad();
+  tcCloseCreate();if(window.auraMomentAction)window.auraMomentAction("Your memory is sealed ✦","It will be waiting safely until its unlock date.",[{label:"Open Time Capsule",primary:true,run:async()=>{tcShowPage("timeCapsules");await tcLoad()}}]);else tcToast("Your memory is sealed. It will be waiting on its unlock date. ✦");await tcLoad();
  }catch(err){if(capsuleId)await tcDB.from("aura_capsules").delete().eq("id",capsuleId).eq("owner_id",tcUser.id);if(uploadedPath)await tcDB.storage.from("aura-capsules").remove([uploadedPath]);tcToast("Could not seal capsule: "+(err.message||"Please try again."));}
  finally{tcBusy=false;btn.disabled=false;btn.textContent="Seal Capsule ✦";}}
-async function tcOpenCapsule(id){if(!await tcEnsureUser())return;const c=[...tcOwn,...tcShared].find(x=>x.id===id);if(!c)return;const left=new Date(c.unlock_at).getTime()-Date.now();if(left>0){tcToast("This capsule is still sealed. Unlocks "+tcFmt(c.unlock_at));return}tc$ ('tcViewContent').innerHTML='<div class="tc-reveal"><div class="tc-orbit"><span class="tc-lock">✧</span></div><h3>Opening your memory…</h3><p>The seal is lifting. Take a moment.</p></div>';tcOpenView();
+async function tcOpenCapsule(id){if(!await tcEnsureUser())return;const c=[...tcOwn,...tcShared,...tcPublic].find(x=>x.id===id);if(!c)return;const left=new Date(c.unlock_at).getTime()-Date.now();if(left>0){tcToast("This capsule is still sealed. Unlocks "+tcFmt(c.unlock_at));return}tc$ ('tcViewContent').innerHTML='<div class="tc-reveal"><div class="tc-orbit"><span class="tc-lock">✧</span></div><h3>Opening your memory…</h3><p>The seal is lifting. Take a moment.</p></div>';tcOpenView();
  const {data,error}=await tcDB.from("aura_capsule_contents").select("content,attachment_path,attachment_mime").eq("capsule_id",id).maybeSingle();if(error||!data){tc$ ('tcViewContent').innerHTML=`<div class="tc-reveal"><h3>Almost there</h3><p>${tcEsc(error?.message||"The capsule content is not available yet. Check your SQL setup and try again.")}</p></div>`;return}
  let media="";if(data.attachment_path){const signed=await tcDB.storage.from("aura-capsules").createSignedUrl(data.attachment_path,300);if(!signed.error){const url=signed.data.signedUrl;if((data.attachment_mime||"").startsWith("image/"))media=`<img class="tc-reveal-media" src="${tcEsc(url)}" alt="Capsule memory">`;else if((data.attachment_mime||"").startsWith("video/"))media=`<video class="tc-reveal-media" controls playsinline src="${tcEsc(url)}"></video>`;else if((data.attachment_mime||"").startsWith("audio/"))media=`<audio class="tc-reveal-media" controls src="${tcEsc(url)}"></audio>`;}}
  tc$ ('tcViewContent').innerHTML=`<div class="tc-reveal"><div class="tc-orbit"><span class="tc-lock">✧</span></div><span class="tc-status">TIME CAPSULE OPENED</span><h3 id="tcViewTitle">${tcEsc(c.title)}</h3><small style="color:#bba9ce">Sealed ${tcEsc(tcFmt(c.created_at))} · Unlocked ${tcEsc(tcFmt(c.unlock_at))}</small><p>${tcEsc(data.content||"A memory saved without a written note.")}</p>${media}</div>`;
@@ -6835,9 +6924,22 @@ async function tcOpenCapsule(id){if(!await tcEnsureUser())return;const c=[...tcO
 async function tcDelete(id){if(!await tcEnsureUser())return;const c=tcOwn.find(x=>x.id===id);if(!c)return;if(!confirm("Delete this Time Capsule permanently? This cannot be undone."))return;const {error}=await tcDB.from("aura_capsules").delete().eq("id",id).eq("owner_id",tcUser.id);if(error){tcToast("Could not delete: "+error.message);return}tcToast("Capsule deleted.");await tcLoad()}
 tc$ ('openTimeCapsules')?.addEventListener('click',async()=>{if(await tcEnsureUser()){tcShowPage('timeCapsules');await tcLoad()}});tc$ ('tcBack')?.addEventListener('click',()=>{document.querySelector('#openAuraStudio')?.click()||tcShowPage('auraStudio')});tc$ ('tcCreateOpen')?.addEventListener('click',async()=>{if(await tcEnsureUser())tcOpenCreate()});tc$ ('tcCreateCancel')?.addEventListener('click',tcCloseCreate);tc$ ('tcViewClose')?.addEventListener('click',tcCloseView);tc$ ('tcCreateModal')?.addEventListener('click',e=>{if(e.target===tc$ ('tcCreateModal'))tcCloseCreate()});tc$ ('tcViewModal')?.addEventListener('click',e=>{if(e.target===tc$ ('tcViewModal'))tcCloseView()});tc$ ('tcCreateForm')?.addEventListener('submit',tcCreate);tc$ ('tcVisibility')?.addEventListener('change',e=>tc$ ('tcInviteArea').hidden=e.target.value!=='shared');
 tc$ ('tcInviteSearch')?.addEventListener('input',e=>{clearTimeout(tcSearchTimer);const q=e.target.value.trim();tcSearchTimer=setTimeout(()=>tcInviteSearch(q),250)});tc$ ('tcInviteResults')?.addEventListener('click',e=>{const b=e.target.closest('[data-tc-invite]');if(!b)return;if(tcInvites.length>=10){tcToast("You can invite up to 10 friends per capsule.");return}tcInvites.push({id:b.dataset.tcInvite,username:b.dataset.tcUsername});tcRenderInvites();tc$ ('tcInviteSearch').value="";tc$ ('tcInviteResults').innerHTML=""});tc$ ('tcInviteChips')?.addEventListener('click',e=>{const b=e.target.closest('[data-tc-remove]');if(b){tcInvites=tcInvites.filter(x=>x.id!==b.dataset.tcRemove);tcRenderInvites()}});
-function tcListAction(e){const open=e.target.closest('[data-tc-open]'),del=e.target.closest('[data-tc-delete]');if(open)tcOpenCapsule(open.dataset.tcOpen);if(del)tcDelete(del.dataset.tcDelete)}tc$ ('tcOwnList')?.addEventListener('click',tcListAction);tc$ ('tcSharedList')?.addEventListener('click',tcListAction);
+function tcListAction(e){const open=e.target.closest('[data-tc-open]'),del=e.target.closest('[data-tc-delete]');if(open)tcOpenCapsule(open.dataset.tcOpen);if(del)tcDelete(del.dataset.tcDelete)}tc$ ('tcOwnList')?.addEventListener('click',tcListAction);tc$ ('tcSharedList')?.addEventListener('click',tcListAction);tc$ ('tcPublicList')?.addEventListener('click',tcListAction);
 tcDB.auth.onAuthStateChange((_event,session)=>{tcUser=session?.user||null;if(tc$ ('timeCapsules')?.classList.contains('active'))tcLoad()});
 </script>
+
+
+<style id="aura-edit-page-v2">
+.aura-edit-page{z-index:100700!important;align-items:stretch!important;justify-content:center!important;padding:0!important;background:rgba(5,3,12,.96)!important;backdrop-filter:blur(18px)!important}
+.aura-edit-page .aura-edit-card{width:min(760px,100%)!important;min-height:100dvh!important;max-height:100dvh!important;overflow:auto!important;border-radius:0!important;padding:calc(24px + env(safe-area-inset-top)) 22px calc(28px + env(safe-area-inset-bottom))!important;display:flex;flex-direction:column;justify-content:flex-start;gap:12px}
+.aura-edit-page .aura-edit-back{align-self:flex-start;border:1px solid rgba(194,145,255,.3);border-radius:13px;background:#211631;color:#eadbff;padding:11px 15px;font-weight:700}
+.aura-edit-page textarea{width:100%;min-height:180px;resize:vertical;background:#090711;color:#fff;border:1px solid #59416f;border-radius:16px;padding:16px;font:inherit;line-height:1.5;outline:none}
+.aura-edit-page textarea:focus{border-color:#bd8cff;box-shadow:0 0 0 3px #a855f722}
+.aura-edit-page .aura-edit-actions{display:flex;gap:12px;flex-wrap:wrap}
+.aura-edit-page .aura-edit-actions button{flex:1;min-height:48px}
+.aura-edit-page .aura-edit-hint{color:#a99bbd;margin-top:4px}
+#auraMessageMenu button{min-height:44px;touch-action:manipulation}
+</style>
 
 </body>
 </html>
