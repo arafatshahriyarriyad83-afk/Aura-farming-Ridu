@@ -2,6 +2,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<style id="aura-boot-first-paint">
+html.aura-booting,html.aura-booting body{background:#07050d!important}
+html.aura-booting body>*:not(#auraStartup){visibility:hidden!important}
+html.aura-booting #auraStartup{visibility:visible!important;position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 48%,#29133f 0%,#10091d 38%,#07050d 78%)}
+</style>
+<script>document.documentElement.classList.add("aura-booting");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080710">
@@ -316,7 +322,7 @@ document.addEventListener("click",e=>{
 #chat .bubble.mine{background:linear-gradient(135deg,#7135b7,#a34fe0);border-color:rgba(224,190,255,.28);border-radius:20px 20px 7px 20px;color:#fff;}
 #chat .bubble:active{transform:scale(.985);}
 #chat .bubble small{font-size:10px;letter-spacing:.15px;opacity:.72;margin-top:8px;}
-#chat .bubble img,#chat .bubble video{max-width:100%;border-radius:14px;display:block;margin-top:9px;}
+#chat .bubble audio{display:block;width:min(260px,70vw);margin-top:9px}#chat .bubble img,#chat .bubble video{max-width:100%;border-radius:14px;display:block;margin-top:9px;}
 #chat .chat-tools{flex:0 0 auto;}
 #chat .chat-compose{flex:0 0 auto;position:relative;bottom:auto;}
 .aura-message-menu{position:fixed;z-index:99999;min-width:158px;padding:7px;border:1px solid rgba(204,164,255,.28);border-radius:17px;background:linear-gradient(145deg,#211631,#100d1b);box-shadow:0 15px 45px rgba(0,0,0,.48),0 0 22px rgba(168,85,247,.16);backdrop-filter:blur(18px);animation:auraMenuPop .14s ease-out;}
@@ -352,14 +358,14 @@ body.chat-open #chat.page.active{display:block!important;position:fixed!importan
 #chat .bubble.mine{margin-left:auto;border-radius:19px 19px 6px 19px!important;background:linear-gradient(135deg,#7136b5 0%,#9948d7 58%,#b45be9 100%)!important;border:1px solid rgba(226,190,255,.2)!important}
 #chat .bubble:not(.mine){background:linear-gradient(145deg,#211a30,#171322)!important;border:1px solid rgba(193,160,232,.13)!important}
 #chat .bubble small{display:block;margin-top:6px;font-size:10px;opacity:.7}
-#chat .bubble img,#chat .bubble video{max-width:min(100%,300px);max-height:360px;object-fit:cover;border-radius:13px;margin-top:8px}
+#chat .bubble audio{display:block;width:min(260px,70vw);margin-top:9px}#chat .bubble img,#chat .bubble video{max-width:min(100%,300px);max-height:360px;object-fit:cover;border-radius:13px;margin-top:8px}
 #chat .chat-compose-shell{flex:0 0 auto;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid rgba(190,145,255,.14);background:rgba(12,9,20,.97);backdrop-filter:blur(22px)}
 #chat .chat-compose{display:flex;align-items:center;gap:7px;padding:0!important;border:0!important;background:transparent!important;position:relative!important;bottom:auto!important}
 #chat #chatText{flex:1;min-width:0;height:44px;padding:0 16px!important;border:1px solid rgba(190,145,255,.18)!important;border-radius:24px!important;background:#171222!important;color:#fff!important;font-size:14px;outline:none;box-shadow:inset 0 1px 4px rgba(0,0,0,.2)}
 #chat #chatText::placeholder{color:#9588a8}
 #chat .compose-icon{width:39px;height:39px;flex:0 0 39px;display:grid;place-items:center;padding:0!important;margin:0!important;border:0!important;border-radius:50%!important;background:rgba(168,85,247,.13)!important;color:#d7b3ff!important;font-size:21px!important;line-height:1}
 #chat .send-message-btn{width:43px;height:43px;flex:0 0 43px;display:grid;place-items:center;padding:0!important;border:0!important;border-radius:50%!important;background:linear-gradient(135deg,#8535e8,#c05cf4)!important;color:#fff!important;font-size:19px!important;box-shadow:0 4px 15px rgba(146,64,220,.3)}
-#chat .send-message-btn:disabled{opacity:.55}
+#chat .send-message-btn:disabled{opacity:.55}#auraVoiceButton.recording{color:#ff9bbd!important;background:rgba(255,80,140,.16)!important;animation:auraVoicePulse .9s ease-in-out infinite alternate}@keyframes auraVoicePulse{to{transform:scale(1.08);box-shadow:0 0 18px rgba(255,80,140,.4)}}
 #chat .chat-back{display:none!important}
 #auraMessageMenu{z-index:10000}
 @media(max-width:600px){body.chat-open #chat.page.active{width:100vw}#chat .chat-head{height:70px;min-height:70px;flex-basis:70px;padding:8px 12px!important}#chat .chat-messages{padding:14px 11px 18px!important}#chat .bubble{max-width:86%;font-size:14px!important}#chat .chat-compose-shell{padding-left:9px;padding-right:9px}}
@@ -783,8 +789,8 @@ html.aura-light #inbox #peopleSearch{color:#302044}
 
 
 <style id="aura-account-tools-v1">
-#auraMediaReview,#auraReportPage,#auraPasswordPage{position:fixed;inset:0;z-index:12000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(5,4,13,.88);backdrop-filter:blur(18px)}
-#auraMediaReview.open,#auraReportPage.open,#auraPasswordPage.open{display:flex;animation:auraReviewFade .22s ease both}
+#auraMediaReview,#auraReportPage,#auraPasswordPage,#auraAccountOptions{position:fixed;inset:0;z-index:12000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(5,4,13,.88);backdrop-filter:blur(18px)}
+#auraMediaReview.open,#auraReportPage.open,#auraPasswordPage.open,#auraAccountOptions.open{display:flex;animation:auraReviewFade .22s ease both}
 .aura-tool-card{width:100%;max-width:440px;max-height:90dvh;overflow:auto;padding:22px;border:1px solid rgba(198,151,255,.28);border-radius:28px;background:linear-gradient(155deg,#211632,#100d1b 72%);box-shadow:0 24px 75px rgba(0,0,0,.55),0 0 35px rgba(168,85,247,.18);animation:auraReviewCard .34s cubic-bezier(.16,1,.3,1) both}
 .aura-tool-mark{width:54px;height:54px;margin:0 auto 12px;display:grid;place-items:center;border-radius:19px;background:linear-gradient(135deg,#792cff,#c05cf4);font-size:26px;box-shadow:0 8px 24px rgba(155,92,255,.35)}
 .aura-tool-card h2{text-align:center;font-family:'Playfair Display',serif;font-size:25px;margin:5px 0 7px;color:#f7efff}
@@ -803,7 +809,20 @@ html.aura-light .aura-tool-card{background:linear-gradient(155deg,#fff,#f6efff);
 html.aura-light .aura-tool-card h2{color:#302044}html.aura-light .aura-tool-card>p{color:#78698d}html.aura-light .aura-tool-field{background:#fff;color:#302044}
 @keyframes auraReviewFade{from{opacity:0}to{opacity:1}}
 @keyframes auraReviewCard{from{opacity:0;transform:translateY(22px) scale(.96);filter:blur(5px)}to{opacity:1;transform:none;filter:blur(0)}}
-@media(prefers-reduced-motion:reduce){#auraMediaReview.open,#auraReportPage.open,#auraPasswordPage.open,.aura-tool-card{animation:none!important}}
+@media(prefers-reduced-motion:reduce){#auraMediaReview.open,#auraReportPage.open,#auraPasswordPage.open,#auraAccountOptions.open,.aura-tool-card{animation:none!important}}
+.aura-report-reasons{display:grid;gap:7px;margin:14px 0;max-height:34dvh;overflow:auto}
+.aura-report-choice{display:flex;align-items:center;gap:12px;min-height:47px;padding:10px 12px;border:1px solid rgba(190,145,255,.18);border-radius:13px;background:rgba(255,255,255,.045);color:#f3eaff;font-size:14px;font-weight:650;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.aura-report-choice:active{transform:scale(.985)}
+.aura-report-choice:has(input:checked){border-color:#b878ff;background:rgba(150,83,235,.2)}
+.aura-report-choice input{width:18px;height:18px;accent-color:#b878ff;flex:0 0 auto}
+.aura-account-options{position:fixed;inset:0;z-index:12001;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(5,4,13,.88);backdrop-filter:blur(18px)}
+.aura-option-row{width:100%;padding:15px;border:1px solid rgba(255,130,170,.22);border-radius:14px;background:rgba(255,255,255,.05);color:#ffabc4;font-weight:800;text-align:left}
+.aura-profile-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:min(100%,520px);margin:22px auto 0}
+.aura-profile-actions>button{width:100%!important;min-width:0!important;min-height:54px!important;height:54px!important;margin:0!important;padding:0 10px!important;display:flex;align-items:center;justify-content:center;border-radius:16px!important;font-size:15px!important;line-height:1.1;white-space:nowrap;transition:transform .2s ease,filter .2s ease,box-shadow .2s ease}
+.aura-profile-actions>button:active{transform:scale(.97)}
+html.aura-light .aura-report-choice{color:#302044;background:rgba(124,58,237,.045)}
+html.aura-light .aura-report-choice:has(input:checked){background:rgba(124,58,237,.12)}
+@media(max-width:380px){.aura-profile-actions{gap:8px}.aura-profile-actions>button{font-size:13px!important;height:50px!important;min-height:50px!important}}
 </style>
 
 
@@ -833,12 +852,35 @@ body.chat-open #chat .send-message-btn{background:linear-gradient(135deg,#f18cbd
 @media(prefers-reduced-motion:reduce){body.chat-open #chat .chat-messages,body.chat-open #chat .chat-messages:before,body.chat-open #chat .chat-messages:after{animation:none!important}}
 </style>
 
+
+<style id="aura-password-eye-controls-v1">
+.aura-pass-wrap{position:relative;width:100%;margin:7px 0}
+.aura-pass-wrap .aura-tool-field{margin:0;padding-right:54px;min-height:58px}
+.aura-eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:1px solid rgba(255,190,226,.2);border-radius:12px;background:linear-gradient(145deg,rgba(255,185,222,.16),rgba(173,112,255,.16));color:#ffd8ef;font-size:16px;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 12px rgba(200,110,190,.12);animation:auraEyeIdle 3s ease-in-out infinite}
+.aura-eye-btn:active{animation:auraEyePop .24s ease-out}
+.aura-eye-btn.is-visible{background:linear-gradient(145deg,rgba(255,126,194,.34),rgba(173,112,255,.3));box-shadow:0 0 0 3px rgba(255,155,211,.12),0 0 16px rgba(230,135,220,.28)}
+@keyframes auraEyeIdle{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
+@keyframes auraEyePop{0%{transform:translateY(-50%) scale(.86)}70%{transform:translateY(-50%) scale(1.12)}100%{transform:translateY(-50%) scale(1)}}
+</style>
+
 </head>
 <body>
 
 <div id="auraMediaReview" aria-hidden="true"><section class="aura-tool-card" role="dialog" aria-modal="true" aria-labelledby="auraMediaTitle"><div class="aura-tool-mark">✧</div><h2 id="auraMediaTitle">Ready to share?</h2><p>Take one last look before sending your media.</p><div class="aura-tool-preview" id="auraMediaPreview"></div><div class="aura-tool-actions"><button type="button" class="aura-tool-cancel" id="auraMediaCancel">Cancel</button><button type="button" class="aura-tool-primary" id="auraMediaSend">Send</button></div><div class="aura-tool-error" id="auraMediaError"></div></section></div>
-<div id="auraReportPage" aria-hidden="true"><section class="aura-tool-card" role="dialog" aria-modal="true" aria-labelledby="auraReportTitle"><div class="aura-tool-mark">⚑</div><h2 id="auraReportTitle">Report account</h2><p>Tell us what happened. Reports are reviewed by the AURA team.</p><select id="auraReportReason" class="aura-tool-field"><option value="">Choose a reason</option><option>Spam or fake account</option><option>Harassment or bullying</option><option>Impersonation</option><option>Inappropriate content</option><option>Scam or fraud</option><option>Other</option></select><textarea id="auraReportDetails" class="aura-tool-field" rows="4" maxlength="1000" placeholder="Additional details (optional)"></textarea><div class="aura-tool-actions"><button type="button" class="aura-tool-cancel" id="auraReportCancel">Cancel</button><button type="button" class="aura-tool-primary" id="auraReportSubmit">Submit report</button></div><div class="aura-tool-error" id="auraReportError"></div></section></div>
-<div id="auraPasswordPage" aria-hidden="true"><section class="aura-tool-card" role="dialog" aria-modal="true" aria-labelledby="auraPasswordTitle"><div class="aura-tool-mark">🔐</div><h2 id="auraPasswordTitle">Change password</h2><p>Choose a strong new password for your AURA account.</p><input id="auraNewPassword" class="aura-tool-field" type="password" autocomplete="new-password" placeholder="New password (8+ characters)"><input id="auraConfirmPassword" class="aura-tool-field" type="password" autocomplete="new-password" placeholder="Confirm new password"><div class="aura-tool-actions"><button type="button" class="aura-tool-cancel" id="auraPasswordCancel">Cancel</button><button type="button" class="aura-tool-primary" id="auraPasswordSave">Save password</button></div><div class="aura-tool-error" id="auraPasswordError"></div></section></div>
+<div id="auraReportPage" aria-hidden="true"><section class="aura-tool-card" role="dialog" aria-modal="true" aria-labelledby="auraReportTitle"><div class="aura-tool-mark">⚑</div><h2 id="auraReportTitle">Report account</h2><p>Tell us what happened. Reports are reviewed by the AURA team.</p><div class="aura-report-reasons" id="auraReportReasons" role="radiogroup" aria-label="Choose a report reason">
+<label class="aura-report-choice"><input type="radio" name="auraReportReason" value="Spam or fake account"><span>Spam or fake account</span></label>
+<label class="aura-report-choice"><input type="radio" name="auraReportReason" value="Harassment or bullying"><span>Harassment or bullying</span></label>
+<label class="aura-report-choice"><input type="radio" name="auraReportReason" value="Impersonation"><span>Impersonation</span></label>
+<label class="aura-report-choice"><input type="radio" name="auraReportReason" value="Inappropriate content"><span>Inappropriate content</span></label>
+<label class="aura-report-choice"><input type="radio" name="auraReportReason" value="Scam or fraud"><span>Scam or fraud</span></label>
+<label class="aura-report-choice"><input type="radio" name="auraReportReason" value="Other"><span>Other</span></label>
+</div><textarea id="auraReportDetails" class="aura-tool-field" rows="4" maxlength="1000" placeholder="Additional details (optional)"></textarea><div class="aura-tool-actions"><button type="button" class="aura-tool-cancel" id="auraReportCancel">Cancel</button><button type="button" class="aura-tool-primary" id="auraReportSubmit">Submit report</button></div><div class="aura-tool-error" id="auraReportError"></div></section></div>
+<div id="auraAccountOptions" class="aura-account-options" aria-hidden="true"><section class="aura-tool-card" role="dialog" aria-modal="true" aria-labelledby="auraOptionsTitle"><div class="aura-tool-mark">⋯</div><h2 id="auraOptionsTitle">Account options</h2><p>Choose what you want to do with this account.</p><button type="button" class="aura-option-row danger-option" id="auraBlockFromProfile">🚫 Block account</button><div class="aura-tool-actions"><button type="button" class="aura-tool-cancel" id="auraOptionsCancel">Cancel</button></div></section></div>
+<div id="auraPasswordPage" aria-hidden="true"><section class="aura-tool-card" role="dialog" aria-modal="true" aria-labelledby="auraPasswordTitle"><div class="aura-tool-mark">🔐</div><h2 id="auraPasswordTitle">Change password</h2><p>Enter your current password, then choose a new one.</p>
+<div class="aura-pass-wrap"><input id="auraCurrentPassword" class="aura-tool-field" type="password" autocomplete="current-password" placeholder="Current password"><button type="button" class="aura-eye-btn" data-target="auraCurrentPassword" aria-label="Show current password" title="Show password">👁️</button></div>
+<div class="aura-pass-wrap"><input id="auraNewPassword" class="aura-tool-field" type="password" autocomplete="new-password" placeholder="New password (8+ characters)"><button type="button" class="aura-eye-btn" data-target="auraNewPassword" aria-label="Show new password" title="Show password">👁️</button></div>
+<div class="aura-pass-wrap"><input id="auraConfirmPassword" class="aura-tool-field" type="password" autocomplete="new-password" placeholder="Confirm new password"><button type="button" class="aura-eye-btn" data-target="auraConfirmPassword" aria-label="Show confirmed password" title="Show password">👁️</button></div>
+<div class="aura-tool-actions"><button type="button" class="aura-tool-cancel" id="auraPasswordCancel">Cancel</button><button type="button" class="aura-tool-primary" id="auraPasswordSave">Save password</button></div><div class="aura-tool-error" id="auraPasswordError"></div></section></div>
 
 
 <div id="authScreen">
@@ -922,7 +964,7 @@ body.chat-open #chat .send-message-btn{background:linear-gradient(135deg,#f18cbd
 
 <section class="page" id="explore">
  <div class="heading">Explore</div><div class="sub">Find your kind of beauty.</div>
- <input class="search" id="search" placeholder="Search posts by username or caption"><div class="grid" id="gallery"></div>
+ <input class="search" id="search" placeholder="Search posts by username or caption"><div class="aura-studio-launch"><button class="primary" id="openAuraStudio">✦ AURA Studio</button><button class="secondary" id="openAuraReels">▶ Reels</button><button class="secondary" id="openAuraMoments">✧ Moments</button></div><div class="grid" id="gallery"></div>
 </section>
 
 <section class="page" id="create">
@@ -968,7 +1010,7 @@ body.chat-open #chat .send-message-btn{background:linear-gradient(135deg,#f18cbd
   <label class="primary cr-pick">＋ Choose Story<input type="file" accept="image/*,video/*" id="storyUpload"></label>
   <div id="storyCompose" class="cr-compose hidden">
    <div class="cr-preview" id="storyPreview"></div>
-   <textarea id="storyComposeCaption" placeholder="Add a caption to your story..." maxlength="200"></textarea>
+   <textarea id="storyComposeCaption" placeholder="Add a caption to your story..." maxlength="200"></textarea><select id="auraStoryVisibility" class="field"><option value="public">Everyone</option><option value="close_friends">Close Friends</option></select>
    <div class="cr-actions"><button type="button" class="cr-cancel" id="storyCancel">Cancel</button><button type="button" class="cr-submit" id="storySubmit">Share story</button></div>
   </div>
  </div>
@@ -1022,7 +1064,7 @@ body.chat-open #chat .send-message-btn{background:linear-gradient(135deg,#f18cbd
     <button id="emojiButton" class="compose-icon" type="button" aria-label="Add emoji">☺</button>
     <input id="chatText" type="text" maxlength="2000" placeholder="Message..." autocomplete="off" aria-label="Write a message">
     <label class="compose-icon attach-icon" aria-label="Attach photo or video">＋<input id="chatImage" type="file" accept="image/*,video/*" hidden></label>
-    <button class="send-message-btn" type="submit" aria-label="Send message">➤</button>
+    <button id="auraVoiceButton" class="compose-icon" type="button" aria-label="Record voice message">🎙</button><button class="send-message-btn" type="submit" aria-label="Send message">➤</button>
    </form>
    <button id="replyCancel" class="hidden" type="button" aria-hidden="true" tabindex="-1">Cancel reply</button>
    <span id="replyLabel" class="hidden" aria-hidden="true"></span>
@@ -1032,7 +1074,7 @@ body.chat-open #chat .send-message-btn{background:linear-gradient(135deg,#f18cbd
 
 <section class="page" id="profile">
  <div class="profile-top">
-  <img class="profile-pic" id="myPic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" alt="Profile picture">
+  <div id="myCover" class="aura-profile-cover"></div><img class="profile-pic" id="myPic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" alt="Profile picture">
   <div class="profile-name" id="myName">AURA User</div><p class="profile-bio" id="myBio">Living in my own little world 🌷</p>
   <span class="gender-pill hidden" id="myGender"></span>
   <div class="stats">
@@ -1042,7 +1084,7 @@ body.chat-open #chat .send-message-btn{background:linear-gradient(135deg,#f18cbd
   </div>
   <div class="profile-story" id="myStoryShortcut"></div>
   <button class="edit" id="editProfileButton">Edit Profile</button>
-  <button class="secondary" id="settingsButton">⚙ Settings</button>
+  <button class="secondary" id="settingsButton">⚙ Settings</button><button class="secondary" id="profileStudioButton" type="button">✦ AURA Studio</button>
   <button class="edit" id="logoutButton">Log out</button>
  </div>
  <div class="grid" id="myPosts"></div>
@@ -1051,7 +1093,7 @@ body.chat-open #chat .send-message-btn{background:linear-gradient(135deg,#f18cbd
 <section class="page" id="viewProfile">
  <div class="chat-back"><button id="backProfile">← Back</button></div>
  <div class="profile-top">
-  <img class="profile-pic" id="viewPic" alt="">
+  <div id="viewCover" class="aura-profile-cover"></div><img class="profile-pic" id="viewPic" alt="">
   <div class="profile-name" id="viewName"></div><p class="profile-bio" id="viewBio"></p>
   <div class="stats">
    <div><strong id="viewPostCount">0</strong><small>Posts</small></div>
@@ -1059,9 +1101,12 @@ body.chat-open #chat .send-message-btn{background:linear-gradient(135deg,#f18cbd
    <div><strong id="viewFollowingCount">0</strong><small>Following</small></div>
   </div>
   <div class="profile-story" id="viewStoryShortcut"></div>
-  <button class="follow" id="viewFollowButton">Follow</button>
-  <button class="secondary" id="viewMessageButton">Message</button>
-  <button class="secondary" id="viewMoreButton">⋯ Options</button>
+  <div class="aura-profile-actions">
+   <button class="follow" id="viewFollowButton">Follow</button>
+   <button class="secondary" id="viewMessageButton">Message</button>
+   <button class="secondary aura-report-profile" id="viewReportButton">⚑ Report</button>
+   <button class="secondary" id="viewMoreButton">⋯ Options</button>
+  </div>
  </div>
  <div class="grid" id="viewPosts"></div>
 </section>
@@ -1088,6 +1133,26 @@ body.chat-open #chat .send-message-btn{background:linear-gradient(135deg,#f18cbd
  <div id="blockedList"></div>
 </section>
 
+<style id="aura-studio-style">
+.aura-profile-cover{height:120px;border-radius:18px;margin:0 0 14px;background-size:cover;background-position:center;background-color:rgba(120,70,180,.12);border:1px solid rgba(190,145,255,.16)}.as-comment-reply{border:0;background:none;color:#c18aff;font-size:11px;font-weight:800;margin-left:5px}.aura-studio-launch{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 18px}.aura-studio-launch button{flex:1;min-width:90px}
+#auraStudio{padding-bottom:110px}.as-hero{padding:22px;border:1px solid rgba(190,145,255,.2);border-radius:25px;background:radial-gradient(circle at 85% 5%,rgba(168,85,247,.25),transparent 42%),linear-gradient(145deg,#1c1230,#0e0a19);margin:12px 0 18px}.as-hero h2{font:800 25px 'Playfair Display',serif;color:#ead8ff}.as-hero p,.as-muted{font-size:12px;color:#a99abb;line-height:1.6;margin-top:6px}
+.as-tabs{display:flex;gap:8px;overflow:auto;padding:5px 0 14px;scrollbar-width:none}.as-tabs button{flex:none;border:1px solid var(--line);background:var(--card);color:#d8baff;padding:9px 13px;border-radius:20px;font-size:12px;font-weight:800}.as-tabs button.active{background:var(--gradient);color:white;border-color:transparent}.as-panel{display:none;animation:pageIn .24s ease}.as-panel.active{display:block}.as-card{padding:16px;margin:10px 0;border:1px solid rgba(190,145,255,.17);border-radius:20px;background:linear-gradient(145deg,#171126,#0e0b18)}.as-card h3{font:700 18px 'Playfair Display',serif;margin-bottom:7px;color:#ead8ff}.as-row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(190,145,255,.1)}.as-row img{width:42px;height:42px;object-fit:cover;border-radius:50%}.as-row>div{flex:1;min-width:0}.as-row small{display:block;color:var(--muted);font-size:11px}.as-input{width:100%;padding:12px 14px;border-radius:13px;border:1px solid #392850;background:#0b0913;color:#f7f3ff;margin:7px 0;outline:none}.as-textarea{min-height:88px;resize:vertical}.as-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.as-actions button{flex:1}.as-empty{text-align:center;color:var(--muted);padding:25px 10px;font-size:13px}.as-badge{display:inline-block;padding:4px 8px;border-radius:20px;background:rgba(168,85,247,.15);color:#d9b8ff;font-size:10px;font-weight:800}.as-reel{position:relative;margin:12px 0;border-radius:22px;overflow:hidden;background:#05040a;border:1px solid #392850;min-height:420px;display:grid;place-items:center}.as-reel video{width:100%;max-height:72vh;object-fit:contain}.as-reel-caption{position:absolute;left:12px;right:12px;bottom:12px;padding:12px;border-radius:14px;background:linear-gradient(transparent,rgba(0,0,0,.8));color:white;font-size:13px;pointer-events:none}.as-moment{padding:15px;border-radius:18px;background:linear-gradient(140deg,#1c1430,#100c1c);border:1px solid rgba(190,145,255,.16);margin:10px 0}.as-moment blockquote{font:700 17px 'Playfair Display',serif;color:#e8d7ff;margin:8px 0}
+html.aura-light .as-card,html.aura-light .as-moment{background:#fff;border-color:rgba(124,58,237,.18)}html.aura-light .as-card h3,html.aura-light .as-moment blockquote{color:#44236b}html.aura-light .as-input{background:#fff;color:#302044}
+</style>
+<section class="page" id="auraStudio">
+<div class="chat-back"><button id="auraStudioBack" class="secondary">← Explore</button></div><div class="heading">AURA Studio ✦</div><div class="sub">Your world. Your people. Your style.</div>
+<div class="as-hero"><span class="as-badge">AURA ORIGINAL</span><h2>Make your little world bigger.</h2><p>Stories, short videos, moments, collections and personal touches — all in the AURA universe.</p></div>
+<div class="as-tabs" id="auraStudioTabs"><button class="active" data-as-tab="reels">▶ Reels</button><button data-as-tab="moments">✧ Moments</button><button data-as-tab="friends">♡ Close Friends</button><button data-as-tab="saved">▣ Collections</button><button data-as-tab="drafts">✎ Drafts</button><button data-as-tab="notify">♧ Notifications</button><button data-as-tab="profiletools">✦ Profile</button><button data-as-tab="themes">◐ Themes</button><button data-as-tab="visits">◉ Visits</button></div>
+<div class="as-panel active" id="as-reels"><div class="as-card"><h3>AURA Reels</h3><p class="as-muted">Short videos from the community. Scroll through and tap controls for sound.</p></div><div id="auraReelsList"><div class="as-empty">Loading videos…</div></div></div>
+<div class="as-panel" id="as-moments"><div class="as-card"><h3>Today's AURA Moment ✧</h3><p class="as-muted" id="auraMomentPrompt">What small thing made today better?</p><textarea id="auraMomentText" class="as-input as-textarea" maxlength="500" placeholder="Share your moment…"></textarea><div class="as-actions"><button class="primary" id="auraMomentPost">Share Moment</button><button class="secondary" id="auraMomentRefresh">New Prompt</button></div></div><div id="auraMomentsList"></div></div>
+<div class="as-panel" id="as-friends"><div class="as-card"><h3>Your Close Friends ♡</h3><p class="as-muted">Only people you add here can see Stories shared with Close Friends. Your list is private.</p><input id="auraFriendSearch" class="as-input" placeholder="Find people you follow…"></div><div id="auraCloseFriendsList"></div></div>
+<div class="as-panel" id="as-saved"><div class="as-card"><h3>Saved Collections ▣</h3><p class="as-muted">Organize saved posts into private collections.</p><input id="auraCollectionName" class="as-input" maxlength="40" placeholder="New collection name"><button id="auraCreateCollection" class="primary">＋ Create Collection</button></div><div id="auraCollectionsList"></div></div>
+<div class="as-panel" id="as-drafts"><div class="as-card"><h3>Post Drafts ✎</h3><p class="as-muted">Keep ideas safe and finish them whenever you're ready.</p><textarea id="auraDraftText" class="as-input as-textarea" maxlength="2000" placeholder="Write an idea or caption…"></textarea><button id="auraSaveDraft" class="primary">Save Draft</button></div><div id="auraDraftsList"></div></div>
+<div class="as-panel" id="as-notify"><div class="as-card"><h3>Notifications ♧</h3><button id="auraMarkNotifications" class="secondary">Mark all as read</button></div><div id="auraNotificationsList"></div></div>
+<div class="as-panel" id="as-profiletools"><div class="as-card"><h3>Profile Cover</h3><p class="as-muted">Add a cover image to your profile.</p><input id="auraCoverFile" class="as-input" type="file" accept="image/*"><button id="auraCoverUpload" class="primary">Upload Cover</button></div><div class="as-card"><h3>Verification Request</h3><p class="as-muted">Verification is granted only after review.</p><textarea id="auraVerifyReason" class="as-input as-textarea" maxlength="500" placeholder="Why should your profile be reviewed?"></textarea><button id="auraVerifySubmit" class="primary">Request Verification</button></div><div class="as-card"><h3>Profile Visit Privacy</h3><label><input id="auraVisitTracking" type="checkbox" checked> Save my visit history</label><p class="as-muted">Control whether your visits are recorded.</p></div><div class="as-card"><h3>Online Friends</h3><p class="as-muted">Followed profiles. Live online status requires an active presence session.</p><div id="auraOnlineFriends"></div></div></div>
+<div class="as-panel" id="as-themes"><div class="as-card"><h3>Choose your AURA</h3><p class="as-muted">Original AURA color moods. Saved on this device.</p><div class="as-actions"><button class="secondary" data-aura-theme="purple">Purple Galaxy</button><button class="secondary" data-aura-theme="lavender">Lavender Glow</button><button class="secondary" data-aura-theme="midnight">Midnight</button><button class="secondary" data-aura-theme="rose">Rose Aura</button></div></div></div>
+<div class="as-panel" id="as-visits"><div class="as-card"><h3>Profile Visits</h3><p class="as-muted">Recent visitors to your profile, subject to their privacy settings.</p></div><div id="auraVisitsList"></div></div>
+</section>
 <nav class="bottom">
  <button class="nav active" data-page="home" aria-label="Home"><svg class="aura-ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3.5 10.5 8.5-7 8.5 7v9.8a.7.7 0 0 1-.7.7H4.2a.7.7 0 0 1-.7-.7z"/><path d="M9 21v-6.5h6V21"/></svg></button>
  <button class="nav" data-page="explore" aria-label="Explore"><svg class="aura-ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5M8.3 10.8h5M10.8 8.3v5"/></svg></button>
@@ -1138,6 +1203,7 @@ function toast(m){
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function validPassword(p){return typeof p==="string"&&p.length>=8;}
 function mediaIsVideo(url){return /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url||"")||String(url||"").includes("story-video-")||String(url||"").includes("message-video-");}
+function mediaIsAudio(url){return /\.(webm|ogg|mp3|m4a|wav|aac)(\?|$)/i.test(url||"")||String(url||"").includes("aura-voice-");}
 function showPage(name,button){
  if(document.body.classList.contains("chat-open") && name!=="chat" && $("chatMessages") && activeConversation){
   window.AURA_CHAT_SCROLL=window.AURA_CHAT_SCROLL||Object.create(null);
@@ -1259,7 +1325,7 @@ async function loadProfile(){
   const username=currentUser.user_metadata?.username||currentUser.email?.split("@")[0]||currentUser.phone?.slice(-8)||"aura_user";
   const fullName=currentUser.user_metadata?.full_name||username;await saveProfile(currentUser,username,fullName);return loadProfile();
  }
- currentProfile=data;$("myName").textContent=data.full_name||data.username||"AURA User";
+ currentProfile=data;if($("myCover"))$("myCover").style.backgroundImage=data.cover_url?`url("${data.cover_url}")`:"none";$("myName").textContent=(data.full_name||data.username||"AURA User")+(data.is_verified?"  ✓":"");
  $("myBio").textContent=data.bio||"Living in my own little world 🌷";$("myPic").src=data.avatar_url||FALLBACK_AVATAR;
 }
 async function safeLoad(label,fn){try{await fn()}catch(error){console.error(label+":",error);if(label==="Feed"&&window.auraWelcomeFeed){window.auraWelcomeFeed();}else{console.warn(label+" could not load.");}}}
@@ -1358,18 +1424,35 @@ if(localStorage.getItem("aura_theme")==="light"){
 
 function changePassword(){
  if(!currentUser||currentUser.guest){toast("Please log in first.");return}
- $("auraNewPassword").value="";$("auraConfirmPassword").value="";$("auraPasswordError").textContent="";openAuraTool("auraPasswordPage");
+ ["auraCurrentPassword","auraNewPassword","auraConfirmPassword"].forEach(id=>$(id).value="");
+ document.querySelectorAll(".aura-eye-btn").forEach(b=>{b.classList.remove("is-visible");b.textContent="👁️";});
+ $("auraPasswordError").textContent="";openAuraTool("auraPasswordPage");
 }
 $("settingsPassword").addEventListener("click",changePassword);
 $("auraPasswordCancel").addEventListener("click",()=>closeAuraTool("auraPasswordPage"));
+document.querySelectorAll(".aura-eye-btn").forEach(btn=>btn.addEventListener("click",()=>{
+ const field=$(btn.dataset.target);if(!field)return;
+ const show=field.type==="password";field.type=show?"text":"password";
+ btn.classList.toggle("is-visible",show);btn.textContent=show?"🙈":"👁️";
+ btn.setAttribute("aria-label",(show?"Hide ":"Show ")+field.placeholder.toLowerCase());
+}));
 $("auraPasswordSave").addEventListener("click",async()=>{
- const p=$("auraNewPassword").value,confirm=$("auraConfirmPassword").value,btn=$("auraPasswordSave");
- if(!validPassword(p)){$("auraPasswordError").textContent="Use a new password with at least 8 characters.";return}
- if(p!==confirm){$("auraPasswordError").textContent="Passwords do not match.";return}
- btn.disabled=true;$("auraPasswordError").textContent="Updating password…";
- try{const {error}=await supabase.auth.updateUser({password:p});if(error)throw error;closeAuraTool("auraPasswordPage");toast("Password updated successfully.");}
- catch(e){$("auraPasswordError").textContent=e.message||"Could not update password.";}
- finally{btn.disabled=false;}
+ const current=$("auraCurrentPassword").value,p=$("auraNewPassword").value,confirm=$("auraConfirmPassword").value,btn=$("auraPasswordSave");
+ const err=$("auraPasswordError");
+ if(!current){err.textContent="Enter your current password first.";return}
+ if(!validPassword(p)){err.textContent="Use a new password with at least 8 characters.";return}
+ if(p!==confirm){err.textContent="New passwords do not match.";return}
+ if(p===current){err.textContent="Choose a password different from your current one.";return}
+ btn.disabled=true;err.textContent="Verifying current password…";
+ try{
+  // Supabase Auth requires current_password when password-change protection is enabled.
+  const {error}=await supabase.auth.updateUser({password:p,current_password:current});
+  if(error)throw error;
+  closeAuraTool("auraPasswordPage");toast("Password updated successfully.");
+ }catch(e){
+  const msg=String(e?.message||"Could not update password.");
+  err.textContent=/current password|invalid.*password|password.*incorrect/i.test(msg)?"Current password is incorrect. Please try again.":msg;
+ }finally{btn.disabled=false;}
 });
 $("settingsButton").addEventListener("click",()=>showPage("settings",null));
 $("backSettings").addEventListener("click",profilePage);
@@ -1384,6 +1467,7 @@ function isPostSaved(id){return getSavedPosts().includes(String(id))}
 function toggleSavedPost(id){
  const saved=getSavedPosts(),key=String(id),next=saved.includes(key)?saved.filter(x=>x!==key):[...saved,key];
  localStorage.setItem(savedPostsKey(),JSON.stringify(next));
+ if(currentUser&&!currentUser.guest){if(next.includes(key))supabase.from("aura_saved_posts").upsert({user_id:currentUser.id,post_id:key},{onConflict:"user_id,post_id"}).then(()=>{});else supabase.from("aura_saved_posts").delete().eq("user_id",currentUser.id).eq("post_id",key).then(()=>{});}
  const on=next.includes(key);
  document.querySelectorAll('[data-save="'+key+'"]').forEach(b=>b.classList.toggle("saved",on));
  window.auraSavePop&&window.auraSavePop(on);
@@ -1458,11 +1542,11 @@ function renderFeed(){
   const article=document.createElement("article");article.className="post";
   article.innerHTML=`
    <div class="post-user"><img class="avatar" src="${esc(avatar)}" alt="" data-profile="${esc(post.user_id)}">
-   <div class="user-info"><strong data-profile="${esc(post.user_id)}">${esc(username)}</strong><small>${new Date(post.created_at).toLocaleString()}</small></div>
+   <div class="user-info"><strong data-profile="${esc(post.user_id)}">${esc(username)}${profile.is_verified?" <span class=\"as-badge\">✓ VERIFIED</span>":""}</strong><small>${new Date(post.created_at).toLocaleString()}</small></div>
    ${!mine?`<button class="follow ${isFollowing?"following":""}" data-follow="${esc(post.user_id)}">${isFollowing?"Following":"Follow"}</button>`:""}
    <button class="more-btn" data-post-menu="${esc(post.id)}" aria-label="Post options">⋯</button></div>
    <div class="caption post-caption-top">${post.caption?esc(post.caption):""}</div>
-   ${video?`<video class="post-image" src="${esc(post.media_url)}" controls playsinline preload="metadata"></video>`:`<img class="post-image" src="${esc(post.media_url)}" alt="Post" loading="lazy">`}
+   ${video?`<video class="post-image" src="${esc(post.media_url)}" controls playsinline preload="metadata" data-aura-feed-video></video>`:`<img class="post-image" src="${esc(post.media_url)}" alt="Post" loading="lazy">`}
    <div class="post-actions">
    <button class="action ${liked?"liked":""}" data-like="${esc(post.id)}">${liked?"♥":"♡"}</button>
    <button class="action" data-focus-comment>♧</button><button class="action" data-share="${esc(post.id)}">↗</button>
@@ -1471,13 +1555,14 @@ function renderFeed(){
 
    <span class="like-count">${(post.likes||[]).length} likes</span></div>
    ${video?`<div class="views-line" data-v="${post.views_count||0}">${post.views_count||0} views</div>`:""}
-   <div class="comment-list">${comments.slice(0,3).map(c=>`<p><b>${esc(c.profiles?.username||"User")}</b> ${esc(c.content)}</p>`).join("")}</div>
+   <div class="comment-list">${comments.slice(0,3).map(c=>`<p><b>${esc(c.profiles?.username||"User")}</b> ${esc(c.content)} <button type="button" class="as-comment-reply" data-comment-reply="${esc(c.id)}">Reply</button></p>`).join("")}</div>
    <form class="comment-form" data-comment="${esc(post.id)}"><input name="content" placeholder="Add a comment..." maxlength="500" required><button>Post</button></form>`;
   feed.appendChild(article);
  });
  feed.querySelectorAll("[data-like]").forEach(b=>b.addEventListener("click",()=>toggleLike(b.dataset.like)));
  feed.querySelectorAll("[data-follow]").forEach(b=>b.addEventListener("click",()=>toggleFollow(b.dataset.follow)));
  feed.querySelectorAll("[data-comment]").forEach(f=>f.addEventListener("submit",submitComment));
+ feed.querySelectorAll("[data-comment-reply]").forEach(b=>b.addEventListener("click",async()=>{const content=prompt("Write a reply:");if(!content?.trim())return;const post=b.closest(".post"),postId=post.querySelector("[data-like]")?.dataset.like;const {error}=await supabase.from("comments").insert({post_id:postId,user_id:currentUser.id,parent_id:b.dataset.commentReply,content:content.trim().slice(0,500)});if(error)toast(error.message);else loadFeed();}));
  feed.querySelectorAll("[data-focus-comment]").forEach(b=>b.addEventListener("click",()=>b.closest(".post").querySelector('input[name="content"]').focus()));
  feed.querySelectorAll("[data-save]").forEach(b=>b.addEventListener("click",()=>toggleSavedPost(b.dataset.save)));
  feed.querySelectorAll("[data-share]").forEach(b=>b.addEventListener("click",sharePost));
@@ -1568,7 +1653,7 @@ async function loadMyStats(){
 }
 function makeMediaElement(p){
  const el=p.media_type==="video"?document.createElement("video"):document.createElement("img");el.src=p.media_url;
- if(el.tagName==="VIDEO"){el.muted=true;el.preload="metadata";el.playsInline=true}else el.loading="lazy";
+ if(el.tagName==="VIDEO"){el.preload="metadata";el.playsInline=true;el.controls=true;el.muted=false}else el.loading="lazy";
  return el;
 }
 function renderGallery(){
@@ -1593,8 +1678,10 @@ async function openUserProfile(id){
  const {data:profile,error}=await supabase.from("profiles").select("*").eq("id",id).maybeSingle();
  if(error||!profile){toast(error?.message||"Profile not found.");return}
  activeViewedProfile=profile;
+ $("viewCover").style.backgroundImage=profile.cover_url?`url("${profile.cover_url}")`:"none";
+ if(currentUser&&!currentUser.guest)supabase.from("aura_user_settings").select("track_profile_visits").eq("user_id",currentUser.id).maybeSingle().then(({data})=>{if(data?.track_profile_visits!==false)supabase.from("aura_profile_visits").insert({profile_id:id,visitor_id:currentUser.id}).then(()=>{});});
  $("viewPic").src=profile.avatar_url||FALLBACK_AVATAR;
- $("viewName").textContent=profile.full_name||profile.username||"AURA User";
+ $("viewName").textContent=(profile.full_name||profile.username||"AURA User")+(profile.is_verified?"  ✓":"");
  $("viewBio").textContent=profile.bio||"";
  const {data:posts,error:postError}=await supabase.from("posts").select("*").eq("user_id",id).order("created_at",{ascending:false});
  if(postError){toast(postError.message);return}
@@ -1609,18 +1696,23 @@ async function openUserProfile(id){
  const fb=$("viewFollowButton");fb.textContent=followingIds.has(id)?"Following":"Follow";fb.classList.toggle("following",followingIds.has(id));
  $("viewFollowButton").onclick=()=>toggleFollow(id);
  $("viewMessageButton").onclick=()=>openChat({id,username:profile.username,full_name:profile.full_name,avatar_url:profile.avatar_url});
- $("viewMoreButton").onclick=()=>userOptions(id);
+ $("viewReportButton").onclick=()=>reportUser(id);
+  $("viewMoreButton").onclick=()=>userOptions(id);
  const group=storyGroups.find(g=>g.user_id===id);
  $("viewStoryShortcut").innerHTML="";
  if(group){const wrap=document.createElement("div");wrap.className="story";const img=document.createElement("img");img.src=profile.avatar_url||FALLBACK_AVATAR;const label=document.createElement("span");label.textContent="Story";wrap.append(img,label);wrap.onclick=()=>openStoryGroup(id);$("viewStoryShortcut").appendChild(wrap);}
  showPage("viewProfile",null);
 }
 $("backProfile").addEventListener("click",()=>showPage("home",document.querySelector('[data-page="home"]')));
+let auraOptionsTargetId=null;
 async function userOptions(id){
- const choice=prompt("Account options:\n1. Block\n2. Report\n\nEnter 1 or 2:");
- if(choice==="1")await blockUser(id);
- if(choice==="2")await reportUser(id);
+ if(!id||id===currentUser?.id)return;
+ auraOptionsTargetId=id;openAuraTool("auraAccountOptions");
 }
+$("auraOptionsCancel").addEventListener("click",()=>closeAuraTool("auraAccountOptions"));
+$("auraBlockFromProfile").addEventListener("click",async()=>{
+ const id=auraOptionsTargetId;closeAuraTool("auraAccountOptions");if(id)await blockUser(id);
+});
 async function blockUser(id){
  if(!id||id===currentUser.id)return;
  if(!(await window.auraConfirm("Block this account? Their posts and stories will be hidden from your AURA feed.")))return;
@@ -1641,11 +1733,11 @@ function openAuraTool(id){const el=$(id);el.classList.add("open");el.setAttribut
 async function reportUser(id){
  if(!currentUser||currentUser.guest){toast("Please log in to report an account.");return}
  if(!id||id===currentUser.id){toast("You cannot report your own account.");return}
- auraReportTargetId=id;$("auraReportReason").value="";$("auraReportDetails").value="";$("auraReportError").textContent="";openAuraTool("auraReportPage");
+ auraReportTargetId=id;document.querySelectorAll('input[name="auraReportReason"]').forEach(r=>r.checked=false);$("auraReportDetails").value="";$("auraReportError").textContent="";openAuraTool("auraReportPage");
 }
 $("auraReportCancel").addEventListener("click",()=>closeAuraTool("auraReportPage"));
 $("auraReportSubmit").addEventListener("click",async()=>{
- const reason=$("auraReportReason").value,details=$("auraReportDetails").value.trim(),btn=$("auraReportSubmit");
+ const reason=document.querySelector('input[name="auraReportReason"]:checked')?.value||"",details=$("auraReportDetails").value.trim(),btn=$("auraReportSubmit");
  if(!reason){$("auraReportError").textContent="Please choose a reason.";return}
  btn.disabled=true;$("auraReportError").textContent="Submitting securely…";
  try{const {error}=await supabase.from("user_reports").insert({reporter_id:currentUser.id,reported_user_id:auraReportTargetId,reason:reason.slice(0,100),details:details.slice(0,1000)||null});if(error)throw error;closeAuraTool("auraReportPage");toast("Report submitted. Thank you.");}
@@ -1739,7 +1831,7 @@ $("storySubmit").addEventListener("click",async()=>{
   const isVideo=pendingStory.type.startsWith("video/");
   const url=await uploadMedia(pendingStory,isVideo?"story-video":"story-image");
   const caption=$("storyComposeCaption").value.trim().slice(0,200)||null;
-  const {error}=await supabase.from("stories").insert({user_id:currentUser.id,media_url:url,caption});
+  const {error}=await supabase.from("stories").insert({user_id:currentUser.id,media_url:url,caption,visibility:$("auraStoryVisibility")?.value||"public"});
   if(error)throw error;
   hideCompose("story");
   $("uploadStatus").textContent="Story added ✨";
@@ -1952,7 +2044,8 @@ async function loadMessages(){
    const mine=m.sender_id===currentUser.id,div=document.createElement("div");div.className="bubble"+(mine?" mine":"");div.dataset.messageId=m.id;
    let media="";
    if(m.image_url){
-    if(mediaIsVideo(m.image_url))media=`<video src="${esc(m.image_url)}" controls playsinline preload="metadata"></video>`;
+    if(mediaIsAudio(m.image_url))media=`<audio src="${esc(m.image_url)}" controls preload="metadata"></audio>`;
+    else if(mediaIsVideo(m.image_url))media=`<video src="${esc(m.image_url)}" controls playsinline preload="metadata"></video>`;
     else media=`<img src="${esc(m.image_url)}" alt="Shared image" loading="lazy">`;
    }
    div.setAttribute("role","button");
@@ -2084,7 +2177,7 @@ async function sendChatMessage(content,imageUrl=null){
   if(error)throw error;
   optimistic.remove();
   if(data){const div=document.createElement("div");div.className="bubble mine";div.dataset.messageId=data.id;div.setAttribute("role","button");div.setAttribute("aria-label","Your message. Press and hold for options");
-   const media=data.image_url?(mediaIsVideo(data.image_url)?`<video src="${esc(data.image_url)}" controls playsinline preload="metadata"></video>`:`<img src="${esc(data.image_url)}" alt="Shared image" loading="lazy">`):"";
+   const media=data.image_url?(mediaIsAudio(data.image_url)?`<audio src="${esc(data.image_url)}" controls preload="metadata"></audio>`:mediaIsVideo(data.image_url)?`<video src="${esc(data.image_url)}" controls playsinline preload="metadata"></video>`:`<img src="${esc(data.image_url)}" alt="Shared image" loading="lazy">`):"";
    div.innerHTML=`<div class="message-content">${esc(data.content||"").replace(/\n/g,"<br>")}</div>${media}<small>${new Date(data.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})} · Sent</small>`;viewport.appendChild(div);viewport.scrollTop=viewport.scrollHeight;
   }
   replyTo=null;$("replyLabel").textContent="";$("replyCancel").classList.add("hidden");
@@ -2095,6 +2188,21 @@ async function sendChatMessage(content,imageUrl=null){
 }
 $("chatForm").addEventListener("submit",e=>{e.preventDefault();sendChatMessage($("chatText").value);});
 let auraPendingChatMedia=null,auraPendingChatPreview=null;
+let auraRecorder=null,auraVoiceChunks=[],auraVoiceStream=null,auraVoiceBlob=null,auraVoicePreviewUrl=null,auraVoiceTimer=null,auraVoiceStarted=0;
+const auraVoiceButton=$("auraVoiceButton");
+function ensureVoiceReview(){
+ if($("auraVoiceReview"))return;
+ const modal=document.createElement("div");modal.id="auraVoiceReview";modal.className="aura-voice-review";modal.innerHTML=`<section class="aura-voice-card" role="dialog" aria-modal="true" aria-labelledby="auraVoiceTitle"><div class="aura-voice-orb">♫</div><span class="aura-voice-kicker">AURA VOICE STUDIO</span><h2 id="auraVoiceTitle">Voice message</h2><p id="auraVoiceStatus">Your recording is ready to review.</p><audio id="auraVoicePreview" controls></audio><div class="aura-voice-actions"><button type="button" id="auraVoiceDiscard" class="aura-voice-cancel">Cancel</button><button type="button" id="auraVoiceSend" class="aura-voice-send">Send voice ↗</button></div></section>`;document.body.appendChild(modal);
+ $("auraVoiceDiscard").onclick=()=>{if(auraVoicePreviewUrl)URL.revokeObjectURL(auraVoicePreviewUrl);auraVoicePreviewUrl=null;auraVoiceBlob=null;modal.classList.remove("open");$("auraVoicePreview").removeAttribute("src");};
+ $("auraVoiceSend").onclick=async()=>{if(!auraVoiceBlob)return;const btn=$("auraVoiceSend");btn.disabled=true;btn.textContent="Sending…";try{if(auraVoiceBlob.size>12*1024*1024)throw new Error("Voice message is too large (12 MB max).");const ext=auraVoiceBlob.type.includes("ogg")?"ogg":auraVoiceBlob.type.includes("mp4")?"m4a":"webm";const path=`${currentUser.id}/aura-voice-${Date.now()}.${ext}`;const {error}=await supabase.storage.from("aura-media").upload(path,auraVoiceBlob,{contentType:auraVoiceBlob.type||"audio/webm",upsert:false});if(error)throw error;const url=supabase.storage.from("aura-media").getPublicUrl(path).data.publicUrl;modal.classList.remove("open");if(auraVoicePreviewUrl)URL.revokeObjectURL(auraVoicePreviewUrl);auraVoicePreviewUrl=null;auraVoiceBlob=null;await sendChatMessage("Voice message",url);}catch(err){toast("Voice send failed: "+(err.message||"Please try again."));}finally{btn.disabled=false;btn.textContent="Send voice ↗";}};
+}
+if(auraVoiceButton)auraVoiceButton.addEventListener("click",async()=>{
+ if(!currentUser||currentUser.guest||!activeConversation){toast("Open a conversation first.");return}
+ if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){toast("Voice recording is not supported by this browser.");return}
+ if(auraRecorder?.state==="recording"){auraRecorder.stop();auraVoiceButton.textContent="🎙";auraVoiceButton.classList.remove("recording");return}
+ try{auraVoiceStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});auraVoiceChunks=[];const mime=["audio/webm;codecs=opus","audio/ogg;codecs=opus","audio/webm"].find(t=>MediaRecorder.isTypeSupported?.(t));auraRecorder=mime?new MediaRecorder(auraVoiceStream,{mimeType:mime}):new MediaRecorder(auraVoiceStream);auraRecorder.ondataavailable=e=>{if(e.data?.size)auraVoiceChunks.push(e.data)};auraRecorder.onstop=()=>{auraVoiceStream?.getTracks().forEach(t=>t.stop());auraVoiceStream=null;if(auraVoiceTimer)clearInterval(auraVoiceTimer);auraVoiceTimer=null;auraVoiceButton.textContent="🎙";auraVoiceButton.classList.remove("recording");if(!auraVoiceChunks.length){toast("No audio was recorded.");return}auraVoiceBlob=new Blob(auraVoiceChunks,{type:auraRecorder.mimeType||"audio/webm"});if(auraVoiceBlob.size>12*1024*1024){auraVoiceBlob=null;toast("Recording is too large. Please record a shorter voice message.");return}ensureVoiceReview();auraVoicePreviewUrl=URL.createObjectURL(auraVoiceBlob);$("auraVoicePreview").src=auraVoicePreviewUrl;$("auraVoiceStatus").textContent=`Recording ready · ${Math.max(1,Math.round((Date.now()-auraVoiceStarted)/1000))} seconds`;$("auraVoiceReview").classList.add("open");};auraVoiceStarted=Date.now();auraRecorder.start(250);auraVoiceButton.textContent="■";auraVoiceButton.classList.add("recording");toast("Recording… tap ■ to review, then Send or Cancel.");}catch(e){auraVoiceStream?.getTracks().forEach(t=>t.stop());auraVoiceStream=null;toast("Microphone permission is needed for voice messages.");}
+});
+
 function closeMediaReview(){closeAuraTool("auraMediaReview");if(auraPendingChatPreview){URL.revokeObjectURL(auraPendingChatPreview);auraPendingChatPreview=null;}auraPendingChatMedia=null;$("chatImage").value="";}
 $("auraMediaCancel").addEventListener("click",closeMediaReview);
 $("chatImage").addEventListener("change",e=>{
@@ -2440,19 +2548,23 @@ window.addEventListener("focus",()=>{if(currentUser){refreshUnreadCount();update
 updateNotificationStatus();
 
 
-/* VIDEO HANDLING */
+/* VIDEO HANDLING — one visible feed video at a time; preserve audio choice */
 const auraVideoObserver=new IntersectionObserver(entries=>{
  entries.forEach(entry=>{
-  const video=entry.target;
-  if(entry.isIntersecting&&entry.intersectionRatio>=.65){
-   document.querySelectorAll("#feed video,#gallery video,#myPosts video").forEach(other=>{if(other!==video){other.pause();}});
-   video.play().catch(()=>{});
-  }else video.pause();
+  const video=entry.target;if(!video.isConnected)return;
+  const inFeed=!!video.closest("#feed");
+  if(entry.isIntersecting&&entry.intersectionRatio>=.65&&inFeed){
+   document.querySelectorAll("#feed video,#gallery video,#myPosts video").forEach(other=>{if(other!==video&&!other.paused)other.pause();});
+   if(video.paused){if(!video.dataset.auraAudioChosen){video.dataset.auraAutoMute="1";video.muted=true;}video.play().catch(()=>{});}
+  }else if(!entry.isIntersecting||entry.intersectionRatio<.25){if(!video.paused)video.pause();}
  });
-},{threshold:[0,.65,1]});
+},{threshold:[0,.25,.65,1]});
 function auraObserveVideos(){
  document.querySelectorAll("#feed video,#gallery video,#myPosts video").forEach(video=>{
-  if(video.dataset.auraObserved)return;video.dataset.auraObserved="true";video.playsInline=true;video.preload="metadata";auraVideoObserver.observe(video);
+  if(video.dataset.auraObserved)return;video.dataset.auraObserved="true";video.playsInline=true;video.preload="metadata";
+  video.addEventListener("volumechange",()=>{if(video.dataset.auraAutoMute){delete video.dataset.auraAutoMute;return;}video.dataset.auraAudioChosen="1";},{passive:true});
+  video.addEventListener("play",()=>{document.querySelectorAll("#feed video,#gallery video,#myPosts video").forEach(other=>{if(other!==video&&!other.paused)other.pause();});},{passive:true});
+  auraVideoObserver.observe(video);
  });
 }
 let _avtPending=false;new MutationObserver(()=>{if(_avtPending)return;_avtPending=true;requestAnimationFrame(()=>{_avtPending=false;auraObserveVideos()})}).observe(document.body,{childList:true,subtree:true});
@@ -2898,10 +3010,7 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
 
   document.addEventListener("play", event => {
     const video = event.target;
-
     if (!(video instanceof HTMLVideoElement)) return;
-
-    pauseOtherVideos(video);
     activeVideo = video;
   }, true);
 
@@ -3447,6 +3556,7 @@ window.addEventListener("beforeunload",()=>{stopStoryTimer();clearTimeout(chatRe
    <img id="epAvatar" alt="Profile photo">
    <label class="secondary" style="cursor:pointer;margin:0">📷 Change Photo<input type="file" id="epAvatarInput" accept="image/*" hidden></label>
   </div>
+  <div class="ep-cover-editor"><div class="ep-cover-preview" id="epCoverPreview"><span>YOUR AURA COVER</span></div><label class="field-label">Profile Background / Cover</label><input type="file" id="epCoverInput" accept="image/*" class="field"><p class="ep-hint">Choose a wide image to personalize the background at the top of your profile.</p><button type="button" class="secondary" id="epCoverRemove">Remove cover</button></div>
   <label class="field-label">Nickname <span class="ep-count" id="epNickCount">0/40</span></label>
   <input class="field" id="epNickname" maxlength="40" placeholder="How people see you" autocomplete="off">
   <label class="field-label">Username</label>
@@ -3464,7 +3574,7 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const sb = createClient("https://lntvyexkbxlfimlhjpvg.supabase.co", "sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv");
 const $ = id => document.getElementById(id);
 const FALLBACK = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
-let me = null, avatarFile = null, usernameOk = true, checkTimer = null;
+let me = null, avatarFile = null, coverFile = null, usernameOk = true, checkTimer = null;
 
 const normalize = v => v.trim().toLowerCase().replace(/[^a-z0-9_.]/g, "");
 function setHint(text, cls) { const h = $("epUserHint"); h.textContent = text; h.className = "ep-hint " + (cls || ""); }
@@ -3501,9 +3611,12 @@ async function openEdit() {
   const { data: prof, error } = await sb.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
   if (error) { alert(error.message); return; }
   me = prof || { id: session.user.id, username: "", full_name: "", bio: "", avatar_url: null };
-  avatarFile = null;
+  avatarFile = null; coverFile = null;
   usernameOk = true;
   $("epAvatar").src = me.avatar_url || FALLBACK;
+  $("epCoverInput").value = "";
+  $("epCoverPreview").style.backgroundImage = me.cover_url ? `linear-gradient(0deg,rgba(8,6,15,.35),rgba(8,6,15,.08)),url("${me.cover_url}")` : "";
+  $("epCoverPreview").classList.toggle("has-cover",!!me.cover_url);
   $("epPreviewAvatar").src = me.avatar_url || FALLBACK;
   $("epNickname").value = me.full_name || "";
   $("epUsername").value = me.username || "";
@@ -3538,6 +3651,8 @@ $("epAvatarInput").addEventListener("change", e => {
   $("epAvatar").src = url;
   $("epPreviewAvatar").src = url;
 });
+$("epCoverInput").addEventListener("change",e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("image/")){alert("Choose an image file.");e.target.value="";return}if(f.size>12*1024*1024){alert("Cover image must be 12 MB or smaller.");e.target.value="";return}coverFile=f;const u=URL.createObjectURL(f);$("epCoverPreview").style.backgroundImage=`linear-gradient(0deg,rgba(8,6,15,.35),rgba(8,6,15,.08)),url("${u}")`;$("epCoverPreview").classList.add("has-cover")});
+$("epCoverRemove").addEventListener("click",()=>{coverFile="REMOVE";$("epCoverInput").value="";$("epCoverPreview").style.backgroundImage="";$("epCoverPreview").classList.remove("has-cover")});
 
 $("epSave").addEventListener("click", async () => {
   if (!me) return;
@@ -3554,7 +3669,7 @@ $("epSave").addEventListener("click", async () => {
   try {
     const { data: { session } } = await sb.auth.getSession();
     if (!session?.user) throw new Error("Please log in again.");
-    let avatar_url = me.avatar_url || null;
+    let avatar_url = me.avatar_url || null, cover_url = me.cover_url || null;
     if (avatarFile) {
       const ext = (avatarFile.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
       const path = `${session.user.id}/avatar-${Date.now()}.${ext}`;
@@ -3562,15 +3677,18 @@ $("epSave").addEventListener("click", async () => {
       if (upErr) throw upErr;
       avatar_url = sb.storage.from("aura-media").getPublicUrl(path).data.publicUrl;
     }
-    const { error } = await sb.from("profiles").update({ full_name: nickname, username, bio, avatar_url }).eq("id", session.user.id);
+    if (coverFile === "REMOVE") cover_url = null;
+    else if (coverFile) { const ext=(coverFile.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,""); const path=`${session.user.id}/cover-${Date.now()}.${ext}`; const {error:coverErr}=await sb.storage.from("aura-media").upload(path,coverFile); if(coverErr)throw coverErr; cover_url=sb.storage.from("aura-media").getPublicUrl(path).data.publicUrl; }
+    const { error } = await sb.from("profiles").update({ full_name: nickname, username, bio, avatar_url, cover_url }).eq("id", session.user.id);
     if (error) {
       if (error.code === "23505") { usernameOk = false; setHint("Username already taken", "bad"); alert("That username is already taken."); return; }
       throw error;
     }
-    me = { ...me, full_name: nickname, username, bio, avatar_url };
+    me = { ...me, full_name: nickname, username, bio, avatar_url, cover_url };
     $("myName").textContent = nickname;
     $("myBio").textContent = bio || "Living in my own little world 🌷";
     if (avatar_url) $("myPic").src = avatar_url;
+    $("myCover").style.backgroundImage = cover_url ? `url("${cover_url}")` : "";
     $("backEditProfile").click();
     const t = document.createElement("div");
     t.className = "toast";
@@ -6470,16 +6588,15 @@ html:not(.aura-light) .bottom .aura-liquid-lens{
  mo.observe(document.body,{childList:true,subtree:true});
  const themeObserver=new MutationObserver(sync);
  themeObserver.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
- // Startup animation: 2.7 seconds, once per full page load.
- if(!document.getElementById('auraStartup')){
-  const splash=document.createElement('div');
-  splash.id='auraStartup';
-  splash.setAttribute('aria-label','AURA is opening');
+ // Hide app content until the AURA opening animation finishes.
+ let splash=document.getElementById('auraStartup');
+ if(!splash){
+  splash=document.createElement('div');splash.id='auraStartup';splash.setAttribute('aria-label','AURA is opening');
   splash.innerHTML='<div class="startup-core"><div class="startup-halo"></div><div class="startup-orbit"></div><svg class="startup-mark" viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 5 95 50 50 95 5 50 50 5Z" stroke="#b878ff" stroke-width="4"/><path d="M50 22 78 50 50 78 22 50 50 22Z" stroke="#d8baff" stroke-width="4"/><path d="M50 38 62 50 50 62 38 50 50 38Z" fill="#f0ddff"/><path d="M50 12v76M12 50h76" stroke="#b878ff" stroke-opacity=".25" stroke-width="1"/></svg><div class="startup-word">AURA</div><div class="startup-tag">YOUR LITTLE WORLD</div></div>';
   document.body.appendChild(splash);
-  const finish=()=>{splash.classList.add('is-leaving');setTimeout(()=>splash.remove(),600)};
-  setTimeout(finish,1900);
  }
+ const finish=()=>{splash.classList.add('is-leaving');setTimeout(()=>{splash.remove();document.documentElement.classList.remove('aura-booting');},600)};
+ setTimeout(finish,2700);
 })();
 </script>
 
@@ -6567,6 +6684,67 @@ body.chat-open #auraPookieLiveOverlay .petal,body.chat-open #auraPookieLiveOverl
  new MutationObserver(()=>{if(!document.getElementById('auraPookieLiveOverlay'))createOverlay()}).observe(document.body,{childList:true});
 })();
 </script>
+
+
+<script id="aura-pookie-live-keepalive-v7">
+(()=>{
+ const active=()=>document.body.classList.contains('chat-open')&&!!document.querySelector('#chat.page.active');
+ const sync=()=>{
+  let layer=document.getElementById('auraPookieLiveOverlay');
+  if(!layer)return;
+  const run=active();
+  layer.style.visibility=run?'visible':'hidden';
+  layer.style.opacity=run?'1':'0';
+  layer.querySelectorAll('.petal,.heart,.glow,.spark').forEach(el=>{
+   el.style.setProperty('animation-play-state',run?'running':'paused','important');
+   if(run){el.style.setProperty('animation-iteration-count','infinite','important');}
+  });
+ };
+ const start=()=>{sync();new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
+  new MutationObserver(()=>{if(!document.getElementById('auraPookieLiveOverlay')){const old=document.getElementById('auraPookieLiveOverlay');if(old)old.remove();}sync()}).observe(document.body,{childList:true,subtree:true});
+  const chat=document.getElementById('chat');if(chat)new MutationObserver(sync).observe(chat,{attributes:true,attributeFilter:['class','style']});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
+  window.addEventListener('pageshow',sync);window.addEventListener('focus',sync);
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
+</script>
+
+<script type="module" id="aura-studio-engine">
+import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const db=createClient("https://lntvyexkbxlfimlhjpvg.supabase.co","sb_publishable_NyDoKcsBtd8LTKuyv-8Jag_xXqV9nAv"),$=id=>document.getElementById(id),escA=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let user=null,friendRows=[],globalPresence=null,onlineIds=new Set();
+const prompts=['What small thing made today better?','What place feels like peace to you?','What song matches your mood?','What are you looking forward to?','Share a tiny win from today.'];async function getUser(){const {data}=await db.auth.getSession();user=data.session?.user||null;if(user&&!globalPresence){globalPresence=db.channel('aura-global-online',{config:{presence:{key:user.id}}});globalPresence.on('presence',{event:'sync'},()=>{onlineIds=new Set(Object.keys(globalPresence.presenceState()||{}));if($('auraOnlineFriends'))renderOnlineFriends()}).subscribe(status=>{if(status==='SUBSCRIBED')globalPresence.track({user_id:user.id,online_at:new Date().toISOString()})})}return user}function say(t){if(window.toast)window.toast(t);else console.log(t)}function openStudio(){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='auraStudio'));document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));window.scrollTo({top:0,behavior:'smooth'})}function tab(n){document.querySelectorAll('[data-as-tab]').forEach(b=>b.classList.toggle('active',b.dataset.asTab===n));document.querySelectorAll('.as-panel').forEach(p=>p.classList.toggle('active',p.id==='as-'+n));({reels:reels,moments:moments,friends:friends,saved:saved,drafts:drafts,notify:notifications,profiletools:profileTools,visits:visits}[n]||(()=>{}))()}
+$('openAuraStudio')?.addEventListener('click',()=>{openStudio();tab('reels')});$('openAuraReels')?.addEventListener('click',()=>{openStudio();tab('reels')});$('openAuraMoments')?.addEventListener('click',()=>{openStudio();tab('moments')});$('auraStudioBack')?.addEventListener('click',()=>document.querySelector('[data-page="explore"]')?.click());$('auraStudioTabs')?.addEventListener('click',e=>{let b=e.target.closest('[data-as-tab]');if(b)tab(b.dataset.asTab)});$('profileStudioButton')?.addEventListener('click',()=>{openStudio();tab('reels')});
+async function reels(){let box=$('auraReelsList');box.innerHTML='<div class="as-empty">Loading…</div>';let {data,error}=await db.from('posts').select('id,caption,media_url,created_at,profiles(username)').eq('media_type','video').order('created_at',{ascending:false}).limit(40);if(error){box.innerHTML='<div class="as-empty">'+escA(error.message)+'</div>';return}box.innerHTML=(data||[]).map(p=>`<article class="as-reel"><video src="${escA(p.media_url)}" controls playsinline preload="metadata"></video><div class="as-reel-caption"><b>@${escA(p.profiles?.username||'aura-user')}</b><br>${escA(p.caption||'')}</div></article>`).join('')||'<div class="as-empty">No videos yet. Share a video post ✨</div>';let vs=[...box.querySelectorAll('video')],io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&e.intersectionRatio>.65){vs.forEach(v=>{if(v!==e.target)v.pause()});e.target.play().catch(()=>{})}else e.target.pause()}),{threshold:[.2,.65]});vs.forEach(v=>io.observe(v))}
+async function moments(){let box=$('auraMomentsList'),{data,error}=await db.from('aura_moments').select('*,profiles(username)').order('created_at',{ascending:false}).limit(40);if(error){box.innerHTML='<div class="as-empty">Run the supplied SQL to enable Moments.</div>';return}box.innerHTML=(data||[]).map(m=>`<article class="as-moment"><small class="as-muted">@${escA(m.profiles?.username||'AURA member')} · ${new Date(m.created_at).toLocaleString()}</small><blockquote>${escA(m.content)}</blockquote><input class="as-input" data-mr="${m.id}" placeholder="Write a reply…"><button class="secondary" data-mrsend="${m.id}">Reply</button><div class="as-muted">${m.reply_count||0} replies</div></article>`).join('')||'<div class="as-empty">No moments yet. Start the conversation ✨</div>'}
+$('auraMomentRefresh')?.addEventListener('click',()=>$('auraMomentPrompt').textContent=prompts[Math.floor(Math.random()*prompts.length)]);$('auraMomentPost')?.addEventListener('click',async()=>{if(!await getUser())return say('Sign in first');let content=$('auraMomentText').value.trim();if(!content)return;let {error}=await db.from('aura_moments').insert({user_id:user.id,content,prompt:$('auraMomentPrompt').textContent});if(error)say(error.message);else{$('auraMomentText').value='';say('AURA Moment shared ✨');moments()}});$('auraMomentsList')?.addEventListener('click',async e=>{let b=e.target.closest('[data-mrsend]');if(!b)return;let id=b.dataset.mrsend,input=$('auraMomentsList').querySelector(`[data-mr="${CSS.escape(id)}"]`),content=input.value.trim();if(!content)return;let {error}=await db.from('aura_moment_replies').insert({moment_id:id,user_id:user.id,content});if(error)say(error.message);else moments()});
+async function friends(){let box=$('auraCloseFriendsList');if(!await getUser())return;let {data:f,error}=await db.from('follows').select('following_id').eq('follower_id',user.id);if(error)return box.textContent=error.message;let ids=(f||[]).map(x=>x.following_id);if(!ids.length)return box.innerHTML='<div class="as-empty">Follow people first.</div>';let [{data:people},{data:mine}]=await Promise.all([db.from('profiles').select('id,username,full_name,avatar_url').in('id',ids),db.from('aura_close_friends').select('friend_id').eq('user_id',user.id)]);let set=new Set((mine||[]).map(x=>x.friend_id));friendRows=people||[];renderFriends(set)}function renderFriends(set){let q=$('auraFriendSearch').value.toLowerCase();$('auraCloseFriendsList').innerHTML=friendRows.filter(p=>(p.username||'').toLowerCase().includes(q)).map(p=>`<div class="as-card as-row"><img src="${escA(p.avatar_url||'')}" alt=""><div><b>${escA(p.full_name||p.username)}</b><small>@${escA(p.username||'')}</small></div><button class="${set.has(p.id)?'secondary':'primary'}" data-cf="${p.id}">${set.has(p.id)?'Added':'＋ Add'}</button></div>`).join('')||'<div class="as-empty">No matching profiles.</div>'}$('auraFriendSearch')?.addEventListener('input',friends);$('auraCloseFriendsList')?.addEventListener('click',async e=>{let b=e.target.closest('[data-cf]');if(!b)return;let id=b.dataset.cf,{data}=await db.from('aura_close_friends').select('friend_id').eq('user_id',user.id);let has=(data||[]).some(x=>x.friend_id===id),r=has?await db.from('aura_close_friends').delete().eq('user_id',user.id).eq('friend_id',id):await db.from('aura_close_friends').insert({user_id:user.id,friend_id:id});if(r.error)say(r.error.message);else friends()});
+async function saved(){let [{data:cols,error},{data:items}]=await Promise.all([db.from('aura_collections').select('*').eq('user_id',user.id).order('created_at',{ascending:false}),db.from('aura_saved_posts').select('post_id,collection_id,posts(id,caption,media_url,media_type)').eq('user_id',user.id).order('created_at',{ascending:false})]);$('auraCollectionsList').innerHTML=error?'<div class="as-empty">SQL setup required.</div>':(cols||[]).map(c=>`<div class="as-card"><b>${escA(c.name)}</b><span class="as-badge">Private</span></div>`).join('')+'<div class="as-card"><h3>Saved Posts</h3>'+((items||[]).map(x=>`<p class="as-muted">${escA(x.posts?.caption||'Saved post')} · ${escA(x.posts?.media_type||'post')}</p>`).join('')||'<p class="as-muted">No saved posts yet. Tap the bookmark on any post.</p>')+'</div>'}$('auraCreateCollection')?.addEventListener('click',async()=>{if(!await getUser())return;let name=$('auraCollectionName').value.trim();if(!name)return;let {error}=await db.from('aura_collections').insert({user_id:user.id,name});if(error)say(error.message);else{$('auraCollectionName').value='';saved()}});
+async function drafts(){let {data,error}=await db.from('aura_post_drafts').select('*').eq('user_id',user.id).order('updated_at',{ascending:false});$('auraDraftsList').innerHTML=error?'<div class="as-empty">SQL setup required.</div>':(data||[]).map(d=>`<div class="as-card"><p>${escA(d.content)}</p><small class="as-muted">${new Date(d.updated_at).toLocaleString()}</small><button class="secondary" data-de="${d.id}">Edit</button><button class="danger" data-dd="${d.id}">Delete</button></div>`).join('')||'<div class="as-empty">No drafts saved.</div>'}$('auraSaveDraft')?.addEventListener('click',async()=>{if(!await getUser())return;let content=$('auraDraftText').value.trim();if(!content)return;let {error}=await db.from('aura_post_drafts').insert({user_id:user.id,content});if(error)say(error.message);else{$('auraDraftText').value='';drafts();say('Draft saved')}});$('auraDraftsList')?.addEventListener('click',async e=>{let edit=e.target.closest('[data-de]'),b=e.target.closest('[data-dd]');if(edit){let {data}=await db.from('aura_post_drafts').select('*').eq('id',edit.dataset.de).single();if(data){$('auraDraftText').value=data.content;let content=prompt('Edit your draft:',data.content);if(content===null)return;let {error}=await db.from('aura_post_drafts').update({content:content.trim()}).eq('id',data.id);if(error)say(error.message);else drafts()}return}if(!b)return;let {error}=await db.from('aura_post_drafts').delete().eq('id',b.dataset.dd);if(error)say(error.message);else drafts()});
+async function notifications(){let {data,error}=await db.from('aura_notifications').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).limit(60);$('auraNotificationsList').innerHTML=error?'<div class="as-empty">SQL setup required.</div>':(data||[]).map(n=>`<div class="as-card"><b>${escA(n.title)}</b><p class="as-muted">${escA(n.body||'')}</p><small class="as-muted">${new Date(n.created_at).toLocaleString()} · ${n.is_read?'Read':'New'}</small></div>`).join('')||'<div class="as-empty">All caught up ✨</div>'}$('auraMarkNotifications')?.addEventListener('click',async()=>{let {error}=await db.from('aura_notifications').update({is_read:true}).eq('user_id',user.id);if(error)say(error.message);else notifications()});
+function renderOnlineFriends(){if(!friendRows.length)return;let online=friendRows.filter(p=>onlineIds.has(p.id));$('auraOnlineFriends').innerHTML=online.map(p=>`<div class="as-row"><img src="${escA(p.avatar_url||'')}" alt=""><div><b>${escA(p.username||'AURA member')}</b><small>Online now</small></div><span class="as-badge">LIVE</span></div>`).join('')||'<div class="as-empty">No followed friends online right now.</div>'}
+async function profileTools(){let {data}=await db.from('aura_user_settings').select('*').eq('user_id',user.id).maybeSingle();$('auraVisitTracking').checked=data?.track_profile_visits!==false;let {data:f}=await db.from('follows').select('following_id').eq('follower_id',user.id),ids=(f||[]).map(x=>x.following_id);if(!ids.length)return $('auraOnlineFriends').innerHTML='<div class="as-empty">No followed people yet.</div>';let {data:people}=await db.from('profiles').select('id,username,avatar_url').in('id',ids);friendRows=people||[];renderOnlineFriends()}
+$('auraVisitTracking')?.addEventListener('change',async()=>{let {error}=await db.from('aura_user_settings').upsert({user_id:user.id,track_profile_visits:$('auraVisitTracking').checked},{onConflict:'user_id'});if(error)say(error.message);else say('Privacy setting saved')});$('auraCoverUpload')?.addEventListener('click',async()=>{let f=$('auraCoverFile').files[0];if(!f||!user)return;let ext=(f.name.split('.').pop()||'jpg').replace(/[^a-z0-9]/gi,''),path=`${user.id}/cover-${Date.now()}.${ext}`,up=await db.storage.from('aura-media').upload(path,f);if(up.error)return say(up.error.message);let url=db.storage.from('aura-media').getPublicUrl(path).data.publicUrl,r=await db.from('profiles').update({cover_url:url}).eq('id',user.id);say(r.error?.message||'Profile cover updated ✨')});$('auraVerifySubmit')?.addEventListener('click',async()=>{let reason=$('auraVerifyReason').value.trim();if(reason.length<10)return say('Please add more detail.');let {error}=await db.from('aura_verification_requests').insert({user_id:user.id,reason});say(error?.message||'Verification request submitted for review.')});
+async function visits(){let {data,error}=await db.from('aura_profile_visits').select('created_at,visitor_id').eq('profile_id',user.id).order('created_at',{ascending:false}).limit(40);if(error)return $('auraVisitsList').innerHTML='<div class="as-empty">SQL setup required.</div>';let ids=[...new Set((data||[]).map(x=>x.visitor_id))],{data:people}=ids.length?await db.from('profiles').select('id,username,avatar_url').in('id',ids):{data:[]};let map=new Map((people||[]).map(p=>[p.id,p]));$('auraVisitsList').innerHTML=(data||[]).map(v=>`<div class="as-card as-row"><img src="${escA(map.get(v.visitor_id)?.avatar_url||'')}" alt=""><div><b>${escA(map.get(v.visitor_id)?.username||'AURA member')}</b><small>${new Date(v.created_at).toLocaleString()}</small></div></div>`).join('')||'<div class="as-empty">No profile visits yet.</div>'}
+document.querySelectorAll('[data-aura-theme]').forEach(b=>b.addEventListener('click',()=>{let t={purple:['#080710','#a855f7','#d8baff'],lavender:['#100b1b','#bd8cff','#ead7ff'],midnight:['#05060b','#6f7cff','#d4d9ff'],rose:['#120811','#d56bba','#ffd2ec']}[b.dataset.auraTheme];document.documentElement.style.setProperty('--bg',t[0]);document.documentElement.style.setProperty('--purple',t[1]);document.documentElement.style.setProperty('--pink',t[2]);localStorage.setItem('aura_custom_theme',b.dataset.auraTheme);say('AURA theme applied ✦')}));const savedTheme=localStorage.getItem('aura_custom_theme');if(savedTheme){const t={purple:['#080710','#a855f7','#d8baff'],lavender:['#100b1b','#bd8cff','#ead7ff'],midnight:['#05060b','#6f7cff','#d4d9ff'],rose:['#120811','#d56bba','#ffd2ec']}[savedTheme];if(t){document.documentElement.style.setProperty('--bg',t[0]);document.documentElement.style.setProperty('--purple',t[1]);document.documentElement.style.setProperty('--pink',t[2])}}await getUser();
+</script>
+
+<style id="aura-premium-interactions">
+.ep-cover-editor{margin:18px 0 22px;padding:14px;border:1px solid rgba(190,145,255,.2);border-radius:20px;background:linear-gradient(145deg,rgba(40,26,61,.55),rgba(15,12,25,.8))}
+.ep-cover-preview{height:132px;border-radius:15px;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,rgba(168,85,247,.35),transparent 70%),linear-gradient(135deg,#211432,#100c1b);background-size:cover;background-position:center;border:1px solid rgba(190,145,255,.22);color:#d9baff;font-size:11px;letter-spacing:3px;font-weight:900;text-shadow:0 2px 10px #000}
+.ep-cover-preview.has-cover span{opacity:0}
+.ep-cover-editor .field{width:100%;padding:10px;border-radius:12px;background:#100d1a;border:1px solid rgba(190,145,255,.2);color:#e9dcff}
+.aura-voice-review{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,3,10,.82);backdrop-filter:blur(18px);opacity:0;visibility:hidden;transition:opacity .24s ease,visibility .24s ease}
+.aura-voice-review.open{opacity:1;visibility:visible}
+.aura-voice-card{width:min(100%,390px);padding:27px 22px 22px;border:1px solid rgba(206,164,255,.3);border-radius:28px;background:radial-gradient(ellipse at 50% 0%,rgba(145,66,220,.25),transparent 60%),linear-gradient(150deg,#1b1429,#0b0913);box-shadow:0 25px 80px rgba(0,0,0,.55),0 0 35px rgba(168,85,247,.16);text-align:center;transform:translateY(18px) scale(.97);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.aura-voice-review.open .aura-voice-card{transform:translateY(0) scale(1)}
+.aura-voice-orb{width:66px;height:66px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#7135b7,#c05cf4);box-shadow:0 0 30px rgba(168,85,247,.38);font-size:28px;color:white}
+.aura-voice-kicker{font-size:9px;letter-spacing:3px;color:#c99bff;font-weight:900}
+.aura-voice-card h2{margin:8px 0;color:#fff;font-size:23px}.aura-voice-card p{margin:0 0 18px;color:#bdb0cf;font-size:12px}
+.aura-voice-card audio{width:100%;height:44px;margin:4px 0 20px;filter:sepia(20%) saturate(120%)}
+.aura-voice-actions{display:flex;gap:10px}.aura-voice-actions button{flex:1;min-height:46px;border:0;border-radius:14px;font-weight:800;transition:transform .18s ease,filter .18s ease}.aura-voice-actions button:active{transform:scale(.97)}
+.aura-voice-cancel{background:#292039;color:#e5d4ff;border:1px solid #493267!important}.aura-voice-send{background:linear-gradient(110deg,#8137d5,#c05cf4);color:white;box-shadow:0 8px 22px rgba(151,70,220,.28)}.aura-voice-send:disabled{opacity:.6}
+</style>
 
 </body>
 </html>
